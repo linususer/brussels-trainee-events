@@ -1,7 +1,7 @@
 ---
 import { loadEvents } from '../lib/load';
 import { upcoming } from '../lib/merge';
-import { CATEGORIES, isAllDay, type Event } from '../lib/event';
+import { CATEGORIES, REGISTRATION, isAllDay, type Event } from '../lib/event';
 
 const today = new Date().toISOString().slice(0, 10);
 const events = upcoming(loadEvents(), today);
@@ -57,12 +57,13 @@ const when = (e: Event) => {
               <li class="event" data-category={e.category} data-end={(e.end ?? e.start).slice(0, 10)}>
                 <div class="when">{when(e)}</div>
                 <div class="what">
+                  {e.registration === 'invitation' && <p class="invite">{REGISTRATION.invitation}</p>}
                   <h3>{e.url ? <a href={e.url} rel="noopener">{e.title}</a> : e.title}</h3>
                   <p class="meta">
                     <span class="tag">{CATEGORIES[e.category]}</span>
                     {e.organiser}
                     {e.location && <> · {e.location}</>}
-                    {e.registration === 'required' && <> · <strong>Registration required</strong></>}
+                    {e.registration === 'required' && <> · <strong>{REGISTRATION.required}</strong></>}
                   </p>
                   {e.description && <p class="desc">{e.description}</p>}
                 </div>
@@ -105,6 +106,8 @@ const when = (e: Event) => {
         --line: #e3e3de;
         --accent: #0b4ea2;
         --tag-bg: #e8eef8;
+        --invite-bg: #fff1d6;
+        --invite-fg: #7a4b00;
         color-scheme: light dark;
       }
       @media (prefers-color-scheme: dark) {
@@ -115,6 +118,8 @@ const when = (e: Event) => {
           --line: #2c2e33;
           --accent: #7fb0ff;
           --tag-bg: #1f2a3d;
+          --invite-bg: #3d2e12;
+          --invite-fg: #ffd28a;
         }
       }
       * { box-sizing: border-box; }
@@ -148,6 +153,16 @@ const when = (e: Event) => {
       .what h3 { margin: 0; font-size: 1rem; }
       .meta, .desc { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
       .tag { background: var(--tag-bg); border-radius: 4px; padding: 1px 6px; margin-right: 6px; color: var(--fg); }
+      .invite {
+        display: inline-block;
+        margin: 0 0 4px;
+        padding: 1px 8px;
+        border-radius: 4px;
+        background: var(--invite-bg);
+        color: var(--invite-fg);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
       .empty, footer { color: var(--muted); }
       footer { margin-top: 40px; font-size: 0.85rem; }
       @media (max-width: 520px) {

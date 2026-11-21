@@ -6,12 +6,14 @@ import type { Adapter } from './types';
  * All automated sources. Prefer an .ics or RSS feed where a site offers one;
  * fall back to `htmlListAdapter` with CSS selectors taken from the page.
  * Check each site's robots.txt and terms before adding it.
+ * Scope: public events in Brussels only; set `country` to the community addressed.
  *
  * Examples (the URLs and selectors are placeholders, not real endpoints):
  *
  *   icalAdapter({
  *     id: 'lv-example',
  *     organiser: 'Vertretung des Landes Beispiel bei der EU',
+ *     country: 'DE',
  *     url: 'https://example.org/veranstaltungen.ics',
  *   }),
  *

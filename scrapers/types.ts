@@ -18,4 +18,6 @@ export interface SourceDefaults {
   id: string;
   organiser: string;
   category?: Category;
+  /** National community the source addresses, e.g. `DE`. */
+  country?: string;
 }

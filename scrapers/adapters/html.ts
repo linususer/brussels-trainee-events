@@ -78,6 +78,7 @@ export function parseHtmlList(html: string, cfg: HtmlListConfig): EventInput[] {
       description: pick(cfg.description) || undefined,
       organiser: cfg.organiser,
       category: cfg.category,
+      country: cfg.country,
       url: href ? new URL(href, cfg.url).href : undefined,
       source: cfg.id,
     });

@@ -42,6 +42,7 @@ export function parseIcs(body: string, src: SourceDefaults): EventInput[] {
       location: text(ev.location)?.trim() || undefined,
       organiser: src.organiser,
       category: src.category,
+      country: src.country,
       url: ev.url || undefined,
       description: text(ev.description)?.trim() || undefined,
       source: src.id,

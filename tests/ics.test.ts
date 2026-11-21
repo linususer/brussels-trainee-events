@@ -37,6 +37,15 @@ describe('toIcs', () => {
   });
 });
 
+describe('registration notes', () => {
+  it('prefixes guest-list events and explains them', () => {
+    const e = EventSchema.parse({ id: 'i', title: 'Reception', start: '2026-12-01T19:00', organiser: 'LV', registration: 'invitation' });
+    const ics = toIcs([e], now);
+    expect(ics).toContain('SUMMARY:[Invitation] Reception');
+    expect(ics).toContain('Get an invitation first.');
+  });
+});
+
 describe('text helpers', () => {
   it('escapes special characters', () => {
     expect(escapeText('a,b;c\\d\ne')).toBe('a\\,b\\;c\\\\d\\ne');

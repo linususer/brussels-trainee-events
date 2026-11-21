@@ -7,6 +7,14 @@ describe('EventSchema', () => {
     expect(e).toMatchObject({ category: 'other', registration: 'unknown', source: 'manual' });
   });
 
+  it('accepts policy talks, invitations and country codes', () => {
+    const e = EventSchema.parse({
+      id: 'x', title: 'T', start: '2026-12-05', organiser: 'O', category: 'policy', registration: 'invitation', country: 'DE',
+    });
+    expect(e).toMatchObject({ category: 'policy', registration: 'invitation', country: 'DE' });
+    expect(EventSchema.safeParse({ id: 'x', title: 'T', start: '2026-12-05', organiser: 'O', country: 'de' }).success).toBe(false);
+  });
+
   it('rejects malformed dates and unknown categories', () => {
     expect(EventSchema.safeParse({ id: 'x', title: 'T', start: '05.12.2026', organiser: 'O' }).success).toBe(false);
     expect(

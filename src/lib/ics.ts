@@ -1,4 +1,4 @@
-import { isAllDay, type Event } from './event';
+import { isAllDay, REGISTRATION, type Event } from './event';
 
 // Europe/Brussels rules (EU summer time), so calendar apps need no lookup.
 const VTIMEZONE = [
@@ -79,6 +79,7 @@ export function toIcs(events: Event[], now = new Date()): string {
   ];
 
   for (const e of events) {
+    const prefix = e.registration === 'invitation' ? '[Invitation] ' : '';
     const description = [e.description, `Organiser: ${e.organiser}`, registrationNote(e), e.url]
       .filter(Boolean)
       .join('\n');
@@ -87,7 +88,7 @@ export function toIcs(events: Event[], now = new Date()): string {
       `UID:${e.id.replace(/[^A-Za-z0-9:._-]/g, '-')}@brussels-trainee-events`,
       `DTSTAMP:${stamp}`,
       ...dateLines(e),
-      `SUMMARY:${escapeText(e.title)}`,
+      `SUMMARY:${escapeText(prefix + e.title)}`,
       `DESCRIPTION:${escapeText(description)}`,
       `CATEGORIES:${escapeText(e.category)}`,
     );
@@ -101,7 +102,5 @@ export function toIcs(events: Event[], now = new Date()): string {
 }
 
 function registrationNote(e: Event): string | undefined {
-  if (e.registration === 'required') return 'Registration required.';
-  if (e.registration === 'not-required') return 'No registration needed.';
-  return undefined;
+  return REGISTRATION[e.registration] ? `${REGISTRATION[e.registration]}.` : undefined;
 }

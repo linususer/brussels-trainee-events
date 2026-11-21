@@ -38,7 +38,9 @@ If a source fails during `npm run fetch`, its previously scraped events are kept
 
 ## Event format
 
-See the comment at the top of `data/manual-events.yaml`. Times are Brussels wall-clock time: `2026-12-05T18:00` (timed) or `2026-12-05` (all day). Categories: `networking`, `culture`, `christmas-market`, `talk`, `party`, `sport`, `other`.
+See the comment at the top of `data/manual-events.yaml`. Times are Brussels wall-clock time: `2026-12-05T18:00` (timed) or `2026-12-05` (all day). Categories: `networking`, `policy`, `culture`, `christmas-market`, `party`, `sport`, `other`.
+
+Scope: **public events in Brussels**. Events that are listed publicly but have a guest list get `registration: invitation` and are flagged "Get an invitation first". Each event can carry a `country` code for the community it addresses; v1 covers German (`DE`) sources, others will follow.
 
 ## Project layout
 

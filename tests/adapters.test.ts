@@ -6,7 +6,7 @@ import { parseDate, parseHtmlList } from '../scrapers/adapters/html';
 const fixture = (name: string) => readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8');
 
 describe('parseIcs', () => {
-  const events = parseIcs(fixture('sample.ics'), { id: 'lv-test', organiser: 'LV Test', category: 'party' });
+  const events = parseIcs(fixture('sample.ics'), { id: 'lv-test', organiser: 'LV Test', category: 'party', country: 'DE' });
 
   it('converts timed UTC events to Brussels time', () => {
     expect(events[0]).toMatchObject({
@@ -17,6 +17,7 @@ describe('parseIcs', () => {
       location: 'Rue Montoyer 1, Brussels',
       url: 'https://example.org/advent',
       category: 'party',
+      country: 'DE',
       source: 'lv-test',
     });
   });

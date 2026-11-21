@@ -7,10 +7,11 @@
 #   start:        Brussels time, 2026-12-05T18:00 (timed) or 2026-12-05 (all day)
 #   end:          optional, same format
 #   organiser:    required
-#   category:     networking | culture | christmas-market | talk | party | sport | other
+#   category:     networking | policy | culture | christmas-market | party | sport | other
 #   location:     optional
 #   url:          optional, link to details or registration
-#   registration: required | not-required | unknown (default)
+#   registration: required | invitation (guest list: get invited first) | not-required | unknown (default)
+#   country:      optional, community the organiser addresses (DE, FR, ...)
 #   description:  optional
 
 - id: manual:example
@@ -21,4 +22,5 @@
   category: networking
   location: Rue Example 1, 1040 Brussels
   registration: required
+  country: DE
   description: Shows how an entry looks on the site and in the calendar feed.

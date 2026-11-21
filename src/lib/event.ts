@@ -2,15 +2,23 @@ import { z } from 'zod';
 
 export const CATEGORIES = {
   networking: 'Networking',
+  policy: 'Policy talk',
   culture: 'Culture',
   'christmas-market': 'Christmas market',
-  talk: 'Talk & panel',
   party: 'Party & reception',
   sport: 'Sport',
   other: 'Other',
 } as const;
 
 export type Category = keyof typeof CATEGORIES;
+
+export const REGISTRATION = {
+  required: 'Registration required',
+  /** Publicly listed, but with a guest list: an invitation is needed first. */
+  invitation: 'Get an invitation first',
+  'not-required': 'No registration needed',
+  unknown: '',
+} as const;
 
 /**
  * Times are Brussels wall-clock time without offset:
@@ -29,7 +37,9 @@ export const EventSchema = z.object({
   organiser: z.string().min(1),
   category: z.enum(Object.keys(CATEGORIES) as [Category, ...Category[]]).default('other'),
   url: z.url().optional(),
-  registration: z.enum(['required', 'not-required', 'unknown']).default('unknown'),
+  registration: z.enum(Object.keys(REGISTRATION) as [keyof typeof REGISTRATION, ...(keyof typeof REGISTRATION)[]]).default('unknown'),
+  /** National community the organiser mainly addresses (ISO 3166 code, e.g. `DE`). */
+  country: z.string().regex(/^[A-Z]{2}$/, 'expected ISO country code like DE').optional(),
   description: z.string().optional(),
   /** Where the entry came from: `manual` or an adapter id. */
   source: z.string().default('manual'),
