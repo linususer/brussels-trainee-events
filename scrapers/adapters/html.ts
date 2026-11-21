@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import { makeId, type EventInput } from '../../src/lib/event';
+import { classify } from '../../src/lib/classify';
 import type { Adapter, SourceDefaults } from '../types';
 
 const MONTHS: Record<string, number> = {
@@ -54,6 +55,8 @@ export interface HtmlListConfig extends SourceDefaults {
   date: string;
   location?: string;
   description?: string;
+  /** The page's own tags/type chips for an event (all matches are used). */
+  labels?: string;
   link?: string;
 }
 
@@ -69,15 +72,20 @@ export function parseHtmlList(html: string, cfg: HtmlListConfig): EventInput[] {
     const start = parseDate(pick(cfg.date));
     if (!title || !start) return;
 
+    const description = pick(cfg.description) || undefined;
+    const labels = cfg.labels
+      ? item.find(cfg.labels).map((_, l) => $(l).text().replace(/\s+/g, ' ').trim()).get().filter(Boolean)
+      : [];
     const href = item.find(cfg.link ?? 'a[href]').first().attr('href');
     events.push({
       id: makeId(cfg.id, start, title),
       title,
       start,
       location: pick(cfg.location) || undefined,
-      description: pick(cfg.description) || undefined,
+      description,
+      labels: labels.length ? labels : undefined,
+      ...classify({ title, description, labels }),
       organiser: cfg.organiser,
-      category: cfg.category,
       country: cfg.country,
       url: href ? new URL(href, cfg.url).href : undefined,
       source: cfg.id,

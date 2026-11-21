@@ -35,7 +35,10 @@ export const EventSchema = z.object({
   end: localDateTime.optional(),
   location: z.string().optional(),
   organiser: z.string().min(1),
-  category: z.enum(Object.keys(CATEGORIES) as [Category, ...Category[]]).default('other'),
+  /** Derived per event (see classify.ts); empty means unclassified. */
+  categories: z.array(z.enum(Object.keys(CATEGORIES) as [Category, ...Category[]])).default([]),
+  /** The source's own labels for this event, kept verbatim for review. */
+  labels: z.array(z.string()).optional(),
   url: z.url().optional(),
   registration: z.enum(Object.keys(REGISTRATION) as [keyof typeof REGISTRATION, ...(keyof typeof REGISTRATION)[]]).default('unknown'),
   /** National community the organiser mainly addresses (ISO 3166 code, e.g. `DE`). */

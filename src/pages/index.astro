@@ -1,7 +1,7 @@
 ---
 import { loadEvents } from '../lib/load';
 import { upcoming } from '../lib/merge';
-import { CATEGORIES, REGISTRATION, isAllDay, type Event } from '../lib/event';
+import { CATEGORIES, REGISTRATION, isAllDay, type Category, type Event } from '../lib/event';
 
 const today = new Date().toISOString().slice(0, 10);
 const events = upcoming(loadEvents(), today);
@@ -17,7 +17,8 @@ for (const e of events) {
   byMonth.set(key, [...(byMonth.get(key) ?? []), e]);
 }
 
-const used = [...new Set(events.map((e) => e.category))];
+const used = Object.keys(CATEGORIES).filter((c) => events.some((e) => e.categories.includes(c as Category))) as Category[];
+const hasUnclassified = events.some((e) => e.categories.length === 0);
 const when = (e: Event) => {
   const day = dayFmt.format(asUtc(e.start));
   if (isAllDay(e)) return e.end && e.end !== e.start ? `${day} – ${dayFmt.format(asUtc(e.end))}` : day;
@@ -45,6 +46,7 @@ const when = (e: Event) => {
     <nav class="filters" aria-label="Filter by category">
       <button type="button" data-filter="all" aria-pressed="true">All</button>
       {used.map((c) => <button type="button" data-filter={c} aria-pressed="false">{CATEGORIES[c]}</button>)}
+      {hasUnclassified && <button type="button" data-filter="unclassified" aria-pressed="false">Unclassified</button>}
     </nav>
 
     <main>
@@ -54,13 +56,13 @@ const when = (e: Event) => {
           <h2>{month}</h2>
           <ul>
             {list.map((e) => (
-              <li class="event" data-category={e.category} data-end={(e.end ?? e.start).slice(0, 10)}>
+              <li class="event" data-categories={e.categories.length ? e.categories.join(' ') : 'unclassified'} data-end={(e.end ?? e.start).slice(0, 10)}>
                 <div class="when">{when(e)}</div>
                 <div class="what">
                   {e.registration === 'invitation' && <p class="invite">{REGISTRATION.invitation}</p>}
                   <h3>{e.url ? <a href={e.url} rel="noopener">{e.title}</a> : e.title}</h3>
                   <p class="meta">
-                    <span class="tag">{CATEGORIES[e.category]}</span>
+                    {e.categories.map((c) => <span class="tag">{CATEGORIES[c]}</span>)}
                     {e.organiser}
                     {e.location && <> · {e.location}</>}
                     {e.registration === 'required' && <> · <strong>{REGISTRATION.required}</strong></>}
@@ -88,7 +90,7 @@ const when = (e: Event) => {
       const apply = (filter: string) => {
         for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.filter === filter));
         for (const li of document.querySelectorAll<HTMLElement>('.event')) {
-          li.hidden = filter !== 'all' && li.dataset.category !== filter;
+          li.hidden = filter !== 'all' && !(li.dataset.categories ?? '').split(' ').includes(filter);
         }
         for (const section of document.querySelectorAll<HTMLElement>('main section')) {
           section.hidden = !section.querySelector('.event:not([hidden])');

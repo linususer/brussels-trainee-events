@@ -90,8 +90,8 @@ export function toIcs(events: Event[], now = new Date()): string {
       ...dateLines(e),
       `SUMMARY:${escapeText(prefix + e.title)}`,
       `DESCRIPTION:${escapeText(description)}`,
-      `CATEGORIES:${escapeText(e.category)}`,
     );
+    if (e.categories.length) lines.push(`CATEGORIES:${e.categories.map(escapeText).join(',')}`);
     if (e.location) lines.push(`LOCATION:${escapeText(e.location)}`);
     if (e.url) lines.push(`URL:${e.url}`);
     lines.push('END:VEVENT');

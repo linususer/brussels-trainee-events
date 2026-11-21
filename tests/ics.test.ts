@@ -14,6 +14,7 @@ describe('toIcs', () => {
     organiser: 'Org',
     registration: 'required',
     location: 'Place; Brussels',
+    categories: ['policy', 'party'],
   });
   const allDay = EventSchema.parse({ id: 'm:y', title: 'Market', start: '2026-12-12', end: '2026-12-13', organiser: 'O' });
 
@@ -25,6 +26,7 @@ describe('toIcs', () => {
     expect(ics).toContain('DTEND;VALUE=DATE:20261214');
     expect(ics).toContain('SUMMARY:Drinks\\, finally');
     expect(ics).toContain('LOCATION:Place\\; Brussels');
+    expect(ics).toContain('CATEGORIES:policy,party');
     expect(ics.split('\r\n').every((l) => new TextEncoder().encode(l).length <= 75)).toBe(true);
   });
 

@@ -1,4 +1,4 @@
-import type { Category, EventInput } from '../src/lib/event';
+import type { EventInput } from '../src/lib/event';
 
 /** One event source, e.g. the event page of a state representation. */
 export interface Adapter {
@@ -17,7 +17,6 @@ export interface FetchContext {
 export interface SourceDefaults {
   id: string;
   organiser: string;
-  category?: Category;
   /** National community the source addresses, e.g. `DE`. */
   country?: string;
 }

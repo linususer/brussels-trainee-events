@@ -15,6 +15,12 @@ describe('mergeEvents', () => {
     expect(invalid).toEqual([]);
   });
 
+  it('applies a partial manual entry on top of the scraped event', () => {
+    const scraped = [{ ...base, id: 'x', title: 'Fachdialog', start: '2026-12-03T18:00', categories: [] }];
+    const { events } = mergeEvents(scraped, [{ id: 'x', categories: ['policy'] }]);
+    expect(events[0]).toMatchObject({ title: 'Fachdialog', source: 's', categories: ['policy'] });
+  });
+
   it('reports invalid entries instead of throwing', () => {
     const { events, invalid } = mergeEvents([{ id: 'x', title: '' }]);
     expect(events).toEqual([]);

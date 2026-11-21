@@ -38,7 +38,9 @@ If a source fails during `npm run fetch`, its previously scraped events are kept
 
 ## Event format
 
-See the comment at the top of `data/manual-events.yaml`. Times are Brussels wall-clock time: `2026-12-05T18:00` (timed) or `2026-12-05` (all day). Categories: `networking`, `policy`, `culture`, `christmas-market`, `party`, `sport`, `other`.
+See the comment at the top of `data/manual-events.yaml`. Times are Brussels wall-clock time: `2026-12-05T18:00` (timed) or `2026-12-05` (all day). Categories: `networking`, `policy`, `culture`, `christmas-market`, `party`, `sport`, `other`. An event can have several (a panel followed by a reception is `policy` and `party`).
+
+**Labels describe the event, not the organiser.** Scraped events are classified from their own title, description and the source's own tags (`src/lib/classify.ts`), never from the type of source. If nothing matches, the event stays *unclassified*; label it by adding a manual entry with the same id. Invitation-only and registration hints ("nur auf Einladung", "registration required", ...) are detected the same way.
 
 Scope: **public events in Brussels**. Events that are listed publicly but have a guest list get `registration: invitation` and are flagged "Get an invitation first". Each event can carry a `country` code for the community it addresses; v1 covers German (`DE`) sources, others will follow.
 

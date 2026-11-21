@@ -6,7 +6,7 @@ import { parseDate, parseHtmlList } from '../scrapers/adapters/html';
 const fixture = (name: string) => readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8');
 
 describe('parseIcs', () => {
-  const events = parseIcs(fixture('sample.ics'), { id: 'lv-test', organiser: 'LV Test', category: 'party', country: 'DE' });
+  const events = parseIcs(fixture('sample.ics'), { id: 'lv-test', organiser: 'LV Test', country: 'DE' });
 
   it('converts timed UTC events to Brussels time', () => {
     expect(events[0]).toMatchObject({
@@ -16,18 +16,22 @@ describe('parseIcs', () => {
       end: '2026-12-05T21:00',
       location: 'Rue Montoyer 1, Brussels',
       url: 'https://example.org/advent',
-      category: 'party',
+      categories: ['party'],
       country: 'DE',
       source: 'lv-test',
     });
   });
 
   it('stores all-day events with an inclusive end date', () => {
-    expect(events[1]).toMatchObject({ start: '2026-12-12', end: '2026-12-13' });
+    expect(events[1]).toMatchObject({ start: '2026-12-12', end: '2026-12-13', categories: ['christmas-market'] });
   });
 
   it('handles TZID times in summer', () => {
     expect(events[2]).toMatchObject({ start: '2026-07-15T18:30', end: undefined });
+  });
+
+  it("classifies from the feed's own CATEGORIES too", () => {
+    expect(events[2]).toMatchObject({ labels: ['Konzert'], categories: ['networking', 'culture'] });
   });
 
   it('works through the adapter interface', async () => {
@@ -55,12 +59,13 @@ describe('parseHtmlList', () => {
   const events = parseHtmlList(fixture('listing.html'), {
     id: 'lv-html',
     organiser: 'LV HTML',
-    category: 'networking',
     url: 'https://lv.example/veranstaltungen',
     item: '.event-teaser',
     title: 'h3',
     date: '.date',
     location: '.location',
+    description: '.teaser',
+    labels: '.tag',
   });
 
   it('extracts dated items and skips undated ones', () => {
@@ -75,5 +80,14 @@ describe('parseHtmlList', () => {
       id: 'lv-html:2026-12-05:networking-abend-fur-stagiaires',
     });
     expect(events[1]).toMatchObject({ start: '2026-12-10', url: 'https://other.example/talk', location: undefined });
+  });
+
+  it('labels each event from its own content and tags', () => {
+    expect(events[0]).toMatchObject({ categories: ['networking'], registration: 'unknown' });
+    expect(events[1]).toMatchObject({
+      labels: ['Europapolitik', 'Dialog'],
+      categories: ['policy'],
+      registration: 'invitation',
+    });
   });
 });

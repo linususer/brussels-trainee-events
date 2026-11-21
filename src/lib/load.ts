@@ -13,10 +13,14 @@ function readList(file: string, parser: (text: string) => unknown): unknown[] {
   return Array.isArray(data) ? data : [];
 }
 
-/** Loads scraped events and manual entries (manual wins on duplicate ids). */
+/**
+ * Loads scraped events and manual entries. Manual fields override scraped ones
+ * with the same id; entries without a scraped counterpart get `source: manual`
+ * from the schema default.
+ */
 export function loadEvents(): Event[] {
   const scraped = readList('scraped.json', JSON.parse);
-  const manual = readList('manual-events.yaml', parse).map((e) => ({ source: 'manual', ...(e as object) }));
+  const manual = readList('manual-events.yaml', parse);
   const { events, invalid } = mergeEvents(scraped, manual);
   for (const { entry, error } of invalid) {
     console.warn(`[events] skipped invalid entry (${error}):`, entry);

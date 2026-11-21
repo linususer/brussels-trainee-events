@@ -7,26 +7,33 @@ export interface MergeResult {
 }
 
 /**
- * Validates and merges event lists. Later lists win on duplicate ids,
- * so pass manual entries last to let them override scraped ones.
- * The result is sorted by start time.
+ * Merges event lists and validates the result. Entries with the same id are
+ * combined field by field, later lists winning, so a manual entry with just
+ * `id` and `categories` corrects a scraped event. The result is sorted by start.
  */
 export function mergeEvents(...lists: (EventInput | unknown)[][]): MergeResult {
-  const byId = new Map<string, Event>();
+  const byId = new Map<string, Record<string, unknown>>();
   const invalid: MergeResult['invalid'] = [];
 
   for (const list of lists) {
     for (const entry of list) {
-      const parsed = EventSchema.safeParse(entry);
-      if (parsed.success) {
-        byId.set(parsed.data.id, parsed.data);
-      } else {
-        invalid.push({ entry, error: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ') });
+      const id = (entry as { id?: unknown } | null)?.id;
+      if (typeof entry !== 'object' || entry === null || typeof id !== 'string') {
+        invalid.push({ entry, error: 'id: missing' });
+        continue;
       }
+      byId.set(id, { ...byId.get(id), ...entry });
     }
   }
 
-  const events = [...byId.values()].sort((a, b) => a.start.localeCompare(b.start));
+  const events: Event[] = [];
+  for (const entry of byId.values()) {
+    const parsed = EventSchema.safeParse(entry);
+    if (parsed.success) events.push(parsed.data);
+    else invalid.push({ entry, error: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ') });
+  }
+
+  events.sort((a, b) => a.start.localeCompare(b.start));
   return { events, invalid };
 }
 

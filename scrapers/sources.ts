@@ -7,6 +7,7 @@ import type { Adapter } from './types';
  * fall back to `htmlListAdapter` with CSS selectors taken from the page.
  * Check each site's robots.txt and terms before adding it.
  * Scope: public events in Brussels only; set `country` to the community addressed.
+ * Categories are never set per source: they are derived per event in src/lib/classify.ts.
  *
  * Examples (the URLs and selectors are placeholders, not real endpoints):
  *
@@ -20,12 +21,12 @@ import type { Adapter } from './types';
  *   htmlListAdapter({
  *     id: 'alumni-example',
  *     organiser: 'Example Alumni Network Brussels',
- *     category: 'networking',
  *     url: 'https://example.org/events',
  *     item: '.event-teaser',
  *     title: 'h3',
  *     date: '.date',
  *     location: '.location',
+ *     labels: '.tag',
  *   }),
  */
 export const sources: Adapter[] = [];

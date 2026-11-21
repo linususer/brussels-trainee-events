@@ -1,5 +1,6 @@
 import ical, { type VEvent } from 'node-ical';
 import { makeId, toBrusselsLocal, type EventInput } from '../../src/lib/event';
+import { classify } from '../../src/lib/classify';
 import type { Adapter, SourceDefaults } from '../types';
 
 type Param = VEvent['summary'];
@@ -34,6 +35,8 @@ export function parseIcs(body: string, src: SourceDefaults): EventInput[] {
       }
     }
 
+    const description = text(ev.description)?.trim() || undefined;
+    const labels = ev.categories?.map((c) => c.trim()).filter(Boolean) ?? [];
     events.push({
       id: ev.uid ? `${src.id}:${ev.uid}` : makeId(src.id, start, title),
       title,
@@ -41,10 +44,11 @@ export function parseIcs(body: string, src: SourceDefaults): EventInput[] {
       end,
       location: text(ev.location)?.trim() || undefined,
       organiser: src.organiser,
-      category: src.category,
       country: src.country,
       url: ev.url || undefined,
-      description: text(ev.description)?.trim() || undefined,
+      description,
+      labels: labels.length ? labels : undefined,
+      ...classify({ title, description, labels }),
       source: src.id,
     });
   }
