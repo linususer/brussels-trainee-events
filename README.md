@@ -76,7 +76,7 @@ tests/           Vitest tests + fixtures
 
 ## Status / next steps
 
-- [x] Automated sources: Böll EU office, Rosa-Luxemburg-Stiftung Brussels, Emmausgemeinde (German-speaking Protestant parish)
+- [x] Automated sources: Böll EU office, Rosa-Luxemburg-Stiftung Brussels
 - [ ] More sources (see `docs/sources.md`), invitation lists for state representations
 - [ ] Deploy to GitHub Pages
 - [ ] Optional: nightly GitHub Action that runs `npm run fetch` and redeploys (not set up yet)

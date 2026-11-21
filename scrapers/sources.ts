@@ -1,7 +1,7 @@
 import type { Adapter } from './types';
 import { boellAdapter } from './adapters/boell';
 import { rosaluxAdapter } from './adapters/rosalux';
-import { jsonLdAdapter } from './adapters/jsonld';
+// import { jsonLdAdapter } from './adapters/jsonld';
 // import { icalAdapter } from './adapters/ical';
 // import { htmlListAdapter } from './adapters/html';
 
@@ -45,14 +45,5 @@ export const sources: Adapter[] = [
     organiser: 'Rosa-Luxemburg-Stiftung, Brussels office',
     country: 'DE',
     baseUrl: 'https://rosalux.eu',
-  }),
-  jsonLdAdapter({
-    id: 'degb',
-    organiser: 'Emmausgemeinde (Ev. Gemeinde deutscher Sprache Brüssel)',
-    country: 'DE',
-    listUrl: 'https://www.degb.be/termine',
-    linkPattern: /^https:\/\/www\.degb\.be\/events-1\/[^/]+$/,
-    // Worship and parish meetings are not free-time events.
-    exclude: /gottesdienst|gebet|lectio divina|bibel|presbyter|kinderkirche|ökiki|andacht|\bmesse\b|konfirm|taufe/i,
   }),
 ];

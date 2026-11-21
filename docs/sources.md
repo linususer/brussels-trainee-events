@@ -63,7 +63,6 @@ Most state representations (Landesvertretungen) publish **write-ups after events
 | Week of Regions and Cities (side events) | several representations | October | policy |
 | Neujahrsempfang (New Year reception) | AHK debelux with German Embassy | January | party, networking |
 | Sommerfest (summer party) | AHK debelux | June | party |
-| Adventsbasar (Advent bazaar) | Emmausgemeinde | late November (automated) | christmas-market |
 
 ## Group B: political foundations (Brussels offices)
 
@@ -99,8 +98,10 @@ The foundations publish **real lists of upcoming events**, unlike the state repr
 
 ## Group D: German-speaking community
 
+**Decision (2026-11-21): church communities are out of scope.** The research is kept for reference; the generic `jsonLdAdapter` built for the Emmausgemeinde stays available for other sources.
+
 | Source | Event page | What's there | Feed / API | Automatable? | Status |
 |---|---|---|---|---|---|
-| Emmausgemeinde (Ev. Gemeinde deutscher Sprache) | [degb.be/termine](https://www.degb.be/termine) | Wix Events calendar: Adventsbasar, Adventssingen, Pikkujoulut, Martinsumzug, lunches, plus many services | **schema.org `Event` JSON-LD** on every detail page | **Automated: adapter `degb`** (generic `jsonLdAdapter`). Worship, prayer, Bible groups and parish meetings are excluded by title | checked |
-| Kath. Gemeinde deutscher Sprache St. Paulus | sankt-paulus.eu (address: Av. de Tervuren 221, 1150) | Site not reachable. Ecumenical events appear in the Emmausgemeinde calendar | n/a | n/a | not located |
+| Emmausgemeinde (Ev. Gemeinde deutscher Sprache) | [degb.be/termine](https://www.degb.be/termine) | Wix Events calendar: Adventsbasar, Adventssingen, Pikkujoulut, Martinsumzug, lunches, plus many services | **schema.org `Event` JSON-LD** on every detail page | **Out of scope** (churches). Was automatable with `jsonLdAdapter` | checked |
+| Kath. Gemeinde deutscher Sprache St. Paulus | sankt-paulus.eu (address: Av. de Tervuren 221, 1150) | Site not reachable | n/a | **Out of scope** (churches) | not located |
 | Internationale Deutsche Schule Brüssel | [idsb.eu](https://www.idsb.eu/) | Christmas market (date per newsletter) | n/a | **Out of scope**: Wezembeek-Oppem is outside the Brussels region | search only |
