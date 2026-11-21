@@ -1,0 +1,24 @@
+# Hand-kept events: anything without a feed (newsletters, LinkedIn, WhatsApp groups, flyers).
+# Entries here override scraped events with the same id.
+#
+# Fields:
+#   id:           unique, e.g. manual:2026-12-05:xmas-drinks
+#   title:        required
+#   start:        Brussels time, 2026-12-05T18:00 (timed) or 2026-12-05 (all day)
+#   end:          optional, same format
+#   organiser:    required
+#   category:     networking | culture | christmas-market | talk | party | sport | other
+#   location:     optional
+#   url:          optional, link to details or registration
+#   registration: required | not-required | unknown (default)
+#   description:  optional
+
+- id: manual:example
+  title: "Example entry: replace or delete me"
+  start: 2026-12-10T18:30
+  end: 2026-12-10T21:00
+  organiser: Your organiser here
+  category: networking
+  location: Rue Example 1, 1040 Brussels
+  registration: required
+  description: Shows how an entry looks on the site and in the calendar feed.

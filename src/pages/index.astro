@@ -1,0 +1,158 @@
+---
+import { loadEvents } from '../lib/load';
+import { upcoming } from '../lib/merge';
+import { CATEGORIES, isAllDay, type Event } from '../lib/event';
+
+const today = new Date().toISOString().slice(0, 10);
+const events = upcoming(loadEvents(), today);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const monthFmt = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const dayFmt = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+const asUtc = (local: string) => new Date(`${local.slice(0, 10)}T00:00:00Z`);
+
+const byMonth = new Map<string, Event[]>();
+for (const e of events) {
+  const key = monthFmt.format(asUtc(e.start));
+  byMonth.set(key, [...(byMonth.get(key) ?? []), e]);
+}
+
+const used = [...new Set(events.map((e) => e.category))];
+const when = (e: Event) => {
+  const day = dayFmt.format(asUtc(e.start));
+  if (isAllDay(e)) return e.end && e.end !== e.start ? `${day} – ${dayFmt.format(asUtc(e.end))}` : day;
+  const time = e.start.slice(11);
+  const endTime = e.end?.slice(0, 10) === e.start.slice(0, 10) ? `–${e.end.slice(11)}` : '';
+  return `${day}, ${time}${endTime}`;
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brussels Trainee Events</title>
+    <meta name="description" content="Free-time events for EU trainees in Brussels in one place." />
+  </head>
+  <body>
+    <header>
+      <h1>Brussels Trainee Events</h1>
+      <p>Networking, receptions, culture and Christmas markets for trainees in Brussels, all in one list.</p>
+      <p><a class="subscribe" href={`${base}/events.ics`}>Subscribe in your calendar (.ics)</a></p>
+    </header>
+
+    <nav class="filters" aria-label="Filter by category">
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      {used.map((c) => <button type="button" data-filter={c} aria-pressed="false">{CATEGORIES[c]}</button>)}
+    </nav>
+
+    <main>
+      {events.length === 0 && <p class="empty">No upcoming events yet.</p>}
+      {[...byMonth].map(([month, list]) => (
+        <section>
+          <h2>{month}</h2>
+          <ul>
+            {list.map((e) => (
+              <li class="event" data-category={e.category} data-end={(e.end ?? e.start).slice(0, 10)}>
+                <div class="when">{when(e)}</div>
+                <div class="what">
+                  <h3>{e.url ? <a href={e.url} rel="noopener">{e.title}</a> : e.title}</h3>
+                  <p class="meta">
+                    <span class="tag">{CATEGORIES[e.category]}</span>
+                    {e.organiser}
+                    {e.location && <> · {e.location}</>}
+                    {e.registration === 'required' && <> · <strong>Registration required</strong></>}
+                  </p>
+                  {e.description && <p class="desc">{e.description}</p>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </main>
+
+    <footer>
+      <p>Not official. Always check the organiser's page before you go.</p>
+    </footer>
+
+    <script>
+      // Hide events that ended since the last build, and handle category filters.
+      const today = new Date().toISOString().slice(0, 10);
+      const items = [...document.querySelectorAll<HTMLElement>('.event')];
+      for (const li of items) if ((li.dataset.end ?? '') < today) li.remove();
+
+      const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+      const apply = (filter: string) => {
+        for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.filter === filter));
+        for (const li of document.querySelectorAll<HTMLElement>('.event')) {
+          li.hidden = filter !== 'all' && li.dataset.category !== filter;
+        }
+        for (const section of document.querySelectorAll<HTMLElement>('main section')) {
+          section.hidden = !section.querySelector('.event:not([hidden])');
+        }
+      };
+      for (const b of buttons) b.addEventListener('click', () => apply(b.dataset.filter ?? 'all'));
+      apply('all');
+    </script>
+
+    <style is:global>
+      :root {
+        --bg: #fafaf7;
+        --fg: #1d1d1f;
+        --muted: #5f6368;
+        --line: #e3e3de;
+        --accent: #0b4ea2;
+        --tag-bg: #e8eef8;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #141518;
+          --fg: #ececec;
+          --muted: #a0a4aa;
+          --line: #2c2e33;
+          --accent: #7fb0ff;
+          --tag-bg: #1f2a3d;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0 auto;
+        max-width: 760px;
+        padding: 24px 16px 48px;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      a { color: var(--accent); }
+      header h1 { margin: 0 0 4px; font-size: 1.8rem; }
+      header p { margin: 4px 0; color: var(--muted); }
+      .subscribe { font-weight: 600; }
+      .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+      .filters button {
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--fg);
+        padding: 4px 12px;
+        border-radius: 999px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .filters button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+      h2 { font-size: 1.1rem; margin: 28px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+      ul { list-style: none; margin: 0; padding: 0; }
+      .event { display: grid; grid-template-columns: 9.5rem 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+      .when { color: var(--muted); font-variant-numeric: tabular-nums; }
+      .what h3 { margin: 0; font-size: 1rem; }
+      .meta, .desc { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+      .tag { background: var(--tag-bg); border-radius: 4px; padding: 1px 6px; margin-right: 6px; color: var(--fg); }
+      .empty, footer { color: var(--muted); }
+      footer { margin-top: 40px; font-size: 0.85rem; }
+      @media (max-width: 520px) {
+        .event { grid-template-columns: 1fr; gap: 2px; }
+      }
+    </style>
+  </body>
+</html>

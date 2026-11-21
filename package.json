@@ -1,0 +1,31 @@
+{
+  "name": "brussels-trainee-events",
+  "version": "1.0.0",
+  "description": "Overview of free-time events for EU trainees in Brussels: networking, culture, Christmas markets and more.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "fetch": "tsx scripts/fetch.ts",
+    "test": "TZ=Europe/Brussels vitest run",
+    "test:watch": "TZ=Europe/Brussels vitest",
+    "check": "astro check"
+  },
+  "keywords": [],
+  "author": "Linus Szillat",
+  "dependencies": {
+    "astro": "7.4.1",
+    "cheerio": "^1.2.0",
+    "node-ical": "^0.27.6",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1"
+  },
+  "type": "module",
+  "private": true
+}
