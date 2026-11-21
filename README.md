@@ -32,6 +32,7 @@ npm run build      # static site in dist/
 2. Add an entry to `scrapers/sources.ts`:
    - `icalAdapter({ id, organiser, url, category? })` for feeds
    - `htmlListAdapter({ id, organiser, url, item, title, date, location?, ... })` for listing pages, using CSS selectors from the page
+   - `jsonLdAdapter({ id, organiser, listUrl, linkPattern, exclude? })` when detail pages carry schema.org `Event` JSON-LD (Wix, many WordPress plugins). Check for it first: it is the most robust format
    - a dedicated adapter when a site needs more (see `scrapers/adapters/boell.ts`, `rosalux.ts`)
 3. Save a copy of the page/feed into `tests/fixtures/` and add a test, so a site redesign shows up as a failing test rather than silently missing events.
 4. Check the site's `robots.txt` and terms first. The fetcher identifies itself and makes at most one request per second.
@@ -75,7 +76,7 @@ tests/           Vitest tests + fixtures
 
 ## Status / next steps
 
-- [x] First automated sources: Böll EU office, Rosa-Luxemburg-Stiftung Brussels
+- [x] Automated sources: Böll EU office, Rosa-Luxemburg-Stiftung Brussels, Emmausgemeinde (German-speaking Protestant parish)
 - [ ] More sources (see `docs/sources.md`), invitation lists for state representations
 - [ ] Deploy to GitHub Pages
 - [ ] Optional: nightly GitHub Action that runs `npm run fetch` and redeploys (not set up yet)

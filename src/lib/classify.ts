@@ -8,7 +8,7 @@ import type { Category, Event } from './event';
  * Patterns match substrings so German compounds work ("Adventsempfang").
  */
 const CATEGORY_RULES: [Category, RegExp][] = [
-  ['christmas-market', /weihnachtsmarkt|adventsmarkt|christmas market|marché de noël|marche de noel|plaisirs d['’]hiver/i],
+  ['christmas-market', /weihnachtsmarkt|adventsmarkt|adventsbasar|weihnachtsbasar|christmas market|christmas bazaa?r|christmas fair|kerstmarkt|marché de noël|marche de noel|plaisirs d['’]hiver/i],
   [
     'policy',
     /podium|panel|diskussion|discussion|debatte|debate|débat|konferenz|conference|conférence|vortrag|lecture|fachgespräch|gespräch|roundtable|runder tisch|symposium|expert workshop|fachworkshop|briefing|hearing|anhörung/i,
@@ -17,7 +17,7 @@ const CATEGORY_RULES: [Category, RegExp][] = [
   ['networking', /networking|netzwerk|stammtisch|after-?work|meet-?up|get-together|kennenlern|drinks/i],
   [
     'culture',
-    /konzert|concert|ausstellung|exhibition|exposition|vernissage|lesung|reading|film|kino|cinema|cinéma|theater|théâtre|musik|music/i,
+    /konzert|concert|ausstellung|exhibition|exposition|vernissage|lesung|reading|film|kino|cinema|cinéma|theater|théâtre|musik|music|singen|chor\b|choir|carol|chorale/i,
   ],
   ['sport', /\blauf\b|\brun\b|running|fußball|football|yoga|radtour|wanderung|\bhike\b|sportfest|turnier|tournament/i],
 ];

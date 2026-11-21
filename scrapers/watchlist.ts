@@ -47,5 +47,7 @@ export const watchlist: WatchEntry[] = [
   { id: 'fes-bxl', organiser: 'Friedrich-Ebert-Stiftung EU Office', status: 'no-calendar', reviewed: '2026-11-21', url: 'https://brussels.fes.de/events.html', note: 'event list exists but is empty' },
   { id: 'kas-bxl', organiser: 'Konrad-Adenauer-Stiftung Europabüro Brüssel', status: 'blocked', reviewed: '2026-11-21', url: 'https://www.kas.de/de/web/bruessel/veranstaltungen', note: 'web application firewall' },
   { id: 'fnf-europe', organiser: 'Friedrich-Naumann-Stiftung Europe', status: 'no-calendar', reviewed: '2026-11-21', url: 'https://www.freiheit.org/europe', note: 'restructured Feb 2026' },
+  // Group D: community
+  { id: 'st-paulus', organiser: 'Kath. Gemeinde deutscher Sprache St. Paulus', status: 'not-located', reviewed: '2026-11-21', note: 'sankt-paulus.eu not reachable; ecumenical events show up in the degb calendar' },
   { id: 'hss-bxl', organiser: 'Hanns-Seidel-Stiftung', status: 'not-located', reviewed: '2026-11-21', note: 'hss.de/veranstaltungen only lists Bavarian seminars; Brussels page not found' },
 ];

@@ -61,6 +61,9 @@ Most state representations (Landesvertretungen) publish **write-ups after events
 | Oktoberfest | Bayern | every two years (2025 was the last) | party |
 | Tag der Deutschen Einheit (Day of German Unity) | German Embassy | 1 October, by invitation | party (invitation) |
 | Week of Regions and Cities (side events) | several representations | October | policy |
+| Neujahrsempfang (New Year reception) | AHK debelux with German Embassy | January | party, networking |
+| Sommerfest (summer party) | AHK debelux | June | party |
+| Adventsbasar (Advent bazaar) | Emmausgemeinde | late November (automated) | christmas-market |
 
 ## Group B: political foundations (Brussels offices)
 
@@ -88,6 +91,16 @@ The foundations publish **real lists of upcoming events**, unlike the state repr
 | KAS Europe Talks, Brüsseler Gespräch | KAS Europabüro | policy |
 | European Forum | Rosa-Luxemburg-Stiftung | policy |
 
-## Groups C–D
+## Group C: business
 
-Not researched yet.
+| Source | Event page | What's there | Feed / API | Automatable? | Status |
+|---|---|---|---|---|---|
+| AHK debelux (German-Belgian-Luxembourg chamber of commerce) | [debelux.ahk.de/de/veranstaltungen](https://debelux.ahk.de/de/veranstaltungen) | Upcoming list (5 at the moment), almost all **B2B**: webinars on Belgian labour law and tax, an online security circle, a matchmaking event in Luxembourg. Dates only in the teaser text. `/de/events` also lists old events | none | Not worth it: low relevance for trainees, and the list always has future dates (too noisy to watch). Enter receptions by hand: **Neujahrsempfang** (with the German Embassy, January) and **Sommerfest** (June, with the members' meeting) | checked |
+
+## Group D: German-speaking community
+
+| Source | Event page | What's there | Feed / API | Automatable? | Status |
+|---|---|---|---|---|---|
+| Emmausgemeinde (Ev. Gemeinde deutscher Sprache) | [degb.be/termine](https://www.degb.be/termine) | Wix Events calendar: Adventsbasar, Adventssingen, Pikkujoulut, Martinsumzug, lunches, plus many services | **schema.org `Event` JSON-LD** on every detail page | **Automated: adapter `degb`** (generic `jsonLdAdapter`). Worship, prayer, Bible groups and parish meetings are excluded by title | checked |
+| Kath. Gemeinde deutscher Sprache St. Paulus | sankt-paulus.eu (address: Av. de Tervuren 221, 1150) | Site not reachable. Ecumenical events appear in the Emmausgemeinde calendar | n/a | n/a | not located |
+| Internationale Deutsche Schule Brüssel | [idsb.eu](https://www.idsb.eu/) | Christmas market (date per newsletter) | n/a | **Out of scope**: Wezembeek-Oppem is outside the Brussels region | search only |

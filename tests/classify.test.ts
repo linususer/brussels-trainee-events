@@ -15,6 +15,9 @@ describe('classify categories', () => {
     ['European perspectives on German rearmament (Discussion)', ['policy']],
     ['EU-India Climate Expert Workshop', ['policy']],
     ['Upcycling workshop', []], // a workshop alone is not a policy event
+    ['Adventsbasar', ['christmas-market']],
+    ['Adventssingen', ['culture']],
+    ['Chorprobe', []], // "chor" only as a word
   ])('%s → %j', (title, expected) => {
     expect(classify({ title }).categories).toEqual(expected);
   });
