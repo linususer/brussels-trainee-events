@@ -58,6 +58,10 @@ See the comment at the top of `data/manual-events.yaml`. Times are Brussels wall
 
 Scope: **public events in Brussels**. Events that are listed publicly but have a guest list get `registration: invitation` and are flagged "Get an invitation first". Each event can carry a `country` code for the community it addresses; v1 covers German (`DE`) sources, others will follow.
 
+## Decisions
+
+- **Classification is rule-based** (`src/lib/classify.ts`). An LLM classifier (Claude API) as a primary labeller, with rules as fallback and cached results, was considered on 2026-11-21 and **deferred**: with only a handful of events, sources are the bottleneck. Revisit when wording gaps keep showing up in the disagreement or unclassified lists.
+
 ## Project layout
 
 ```
