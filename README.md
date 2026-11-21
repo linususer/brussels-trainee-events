@@ -21,7 +21,8 @@ Requires Node.js ≥ 22.22.
 npm install
 npm run dev        # local site at http://localhost:4321/brussels-trainee-events/
 npm test           # unit tests (Vitest), no network access
-npm run fetch      # run all adapters and update data/scraped.json
+npm run fetch      # run all adapters, update data/scraped.json, then re-check the watchlist
+npm run watch      # re-check the watchlist only
 npm run build      # static site in dist/
 ```
 
@@ -35,6 +36,17 @@ npm run build      # static site in dist/
 4. Check the site's `robots.txt` and terms first. The fetcher identifies itself and waits 1 s between sources.
 
 If a source fails during `npm run fetch`, its previously scraped events are kept.
+
+## Watchlist: sources without automation
+
+Sources we could not automate (no calendar, blocked, or not located yet) are listed in `scrapers/watchlist.ts` and **re-checked on every fetch**. Each run compares against `data/watch-state.json` and reports only what is new:
+
+- 👀 a page now links a **feed** (RSS/Atom/iCal/webcal) → consider an adapter
+- 👀 a page now mentions **upcoming dates** → it may have started listing events
+- 👀 a blocked site **became reachable**, or a page failed **twice in a row** (moved?)
+- ⏰ a blocked or not-located source was **last reviewed more than 30 days ago** → look by hand, then update its `reviewed` date
+
+When a watched source gets an adapter, move it from `watchlist.ts` to `sources.ts`.
 
 ## Event format
 

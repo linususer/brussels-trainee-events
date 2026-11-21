@@ -7,6 +7,10 @@ Status as of **2026-11-21**. Each row says how far it was checked:
 - **search only**: found via web search, page not inspected yet
 - **not located**: no Brussels event page found yet
 
+## Re-check policy
+
+Sources without automation are not dropped. They sit on the watchlist (`scrapers/watchlist.ts`), are re-checked on every `npm run fetch`, and come with a monthly reminder for manual review where an automatic check is impossible. See the README section "Watchlist".
+
 ## Group A: state level
 
 ### Key finding

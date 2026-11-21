@@ -1,0 +1,105 @@
+{
+  "lv-bw": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "lv-by": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "lv-be": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [
+      "https://www.berlin.de/sen/europa/buero-bruessel/index.php/rss"
+    ],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "lv-hanse": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [
+      "https://hanse-office.de/category/veranstaltungen-termine/feed/",
+      "https://hanse-office.de/comments/feed/",
+      "https://hanse-office.de/feed/"
+    ],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "lv-he": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "lv-ni": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [
+      "https://www.stk.niedersachsen.de/rss/"
+    ],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "lv-sn": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "lv-st": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "staev": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "botschaft-be": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "goethe-bxl": {
+    "status": 403,
+    "failures": 2,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "lv-sl": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [
+      "2026-11-27",
+      "2026-12-30",
+      "2027-01-17"
+    ],
+    "checkedAt": "2026-11-21"
+  },
+  "euagenda": {
+    "status": 403,
+    "failures": 2,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  }
+}
