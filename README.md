@@ -8,7 +8,7 @@ The site is static (Astro) and meant for GitHub Pages. It also publishes an **`.
 
 | Way | For | Where |
 |---|---|---|
-| **Adapters** (automated) | Sources with an iCal feed or a simple listing page | `scrapers/sources.ts` → `npm run fetch` → `data/scraped.json` |
+| **Adapters** (automated) | Sources with a feed, an API or a parsable listing page | `scrapers/sources.ts` → `npm run fetch` → `data/scraped.json` |
 | **Manual entries** | Newsletters, LinkedIn, WhatsApp groups, flyers | `data/manual-events.yaml` |
 
 Both are merged at build time. Manual entries win when the ids match, so you can correct a scraped event.
@@ -32,8 +32,10 @@ npm run build      # static site in dist/
 2. Add an entry to `scrapers/sources.ts`:
    - `icalAdapter({ id, organiser, url, category? })` for feeds
    - `htmlListAdapter({ id, organiser, url, item, title, date, location?, ... })` for listing pages, using CSS selectors from the page
+   - a dedicated adapter when a site needs more (see `scrapers/adapters/boell.ts`, `rosalux.ts`)
 3. Save a copy of the page/feed into `tests/fixtures/` and add a test, so a site redesign shows up as a failing test rather than silently missing events.
-4. Check the site's `robots.txt` and terms first. The fetcher identifies itself and waits 1 s between sources.
+4. Check the site's `robots.txt` and terms first. The fetcher identifies itself and makes at most one request per second.
+5. Drop events that are clearly not in Brussels with `inBrussels()` from `src/lib/location.ts` (unknown locations are kept).
 
 If a source fails during `npm run fetch`, its previously scraped events are kept.
 
@@ -69,7 +71,8 @@ tests/           Vitest tests + fixtures
 
 ## Status / next steps
 
-- [ ] Add real sources (state representations, alumni networks, …)
+- [x] First automated sources: Böll EU office, Rosa-Luxemburg-Stiftung Brussels
+- [ ] More sources (see `docs/sources.md`), invitation lists for state representations
 - [ ] Deploy to GitHub Pages
 - [ ] Optional: nightly GitHub Action that runs `npm run fetch` and redeploys (not set up yet)
 

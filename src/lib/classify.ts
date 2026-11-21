@@ -11,7 +11,7 @@ const CATEGORY_RULES: [Category, RegExp][] = [
   ['christmas-market', /weihnachtsmarkt|adventsmarkt|christmas market|marché de noël|marche de noel|plaisirs d['’]hiver/i],
   [
     'policy',
-    /podium|panel|diskussion|debatte|debate|débat|konferenz|conference|conférence|vortrag|lecture|fachgespräch|gespräch|roundtable|runder tisch|symposium|briefing|hearing|anhörung/i,
+    /podium|panel|diskussion|discussion|debatte|debate|débat|konferenz|conference|conférence|vortrag|lecture|fachgespräch|gespräch|roundtable|runder tisch|symposium|expert workshop|fachworkshop|briefing|hearing|anhörung/i,
   ],
   ['party', /empfang|reception|réception|sommerfest|summer party|party|feier|cocktail|apéro|apero|\bfest\b/i],
   ['networking', /networking|netzwerk|stammtisch|after-?work|meet-?up|get-together|kennenlern|drinks/i],

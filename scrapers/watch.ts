@@ -2,7 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import * as cheerio from 'cheerio';
 import { parseDate } from './adapters/html';
-import { get, politeDelay } from './http';
+import { politeGet } from './http';
 import { watchlist, type WatchEntry } from './watchlist';
 
 /** What we remember about a watched page between runs. */
@@ -132,7 +132,7 @@ export async function runWatch(today = new Date().toISOString().slice(0, 10)): P
 
     let next: WatchState;
     try {
-      const res = await get(entry.url);
+      const res = await politeGet(entry.url);
       const signals = res.ok ? extractSignals(await res.text(), res.url || entry.url, today) : undefined;
       next = nextState(state[entry.id], res.status, signals, today);
     } catch {
@@ -146,7 +146,6 @@ export async function runWatch(today = new Date().toISOString().slice(0, 10)): P
       for (const f of findings) console.log(`     - ${f}`);
     }
     state[entry.id] = next;
-    await politeDelay();
   }
 
   writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + '\n');

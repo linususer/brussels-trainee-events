@@ -1,0 +1,22 @@
+[
+  {
+    "id": 9986, "date": "2026-12-11T11:00:51", "link": "https://rosalux.eu/termine/european-forum/",
+    "title": { "rendered": "European Forum" },
+    "content": { "rendered": "<p>EUROPEAN FORUM of Left, Green and Progressive forces.</p>" },
+    "_embedded": { "wp:term": [
+      [{ "taxonomy": "termintyp", "name": "Veranstaltung" }],
+      [{ "taxonomy": "terminveranstalter", "name": "European Left" }, { "taxonomy": "terminveranstalter", "name": "Rosa Luxemburg Stiftung" }],
+      [{ "taxonomy": "terminveranstaltungsort", "name": "Berlin" }]
+    ] }
+  },
+  {
+    "id": 9990, "date": "2026-12-03T10:12:00", "link": "https://rosalux.eu/termine/podiumsdiskussion/",
+    "title": { "rendered": "Podiumsdiskussion &#8211; Arbeit &amp; Klima" },
+    "content": { "rendered": "<p>Diskussion mit anschlie&szlig;endem Empfang.</p>" },
+    "_embedded": { "wp:term": [
+      [{ "taxonomy": "termintyp", "name": "Veranstaltung" }],
+      [],
+      [{ "taxonomy": "terminveranstaltungsort", "name": "1000 Brussels" }]
+    ] }
+  }
+]

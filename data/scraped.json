@@ -1,1 +1,40 @@
-[]
+[
+  {
+    "id": "boell-eu:167273",
+    "title": "EU-India Climate Expert Workshop",
+    "start": "2026-11-26T09:00",
+    "end": "2026-11-26T14:00",
+    "location": "Brussels",
+    "organiser": "Heinrich-Böll-Stiftung, EU office",
+    "country": "DE",
+    "url": "https://calendar.boell.de/en/event/eu-india-climate-expert-workshop",
+    "description": "The workshop will bring together Indian and European participants to exchange experiences on environmental challenges, discuss climate cooperation and explore the role of civil society in shaping shared solutions.",
+    "labels": [
+      "Workshop"
+    ],
+    "categories": [
+      "policy"
+    ],
+    "registration": "invitation",
+    "source": "boell-eu"
+  },
+  {
+    "id": "boell-eu:167281",
+    "title": "European perspectives on German rearmament: Reassurance or concern?",
+    "start": "2026-12-01T14:00",
+    "end": "2026-12-01T16:00",
+    "location": "Brussels",
+    "organiser": "Heinrich-Böll-Stiftung, EU office",
+    "country": "DE",
+    "url": "https://calendar.boell.de/en/european-perspectives-german-rearmament",
+    "description": "Since Russia's full-scale invasion of Ukraine, Germany has been on a clear path to rearmament. Now, it aims to build Europe's strongest conventional army by 2039.",
+    "labels": [
+      "Discussion"
+    ],
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "boell-eu"
+  }
+]

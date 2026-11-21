@@ -12,6 +12,9 @@ describe('classify categories', () => {
     ['Vernissage: Fotografie aus Thüringen', ['culture']],
     ['Brussels 20 km run with colleagues', ['sport']],
     ['Mitgliederversammlung', []],
+    ['European perspectives on German rearmament (Discussion)', ['policy']],
+    ['EU-India Climate Expert Workshop', ['policy']],
+    ['Upcycling workshop', []], // a workshop alone is not a policy event
   ])('%s → %j', (title, expected) => {
     expect(classify({ title }).categories).toEqual(expected);
   });

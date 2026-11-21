@@ -7,7 +7,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { sources } from '../scrapers/sources';
-import { get, politeDelay } from '../scrapers/http';
+import { politeGet } from '../scrapers/http';
 import { runWatch } from '../scrapers/watch';
 import type { FetchContext } from '../scrapers/types';
 import type { EventInput } from '../src/lib/event';
@@ -16,7 +16,7 @@ const OUT = resolve(import.meta.dirname, '../data/scraped.json');
 
 const ctx: FetchContext = {
   async get(url) {
-    const res = await get(url);
+    const res = await politeGet(url);
     if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
     return res.text();
   },
@@ -37,7 +37,6 @@ for (const source of sources) {
     console.error(`✘ ${source.id}: ${(err as Error).message} (keeping ${kept.length} previous events)`);
     result.push(...kept);
   }
-  await politeDelay();
 }
 
 writeFileSync(OUT, JSON.stringify(result, null, 2) + '\n');

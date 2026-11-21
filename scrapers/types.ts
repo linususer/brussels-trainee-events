@@ -10,7 +10,7 @@ export interface Adapter {
 }
 
 export interface FetchContext {
-  /** Fetches a URL as text with a polite User-Agent. */
+  /** Fetches a URL as text (polite User-Agent, at most one request per second). */
   get(url: string): Promise<string>;
 }
 

@@ -15,13 +15,16 @@
 #   country:      optional, community the organiser addresses (DE, FR, ...)
 #   description:  optional
 
-- id: manual:example
-  title: "Example entry: replace or delete me"
-  start: 2026-12-10T18:30
-  end: 2026-12-10T21:00
-  organiser: Your organiser here
-  categories: [networking]
-  location: Rue Example 1, 1040 Brussels
-  registration: required
-  country: DE
-  description: Shows how an entry looks on the site and in the calendar feed.
+# Example:
+# - id: manual:example
+#   title: "Example entry: replace or delete me"
+#   start: 2026-12-10T18:30
+#   end: 2026-12-10T21:00
+#   organiser: Your organiser here
+#   categories: [networking]
+#   location: Rue Example 1, 1040 Brussels
+#   registration: required
+#   country: DE
+#   description: Shows how an entry looks on the site and in the calendar feed.
+
+[]
