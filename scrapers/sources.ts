@@ -1,6 +1,7 @@
 import type { Adapter } from './types';
 import { boellAdapter } from './adapters/boell';
 import { rosaluxAdapter } from './adapters/rosalux';
+import { eventManagerAdapter } from './adapters/eventmanager';
 // import { jsonLdAdapter } from './adapters/jsonld';
 // import { icalAdapter } from './adapters/ical';
 // import { htmlListAdapter } from './adapters/html';
@@ -45,5 +46,24 @@ export const sources: Adapter[] = [
     organiser: 'Rosa-Luxemburg-Stiftung, Brussels office',
     country: 'DE',
     baseUrl: 'https://rosalux.eu',
+  }),
+  // State representations using the same online registration portal ("Offene Veranstaltungen").
+  eventManagerAdapter({
+    id: 'lv-nrw',
+    organiser: 'Vertretung des Landes Nordrhein-Westfalen bei der EU',
+    country: 'DE',
+    startUrl: 'https://bruessel.veranstaltungen.land.nrw/index.php?Locale=de_DE',
+  }),
+  eventManagerAdapter({
+    id: 'lv-rp',
+    organiser: 'Vertretung des Landes Rheinland-Pfalz bei der EU',
+    country: 'DE',
+    startUrl: 'https://bruessel.landesvertretung-rlp.de/',
+  }),
+  eventManagerAdapter({
+    id: 'lv-mv',
+    organiser: 'Vertretung des Landes Mecklenburg-Vorpommern bei der EU',
+    country: 'DE',
+    startUrl: 'https://eu.landesvertretung-mv.de/',
   }),
 ];

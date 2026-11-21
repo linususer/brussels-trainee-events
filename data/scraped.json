@@ -36,5 +36,39 @@
     ],
     "registration": "unknown",
     "source": "boell-eu"
+  },
+  {
+    "id": "lv-nrw:3E268",
+    "title": "Filmvorführung \"Ash and Crayons\"",
+    "start": "2026-11-30T17:30",
+    "end": "2026-11-30T21:00",
+    "location": "Vertretung des Landes Nordrhein-Westfalen bei der Europäischen Union, Rue Montoyer 47, 1000 Brüssel",
+    "organiser": "Vertretung des Landes Nordrhein-Westfalen bei der EU",
+    "country": "DE",
+    "url": "https://bruessel.veranstaltungen.land.nrw/event.php?vnrtoken=JEd+dM8G1ptymmIX5u7AFWN2YxL+p68EQfiu5bcjOmDA6YREggw5z9WRVp9Dw3nkzBG4UCH9HMdCzDrvRikva2JtTmPcdiT3XBder7zMzkq31PQ0ufnlvcMaYsFwk8EY0gq6dA3kDVseFvY95u/miQhI/qSN7wk/k2m2AwspLm8ZNPxbrENp2eyWEldwJ9lgQDV0szJmzMWu5/Fylcm6Ii1v1JCaw21McUlIRdtqJkQxtSy5/m58Au98el9IFG1PcjjNPG2Lfoo1TdhW2j67kxFSN2HGYBTC+yogeFZ7gj0pBqsCQYXqvDh/5tH+AkxoJ4HGBM8FggVvUGOh6qJTQJVNi5AG/hXKGNqGPl4XkgnShvgtWNlVb2AklBfe8WwFRMMqTx4oxOulh4sxddhrDI4=&intLinkSource=OVLEventName",
+    "description": "Die Vertretung des Landes Nordrhein-Westfalen bei der Europäischen Union, in Kooperation mit Lukas Sieper, MdEP, lädt Sie herzlich ein zur Filmvorführung: „Ash and Crayons“ - What War Tries to Erase, Children Can Redraw Ein Dokumentarfilm des Oscar-Nominierten Evgeny Afineevsky …",
+    "categories": [
+      "party",
+      "culture"
+    ],
+    "registration": "required",
+    "source": "lv-nrw"
+  },
+  {
+    "id": "lv-rp:1E55",
+    "title": "Die GAP nach 2027",
+    "start": "2026-11-16T18:00",
+    "end": "2026-11-16T22:00",
+    "location": "Vertretung des Landes Rheinland-Pfalz bei der EU",
+    "organiser": "Vertretung des Landes Rheinland-Pfalz bei der EU",
+    "country": "DE",
+    "url": "https://bruessel.landesvertretung-rlp.de/event.php?vnrtoken=JGjtWlxkCwRaNoO0OlJluvhE1SzYikMmU3Ur8gsfKJ4lpefKDtmFAWKE6ljTPwsoD68DWPK7qO6eXYyrPVonkn7KrH/EXbB/5A/3MwtBlfbFHZJ919U5FGl5zbylDOpmyPqXyeZAO64znLhorq0fR6zDubMIqUFVxX2vOz4dRfiRsGV5Lfek7qMU1LHbHUNE9VQA3LIWNQZnidByJD9taIA5tfAhB0nBj0dB031hH/Z9m30l/2SwNFsKHsFU+CnLXCIfkaanNLASgJx8L5b0AAIu4wiA23emHV+YKBhzGAiW5JVG1CasQ9mvZoG2N+SyTaYAkPFqrxq0jfbyyR98mdAoaRWzGZcrBbKZnWQU/ctVcmAKLNCwMtdgWAb3LCRJpdcZrRj9X86u0XEcKGyPl40=&intLinkSource=OVLEventName",
+    "description": "EINLADUNG Die GAP nach 2027 - Perspektiven für Weinbau und Sonderkulturen am Montag, 16. November 2026 um 18.30 Uhr // Einlass 18.00 Uhr in die Vertretung des Landes Rheinland-Pfalz Avenue de Tervueren 60 1040 Brüssel Mit den Vorschlägen der Europäischen Kommission zur …",
+    "categories": [
+      "policy",
+      "party"
+    ],
+    "registration": "required",
+    "source": "lv-rp"
   }
 ]

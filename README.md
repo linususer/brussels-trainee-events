@@ -76,7 +76,7 @@ tests/           Vitest tests + fixtures
 
 ## Status / next steps
 
-- [x] Automated sources: Böll EU office, Rosa-Luxemburg-Stiftung Brussels
+- [x] Automated sources: Böll EU office, Rosa-Luxemburg-Stiftung Brussels, state representations of NRW, Rheinland-Pfalz and Mecklenburg-Vorpommern (shared registration portal)
 - [ ] More sources (see `docs/sources.md`), invitation lists for state representations
 - [ ] Deploy to GitHub Pages
 - [ ] Optional: nightly GitHub Action that runs `npm run fetch` and redeploys (not set up yet)
