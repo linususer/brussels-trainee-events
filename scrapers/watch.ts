@@ -56,6 +56,10 @@ function isRealDate(date: string): boolean {
   return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === date;
 }
 
+// "ical" only as its own path/query part, so "political" or "critical" don't match.
+const FEED_HREF =
+  /\.ics(\?|$)|(^|[/?&=_.-])i?cal(endar)?([/?&=_.-]|$)|savetocalendar|webcal:|\/feed\/?$|\.rss(\?|$)|\/rss\/?$/i;
+
 /** Feed links (RSS/Atom/iCal) and future dates in the page's main text. */
 export function extractSignals(html: string, pageUrl: string, today: string): Pick<WatchState, 'feeds' | 'futureDates'> {
   const $ = cheerio.load(html);
@@ -73,7 +77,7 @@ export function extractSignals(html: string, pageUrl: string, today: string): Pi
   });
   $('a[href]').each((_, el) => {
     const href = $(el).attr('href') ?? '';
-    if (/\.ics(\?|$)|ical|webcal:|\/feed\/?$|\.rss(\?|$)|\/rss\/?$/i.test(href)) add(href);
+    if (FEED_HREF.test(href)) add(href);
   });
 
   $('script, style, noscript, nav, header, footer').remove();

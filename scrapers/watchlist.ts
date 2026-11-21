@@ -42,4 +42,10 @@ export const watchlist: WatchEntry[] = [
   { id: 'lv-nrw', organiser: 'Vertretung des Landes Nordrhein-Westfalen bei der EU', status: 'not-located', reviewed: '2026-11-21' },
   { id: 'lv-rp', organiser: 'Vertretung des Landes Rheinland-Pfalz bei der EU', status: 'not-located', reviewed: '2026-11-21' },
   { id: 'lv-th', organiser: 'Vertretung des Freistaats Thüringen bei der EU', status: 'not-located', reviewed: '2026-11-21' },
+
+  // Group B: political foundations (Böll and Rosa-Luxemburg are candidates for adapters)
+  { id: 'fes-bxl', organiser: 'Friedrich-Ebert-Stiftung EU Office', status: 'no-calendar', reviewed: '2026-11-21', url: 'https://brussels.fes.de/events.html', note: 'event list exists but is empty' },
+  { id: 'kas-bxl', organiser: 'Konrad-Adenauer-Stiftung Europabüro Brüssel', status: 'blocked', reviewed: '2026-11-21', url: 'https://www.kas.de/de/web/bruessel/veranstaltungen', note: 'web application firewall' },
+  { id: 'fnf-europe', organiser: 'Friedrich-Naumann-Stiftung Europe', status: 'no-calendar', reviewed: '2026-11-21', url: 'https://www.freiheit.org/europe', note: 'restructured Feb 2026' },
+  { id: 'hss-bxl', organiser: 'Hanns-Seidel-Stiftung', status: 'not-located', reviewed: '2026-11-21', note: 'hss.de/veranstaltungen only lists Bavarian seminars; Brussels page not found' },
 ];

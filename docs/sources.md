@@ -62,6 +62,32 @@ Most state representations (Landesvertretungen) publish **write-ups after events
 | Tag der Deutschen Einheit (Day of German Unity) | German Embassy | 1 October, by invitation | party (invitation) |
 | Week of Regions and Cities (side events) | several representations | October | policy |
 
-## Groups B–D
+## Group B: political foundations (Brussels offices)
 
-Not researched yet. One early hint: the Böll foundation runs its own calendar site (`calendar.boell.de`), so the political foundations may have proper event calendars.
+### Key finding
+
+The foundations publish **real lists of upcoming events**, unlike the state representations. Two of them can be automated cleanly today. They are mostly `policy` (panels, workshops, conferences), with some networking formats.
+
+### Sources
+
+| Source | Event page | What's there | Feed / API | Automatable? | Status |
+|---|---|---|---|---|---|
+| Heinrich-Böll-Stiftung EU office | [eu.boell.org/en/events](https://eu.boell.org/en/events) → [calendar.boell.de, filtered to the EU office](https://calendar.boell.de/en/calendar/advancedsearch?f%5B0%5D=webseiten_zuordnung_des_termins%3A3619) | Upcoming events with detail pages (date, time, format, organiser) | Per event: `/en/node/<id>/savetoCalendar` returns `text/calendar`. Detail pages carry `<meta name="datetime-start/end">` | **Yes.** List page → detail links → per-event `.ics`. Quirks: the `.ics` has a **new UID on every request** (use the node id) and **floating times without a time zone** (they are Brussels time); no LOCATION/URL in the `.ics`, so take those from the detail page | checked |
+| Rosa-Luxemburg-Stiftung Brussels | [rosalux.eu/termine](https://rosalux.eu/termine/) | Few entries (1 at the moment: "European Forum", 11 Dec) | RSS `/termine/feed/`; WordPress API `/wp-json/wp/v2/termine` with venue taxonomy `terminveranstaltungsort` and type `termintyp` | **Yes.** WordPress API; filter by venue for Brussels. Venue terms are messy (split at commas: "Brussels)", "room 319)") | checked |
+| Friedrich-Ebert-Stiftung EU office | [brussels.fes.de/events](https://brussels.fes.de/events.html) | Event list currently empty ("No news available"); past events page exists | none | Watch: structure unknown until entries appear | checked |
+| Konrad-Adenauer-Stiftung Europabüro | [kas.de/de/web/bruessel/veranstaltungen](https://www.kas.de/de/web/bruessel/veranstaltungen) | Per search: talks ("KAS Europe Talks", "Brüsseler Gespräch", "Der Morgen danach") | n/a | **Blocked** (web application firewall, 403). Ask KAS / subscribe to invitations | checked |
+| Friedrich-Naumann-Stiftung | [freiheit.org/europe](https://www.freiheit.org/europe) | EU office merged into "FNF Europe" in Feb 2026; site-wide event list has no Brussels filter. Formats per search: Liberal Afterwork (networking), New Year's reception | none | No → mailing list; watch | checked |
+| Hanns-Seidel-Stiftung | [hss.de/veranstaltungen](https://www.hss.de/veranstaltungen/) | Event list with location filter, but only Bavarian seminars; Brussels page not located | none | No (watching this list would flag every new Bavarian seminar) | not located |
+
+### Recurring formats worth knowing
+
+| Format | Organiser | Likely labels |
+|---|---|---|
+| Liberal Afterwork | Naumann (Brussels) | networking, policy |
+| New Year's reception (Bibliothèque Solvay) | Naumann (Brussels) | party, policy |
+| KAS Europe Talks, Brüsseler Gespräch | KAS Europabüro | policy |
+| European Forum | Rosa-Luxemburg-Stiftung | policy |
+
+## Groups C–D
+
+Not researched yet.

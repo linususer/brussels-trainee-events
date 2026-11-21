@@ -57,8 +57,8 @@
     "checkedAt": "2026-11-21"
   },
   "lv-st": {
-    "status": 200,
-    "failures": 0,
+    "status": 0,
+    "failures": 1,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-21"
@@ -79,7 +79,7 @@
   },
   "goethe-bxl": {
     "status": 403,
-    "failures": 2,
+    "failures": 4,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-21"
@@ -97,7 +97,28 @@
   },
   "euagenda": {
     "status": 403,
-    "failures": 2,
+    "failures": 4,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "fes-bxl": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "kas-bxl": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-21"
+  },
+  "fnf-europe": {
+    "status": 200,
+    "failures": 0,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-21"

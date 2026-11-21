@@ -20,9 +20,10 @@ describe('findFutureDates', () => {
 describe('extractSignals', () => {
   const signals = extractSignals(html, 'https://lv.example/va', today);
 
-  it('finds feed and calendar links', () => {
+  it('finds feed and calendar links but not words like "political"', () => {
     expect(signals.feeds).toEqual([
       'https://example.org/cal',
+      'https://lv.example/en/node/167273/savetoCalendar',
       'https://lv.example/feed/',
       'https://lv.example/termine/neujahrsempfang.ics',
     ]);
