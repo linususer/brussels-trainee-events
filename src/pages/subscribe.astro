@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { FEEDS, eventsForFeed, feedIds, feedTitle } from '../lib/feeds';
+import { GROUPS, eventsForFeed, feedIds, feedName, feedTitle, groupIds } from '../lib/feeds';
 import { siteEvents } from '../lib/published';
 import { subscribeLinks } from '../lib/subscribe';
 
@@ -8,156 +8,182 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const site = Astro.site ?? new URL('https://example.org');
 const upcomingEvents = siteEvents();
 
-const feeds = feedIds.map((id) => {
-  const url = new URL(`${base}/calendar/${id}.ics`, site).href;
-  return { id, ...FEEDS[id], count: eventsForFeed(upcomingEvents, id).length, links: subscribeLinks(url, feedTitle(id)) };
-});
+// Everything the page script needs per feed: address, name and current event count.
+const feeds = Object.fromEntries(
+  feedIds.map((id) => [id, { url: new URL(`${base}/calendar/${id}.ics`, site).href, name: feedTitle(id), label: feedName(id), count: eventsForFeed(upcomingEvents, id).length }]),
+);
+const groups = groupIds.map((id) => ({ id, ...GROUPS[id], count: eventsForFeed(upcomingEvents, id).length }));
+const fallback = subscribeLinks(feeds.all.url, feeds.all.name); // works without JavaScript
 ---
 
-<Base title="Subscribe | Brussels Trainee Events" description="Add the Brussels trainee events to Google, Apple, Outlook or Thunderbird calendar. Subscriptions update themselves." current="subscribe">
+<Base title="Add to your calendar | Brussels Trainee Events" description="Add the Brussels trainee events to Google, Apple, Outlook or Thunderbird calendar. The subscription updates itself." current="subscribe">
   <header>
-    <h1>Subscribe to the calendar</h1>
-    <p>
-      Add the events to the calendar you already use. A subscription <strong>updates itself</strong>: new events
-      appear in your calendar without you visiting this site again.
-    </p>
+    <h1>Add the events to your calendar</h1>
+    <p>Subscribe once and new events appear in your calendar by themselves. No need to come back to this site.</p>
   </header>
 
-  <aside class="note">
-    <strong>Subscribe or download?</strong> The buttons below <em>subscribe</em>, so your calendar stays up to date.
-    Downloading a <code>.ics</code> file instead only adds a one-time copy that never updates.
-  </aside>
+  <form id="subscribe" data-feeds={JSON.stringify(feeds)} onsubmit="return false">
+    <fieldset class="step">
+      <legend><span class="step-no">1</span> What would you like to see?</legend>
+      <div class="choices">
+        {groups.map((g) => (
+          <label class="choice">
+            <input type="checkbox" name="group" value={g.id} checked />
+            <span class="choice-body">
+              <span class="choice-name">{g.name}</span>
+              <span class="choice-desc">{g.description}</span>
+              <span class="choice-count">{g.count} upcoming</span>
+            </span>
+          </label>
+        ))}
+      </div>
+      <p class="summary" id="selection-summary" aria-live="polite">You'll get all {feeds.all.count} upcoming events, and new ones as they appear.</p>
+    </fieldset>
 
-  <h2>1. Pick what you want to see</h2>
-  <div class="feeds">
-    {feeds.map((f) => (
-      <section class="feed" aria-labelledby={`feed-${f.id}`}>
-        <div class="feed-head">
-          <h3 id={`feed-${f.id}`}>{f.name}</h3>
-          <span class="feed-count">{f.count} upcoming {f.count === 1 ? 'event' : 'events'}</span>
-        </div>
-        <p class="feed-desc">{f.description}</p>
-        <p class="feed-step">2. Choose your calendar app:</p>
-        <div class="apps">
-          <a class="app" href={f.links.google} target="_blank" rel="noopener">Google Calendar<span>web &amp; Android</span></a>
-          <a class="app" href={f.links.apple}>Apple Calendar<span>iPhone, iPad, Mac</span></a>
-          <a class="app" href={f.links.outlookPersonal} target="_blank" rel="noopener">Outlook<span>personal account</span></a>
-          <a class="app" href={f.links.outlookWork} target="_blank" rel="noopener">Outlook<span>work or school account</span></a>
-          <button type="button" class="app" data-copy={f.links.https} data-show="thunderbird-help">Thunderbird<span>copies the link, see steps</span></button>
-          <button type="button" class="app" data-copy={f.links.https}>Copy link<span>for any other app</span></button>
-        </div>
-        <p class="copied" role="status" aria-live="polite" hidden>Link copied.</p>
-      </section>
-    ))}
-  </div>
+    <fieldset class="step" id="step-apps">
+      <legend><span class="step-no">2</span> Add to your calendar</legend>
+      <a id="primary" class="btn btn-primary btn-large" href={fallback.google} target="_blank" rel="noopener" data-app="google">
+        Add to <span data-primary-label>Google Calendar</span>
+      </a>
+      <p class="others-label">Using another calendar?</p>
+      <div class="others">
+        <a class="btn" data-app="apple" href={fallback.apple}>Apple Calendar</a>
+        <a class="btn" data-app="google" href={fallback.google} target="_blank" rel="noopener">Google Calendar</a>
+        <a class="btn" data-app="outlookPersonal" href={fallback.outlookPersonal} target="_blank" rel="noopener">Outlook (personal)</a>
+        <a class="btn" data-app="outlookWork" href={fallback.outlookWork} target="_blank" rel="noopener">Outlook (work or school)</a>
+        <button type="button" class="btn" data-app="thunderbird">Thunderbird</button>
+        <button type="button" class="btn" data-app="copy">Copy link</button>
+      </div>
+      <p class="status" id="subscribe-status" role="status" aria-live="polite" hidden></p>
+    </fieldset>
+  </form>
 
-  <section id="thunderbird-help" class="help" hidden>
-    <h2>Thunderbird: three steps</h2>
-    <ol>
-      <li>The link is now copied (use “Copy link” again if needed).</li>
-      <li>In Thunderbird, open the <strong>Calendar</strong>, then choose <strong>New Calendar… → On the Network</strong>.</li>
-      <li>Paste the link into <strong>Location</strong>, click <strong>Find Calendars</strong> / <strong>Next</strong>, pick a name and colour, and finish.</li>
-    </ol>
+  <section class="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Good to know</h2>
+    <details>
+      <summary>Subscribe or download, what's the difference?</summary>
+      <p>
+        The buttons above <strong>subscribe</strong>: your calendar keeps checking for new events. Downloading a single
+        event (on the events page) adds just that one event and never changes afterwards.
+      </p>
+    </details>
+    <details>
+      <summary>How quickly do new events show up?</summary>
+      <p>
+        The site collects new events every night. Calendar apps then check on their own schedule: Apple, Outlook and
+        Thunderbird usually within a few hours, Google Calendar can take up to a day.
+      </p>
+    </details>
+    <details>
+      <summary>Will these events make me look busy?</summary>
+      <p>No. They are marked as free time, so they don't block your calendar for meeting invitations.</p>
+    </details>
+    <details>
+      <summary>What does “[Invitation]” in a title mean?</summary>
+      <p>The organiser lists the event publicly, but you need an invitation first. The event notes link to the organiser.</p>
+    </details>
+    <details>
+      <summary>How do I stop the subscription?</summary>
+      <p>
+        Delete the calendar in your app: Google Calendar under Settings, Apple Calendar in the calendar list, Outlook by
+        right-clicking the calendar, Thunderbird via the calendar's menu. Nothing else is stored anywhere.
+      </p>
+    </details>
   </section>
 
-  <h2>Good to know</h2>
-  <details>
-    <summary>How quickly do new events show up?</summary>
-    <p>
-      Calendar apps check subscriptions on their own schedule. Apple, Outlook and Thunderbird usually check every few
-      hours; Google Calendar can take up to a day. The events themselves are collected and published here regularly.
-    </p>
-  </details>
-  <details>
-    <summary>Do these events make me look busy?</summary>
-    <p>No. They are marked as free time, so they don't block your calendar for meeting invitations.</p>
-  </details>
-  <details>
-    <summary>What does “[Invitation]” in a title mean?</summary>
-    <p>The organiser lists the event publicly, but you need an invitation first. The event notes say how to ask for one.</p>
-  </details>
-  <details>
-    <summary>How do I remove a subscription?</summary>
-    <p>
-      Delete the subscribed calendar in your app: in Google Calendar under Settings, in Apple Calendar via the
-      calendar list, in Outlook by right-clicking the calendar, in Thunderbird via the calendar's context menu.
-      Nothing else is stored anywhere.
-    </p>
-  </details>
-  <details>
-    <summary>Just one event?</summary>
-    <p>Every event on the <a href={`${base}/`}>events page</a> has its own “Add to calendar” links.</p>
-  </details>
-
   <script>
-    // Copy feed links; show the Thunderbird steps when that button is used.
-    for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
-      btn.addEventListener('click', async () => {
-        const text = btn.dataset.copy ?? '';
-        try {
-          await navigator.clipboard.writeText(text);
-        } catch {
-          window.prompt('Copy this link:', text);
+    import { APP_HINTS, APP_LABELS, appLink, copyText, detectApp, opensNewTab, say, type AppId } from '../scripts/subscribe-client';
+    import { feedForSelection, type GroupId } from '../lib/feeds';
+
+    type Feed = { url: string; name: string; label: string; count: number };
+    const form = document.getElementById('subscribe') as HTMLFormElement;
+    const feeds = JSON.parse(form.dataset.feeds ?? '{}') as Record<string, Feed>;
+    const boxes = [...form.querySelectorAll<HTMLInputElement>('input[name="group"]')];
+    const summary = document.getElementById('selection-summary')!;
+    const status = document.getElementById('subscribe-status')!;
+    const appsStep = document.getElementById('step-apps')!;
+    const primary = document.getElementById('primary') as HTMLAnchorElement;
+    const preferred = detectApp();
+
+    // The device's usual calendar becomes the big button; the others stay one click away.
+    primary.dataset.app = preferred;
+    primary.querySelector('[data-primary-label]')!.textContent = APP_LABELS[preferred];
+    form.querySelector<HTMLElement>(`.others [data-app="${preferred}"]`)?.remove();
+
+    // Preselect from ?feed=culture or ?feed=social-culture (used by the events page).
+    const wanted = new URLSearchParams(location.search).get('feed');
+    if (wanted && wanted !== 'all' && feeds[wanted]) {
+      const ids = wanted.split('-');
+      for (const b of boxes) b.checked = ids.includes(b.value);
+    }
+
+    const currentFeed = () => feeds[feedForSelection(boxes.filter((b) => b.checked).map((b) => b.value as GroupId))];
+    const nothingChosen = () => !boxes.some((b) => b.checked);
+
+    const update = () => {
+      status.hidden = true;
+      if (nothingChosen()) {
+        summary.textContent = 'Tick at least one option to continue.';
+        appsStep.setAttribute('aria-disabled', 'true');
+        return;
+      }
+      appsStep.removeAttribute('aria-disabled');
+      const feed = currentFeed();
+      const what = feed.label === 'Everything' ? 'all' : `${feed.count}`;
+      summary.textContent =
+        feed.label === 'Everything'
+          ? `You'll get all ${feed.count} upcoming events, and new ones as they appear.`
+          : `You'll get ${what} upcoming ${feed.count === 1 ? 'event' : 'events'} (${feed.label}), and new ones as they appear.`;
+      for (const el of form.querySelectorAll<HTMLAnchorElement>('a[data-app]')) {
+        const href = appLink(el.dataset.app as AppId, feed.url, feed.name);
+        if (href) el.href = href;
+      }
+    };
+
+    for (const el of form.querySelectorAll<HTMLElement>('[data-app]')) {
+      el.addEventListener('click', async (ev) => {
+        if (nothingChosen()) {
+          ev.preventDefault();
+          say(status, 'Please tick at least one option in step 1 first.');
+          return;
         }
-        const status = btn.closest('.feed')?.querySelector<HTMLElement>('.copied');
-        if (status) {
-          status.hidden = false;
-          setTimeout(() => (status.hidden = true), 3000);
-        }
-        if (btn.dataset.show) {
-          const help = document.getElementById(btn.dataset.show);
-          if (help) {
-            help.hidden = false;
-            help.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          }
-        }
+        const app = el.dataset.app as AppId;
+        if (app === 'thunderbird' || app === 'copy') await copyText(currentFeed().url);
+        say(status, APP_HINTS[app]);
+        if (!opensNewTab(app)) status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
     }
+    for (const b of boxes) b.addEventListener('change', update);
+    update();
   </script>
 
   <style is:global>
-    .note {
-      margin: 16px 0 8px;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--accent);
-      border-radius: 6px;
-      font-size: 0.95rem;
+    .step { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 16px; margin: 16px 0; }
+    .step legend { padding: 0 6px; font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+    .step-no {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--bg);
+      font-size: 0.85rem;
     }
-    .note code { font-size: 0.9em; }
-    .feeds { display: grid; gap: 16px; }
-    .feed { border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
-    .feed-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-    .feed h3 { margin: 0; font-size: 1.1rem; }
-    .feed-count { color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
-    .feed-desc { margin: 4px 0 10px; color: var(--muted); font-size: 0.9rem; }
-    .feed-step { margin: 0 0 6px; font-size: 0.85rem; color: var(--muted); }
-    .apps { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
-    .app {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      padding: 8px 10px;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: transparent;
-      color: var(--fg);
-      font: inherit;
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-align: left;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .app:hover, .app:focus-visible { border-color: var(--accent); }
-    .app span { font-weight: 400; font-size: 0.78rem; color: var(--muted); }
-    .copied { margin: 8px 0 0; font-size: 0.85rem; color: var(--fg); }
-    .help { margin-top: 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; }
-    .help h2 { margin-top: 0; }
-    .help ol { margin: 0; padding-left: 1.2rem; }
-    .help li { margin: 4px 0; }
-    details { border-bottom: 1px solid var(--line); padding: 10px 0; }
-    details summary { cursor: pointer; font-weight: 600; }
-    details p { margin: 8px 0 0; color: var(--muted); font-size: 0.92rem; }
+    .step[aria-disabled='true'] { opacity: 0.5; }
+    .choices { display: grid; gap: 8px; }
+    .choice { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+    .choice:has(input:checked) { border-color: var(--accent); background: var(--tag-bg); }
+    .choice input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); flex-shrink: 0; }
+    .choice-body { display: grid; gap: 2px; }
+    .choice-name { font-weight: 600; }
+    .choice-desc, .choice-count { color: var(--muted); font-size: 0.88rem; }
+    .summary { margin: 10px 0 0; font-size: 0.95rem; }
+    .others-label { margin: 16px 0 6px; color: var(--muted); font-size: 0.9rem; }
+    .others { display: flex; flex-wrap: wrap; gap: 8px; }
+    .faq details { border-bottom: 1px solid var(--line); padding: 10px 0; }
+    .faq summary { cursor: pointer; font-weight: 600; }
+    .faq details p { margin: 8px 0 0; color: var(--muted); font-size: 0.92rem; }
   </style>
 </Base>

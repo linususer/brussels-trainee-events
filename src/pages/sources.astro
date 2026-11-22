@@ -38,34 +38,35 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
 <Base title="Sources | Brussels Trainee Events" description="Which event sources are read automatically, and which ones trainees need to check by hand." current="sources">
   <header>
     <h1>Sources</h1>
-    <p>
-      We considered <strong>{overview.total + overview.notTracked.length}</strong> organisers.{' '}
-      Of the <strong>{overview.total}</strong> we track, <strong>{overview.counts.active}</strong> are read automatically.{' '}
-      The other <strong>{inactive}</strong> have no connector: check them yourself, using the links below.{' '}
-      <strong>{withSignup}</strong> of them offer an event newsletter or an events contact.
+    <p class="lead">
+      Events from <strong>{overview.counts.active}</strong> organisers appear on this site by themselves. For the other{' '}
+      <strong>{inactive}</strong>, you need to look yourself{withSignup > 0 && <>, and <strong>{withSignup}</strong> of them let you sign up for event newsletters or invitations</>}.
     </p>
+    <p class="muted-small">{overview.total + overview.notTracked.length} organisers were considered in total; the ones we left out are listed at the end.</p>
   </header>
 
   <section aria-labelledby="coverage-title" class="chart">
     <h2 id="coverage-title">Coverage of tracked sources</h2>
-    <div class="bar bar-total" role="img" aria-label={order.map((c) => `${COVERAGE[c].label}: ${overview.counts[c]}`).join(', ')}>
+    <div class="bar bar-total" aria-label={order.map((c) => `${COVERAGE[c].label}: ${overview.counts[c]}`).join(', ')}>
       {segments(overview.rows).map((s) => (
-        <span
+        <a
           class={`seg seg-${s.coverage}`}
           style={`flex-grow: ${s.rows.length}`}
-          tabindex="0"
+          href={`#sec-${s.coverage}`}
           data-tip={tip(s.coverage, s.rows, overview.total)}
-          aria-label={`${COVERAGE[s.coverage].label}: ${s.rows.length}`}
+          aria-label={`${COVERAGE[s.coverage].label}: ${s.rows.length}. Show list`}
         >
           {pct(s.rows.length, overview.total) >= 8 && <span class="seg-label">{s.rows.length}</span>}
-        </span>
+        </a>
       ))}
     </div>
     <ul class="legend">
       {order.map((c) => (
         <li>
-          <span class={`swatch seg-${c}`} aria-hidden="true">{COVERAGE[c].icon}</span>
-          {COVERAGE[c].label} <span class="count">{overview.counts[c]}</span>
+          <a href={`#sec-${c}`}>
+            <span class={`swatch seg-${c}`} aria-hidden="true">{COVERAGE[c].icon}</span>
+            {COVERAGE[c].label} <span class="count">{overview.counts[c]}</span>
+          </a>
         </li>
       ))}
     </ul>
@@ -89,7 +90,7 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
             </div>
           </div>
           <span class="group-count">
-            {g.rows.filter((r) => r.coverage === 'active').length} of {g.rows.length} automated
+            {g.rows.filter((r) => r.coverage === 'active').length} of {g.rows.length} shown automatically
           </span>
         </div>
       ))}
@@ -100,41 +101,34 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
     const rows = overview.rows.filter((r) => r.coverage === c);
     if (rows.length === 0) return null;
     return (
-      <section class="status-section" aria-labelledby={`sec-${c}`}>
-        <h2 id={`sec-${c}`}>
+      <details class="status-section" id={`sec-${c}`} open={c === 'no-calendar' || c === 'blocked'}>
+        <summary>
           <span class={`badge seg-${c}`} aria-hidden="true">{COVERAGE[c].icon}</span>
-          {COVERAGE[c].label} <span class="count">({rows.length})</span>
-        </h2>
+          <span class="sec-label">{COVERAGE[c].label}</span> <span class="count">({rows.length})</span>
+        </summary>
         <p class="advice">{COVERAGE[c].advice}</p>
         <ul class="source-list">
           {rows.map((r) => (
-            <li>
-              <div class="source-name">
-                {r.homepage ? <a href={r.homepage} rel="noopener">{r.organiser}</a> : r.organiser}
-              </div>
+            <li id={`src-${r.id}`}>
+              <div class="source-name">{r.organiser}</div>
               <div class="source-meta">
                 {SOURCE_GROUPS[r.group]}
-                {r.upcoming !== undefined && <> · {r.upcoming} upcoming {r.upcoming === 1 ? 'event' : 'events'}</>}
-                {r.note && <> · {r.note}</>}
-                {r.lastChecked && <> · last checked {r.lastChecked}</>}
-                {!r.homepage && c !== 'active' && <> · no page to check yet</>}
+                {r.upcoming !== undefined && <> · {r.upcoming} upcoming {r.upcoming === 1 ? 'event' : 'events'} on this site</>}
               </div>
-              {c !== 'active' && (
-                <div class="source-signup">
-                  {r.signup ? (
-                    <>
-                      <span class="signup-icon" aria-hidden="true">✉</span>
-                      <a href={r.signup.url} rel="noopener">{r.signup.label}</a>
-                    </>
-                  ) : (
-                    <span class="no-signup">No newsletter or sign-up found</span>
-                  )}
-                </div>
-              )}
+              <div class="source-actions">
+                {r.signup && (
+                  <a class="btn btn-small btn-primary" href={r.signup.url} rel="noopener">✉ {r.signup.label}</a>
+                )}
+                {r.homepage ? (
+                  <a class="btn btn-small" href={r.homepage} rel="noopener">{c === 'active' ? 'Their events page' : 'Open their events page'}</a>
+                ) : (
+                  <span class="no-signup">Website not known yet</span>
+                )}
+              </div>
             </li>
           ))}
         </ul>
-      </section>
+      </details>
     );
   })}
 
@@ -162,6 +156,16 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
       tooltip.style.left = `${Math.max(8, Math.min(x - w / 2, window.innerWidth - w - 8))}px`;
       tooltip.style.top = `${y + 14}px`;
     };
+    // Segment and legend links open their (possibly collapsed) section.
+    const openSection = (hash: string) => {
+      const target = hash ? document.querySelector<HTMLDetailsElement>(hash) : null;
+      if (target?.tagName === 'DETAILS') target.open = true;
+    };
+    for (const a of document.querySelectorAll<HTMLAnchorElement>('a[href^="#sec-"]')) {
+      a.addEventListener('click', () => openSection(a.getAttribute('href')!));
+    }
+    openSection(location.hash);
+
     for (const seg of document.querySelectorAll<HTMLElement>('[data-tip]')) {
       seg.addEventListener('mousemove', (e) => show(seg, e.clientX, e.clientY));
       seg.addEventListener('mouseleave', () => (tooltip.hidden = true));
@@ -184,7 +188,8 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
       justify-content: center;
       flex-basis: 0;
       min-width: 6px;
-      cursor: default;
+      cursor: pointer;
+      text-decoration: none;
       outline-offset: 2px;
     }
     .seg:focus-visible { outline: 2px solid var(--fg); }
@@ -194,7 +199,8 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
     .seg-not-located { background: var(--status-neutral); color: #fff; }
     .seg-blocked { background: var(--status-critical); color: #fff; }
     .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 0; font-size: 0.9rem; color: var(--muted); }
-    .legend li { display: flex; align-items: center; gap: 6px; }
+    .legend li a { display: flex; align-items: center; gap: 6px; color: inherit; text-decoration: none; }
+    .legend li a:hover .sec-label, .legend li a:hover { text-decoration: underline; }
     .legend .count { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
     .swatch, .badge {
       display: inline-flex;
@@ -212,15 +218,20 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
     .group-row { display: grid; grid-template-columns: 13rem 1fr auto; gap: 12px; align-items: center; font-size: 0.9rem; }
     .group-name { color: var(--fg); }
     .group-count { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .status-section h2 { display: flex; align-items: center; gap: 8px; }
-    .status-section h2 .count { color: var(--muted); font-weight: 400; }
+    .lead { font-size: 1rem; color: var(--fg) !important; }
+    .muted-small { font-size: 0.85rem; }
+    .status-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 10px; scroll-margin-top: 12px; }
+    .status-section > summary { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 1.1rem; font-weight: 700; list-style: none; }
+    .status-section > summary::-webkit-details-marker { display: none; }
+    .status-section > summary::after { content: '▸'; margin-left: auto; color: var(--muted); }
+    .status-section[open] > summary::after { content: '▾'; }
+    .status-section .count { color: var(--muted); font-weight: 400; }
+    .source-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
     .advice { margin: 0 0 8px; color: var(--muted); font-size: 0.9rem; }
     .source-list li { padding: 8px 0; border-bottom: 1px solid var(--line); }
     .source-name { font-weight: 600; }
     .source-meta { color: var(--muted); font-size: 0.85rem; }
-    .source-signup { margin-top: 2px; font-size: 0.85rem; display: flex; gap: 6px; align-items: baseline; }
-    .signup-icon { color: var(--muted); }
-    .no-signup { color: var(--muted); font-style: italic; }
+    .no-signup { color: var(--muted); font-style: italic; font-size: 0.85rem; align-self: center; }
     .not-tracked { margin-top: 28px; }
     .not-tracked summary { cursor: pointer; font-weight: 600; }
     .tooltip {

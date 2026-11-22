@@ -21,7 +21,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <a href={`${base}/`} class="brand">Brussels Trainee Events</a>
       <span class="links">
         <a href={`${base}/`} aria-current={current === 'events' ? 'page' : undefined}>Events</a>
-        <a href={`${base}/subscribe/`} aria-current={current === 'subscribe' ? 'page' : undefined}>Subscribe</a>
+        <a href={`${base}/subscribe/`} aria-current={current === 'subscribe' ? 'page' : undefined}>Add to calendar</a>
         <a href={`${base}/sources/`} aria-current={current === 'sources' ? 'page' : undefined}>Sources</a>
       </span>
     </nav>
@@ -90,6 +90,40 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       h2 { font-size: 1.1rem; margin: 28px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
       ul { list-style: none; margin: 0; padding: 0; }
       footer { margin-top: 40px; font-size: 0.85rem; color: var(--muted); }
+
+      /* Shared controls */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 36px;
+        padding: 6px 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--fg);
+        font: inherit;
+        font-size: 0.92rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .btn:hover, .btn:focus-visible { border-color: var(--accent); }
+      .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+      .btn-primary:hover, .btn-primary:focus-visible { filter: brightness(1.1); }
+      .btn-large { width: 100%; min-height: 48px; font-size: 1.05rem; }
+      .btn-small { min-height: 30px; padding: 3px 10px; font-size: 0.82rem; }
+      /* Confirmation after an action ("Link copied", "Downloaded"). */
+      .status {
+        margin: 10px 0 0;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid var(--status-good);
+        background: color-mix(in srgb, var(--status-good) 12%, transparent);
+        font-size: 0.92rem;
+      }
+      .status::before { content: '✓ '; font-weight: 700; color: var(--status-good); }
     </style>
   </body>
 </html>

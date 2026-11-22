@@ -54,10 +54,11 @@ If a source fails during `npm run fetch`, its previously scraped events are kept
 
 ## Calendar subscriptions and views
 
-- **Subscribe page** (`/subscribe/`): one-click buttons per feed for Google Calendar, Apple Calendar (webcal), Outlook (personal and work/school), Thunderbird (copy link + steps) and "copy link". Explains subscribe vs. download.
-- **Feeds** (`/calendar/<feed>.ics`, defined in `src/lib/feeds.ts`): `all`, `social` (networking, receptions, Christmas markets, sport), `culture`, `policy`. `/events.ics` stays as an alias of `all` for existing subscriptions. Feeds carry a name, description and a 6-hour refresh hint; events are marked as free time (`TRANSP:TRANSPARENT`).
-- **Single events**: every event has "Add to calendar" links (Google template link and `/calendar/event/<slug>.ics`).
-- **Month view**: the events page switches between list and a Monday-first month grid (choice remembered per browser). On phones, days show counts; clicking a day opens its events.
+- **Add to calendar page** (`/subscribe/`): step 1 ticks what to see (Networking & social, Culture, Policy talks); step 2 offers one large button for the device's usual calendar (Apple on iPhone/iPad/Mac, Google otherwise) and the other apps (Outlook personal/work, Thunderbird, copy link) directly below. Every click shows what to do next. `?feed=culture` preselects.
+- **Feeds** (`/calendar/<feed>.ics`, `src/lib/feeds.ts`): `all` plus every combination of the three groups (`social`, `culture`, `policy`, `social-culture`, `social-policy`, `culture-policy`), so any selection is one subscription. `/events.ics` stays as an alias of `all`. Feeds carry a name, description and a 6-hour refresh hint; events are marked as free time.
+- **Events page**: a calendar bar subscribes to the feed matching the current filter in one click; filters show counts, a status line and an empty state; events show "Register on the organiser's page" / "Ask the organiser for an invitation" and two add buttons (Google, and `.ics` for Apple/Outlook/others) with a confirmation.
+- **Month view**: list/month toggle (remembered per browser); clicking a day or an event chip opens that day's panel in place.
+- **Sources page**: plain-language statuses, clickable bar segments and legend, sections that need action are open, sign-up buttons per organiser.
 
 Subscriptions update automatically; the feeds are rebuilt every night by the nightly run.
 

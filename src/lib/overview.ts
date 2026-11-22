@@ -7,24 +7,24 @@ import type { Event } from './event';
 /** How well a source is covered. Order is the display order (bar segments, sections). */
 export const COVERAGE = {
   active: {
-    label: 'Read automatically',
+    label: 'Shown here automatically',
     icon: '✓',
-    advice: 'A connector reads this source on every update.',
+    advice: 'Their events appear on this site by themselves. Nothing to do.',
   },
   'no-calendar': {
-    label: 'No public calendar',
+    label: 'Invitations or newsletter only',
     icon: '✉',
-    advice: 'Events are announced by invitation or newsletter. Sign up where a link is given, otherwise check the page now and then.',
+    advice: 'These organisers announce events by email. Sign up where a button is shown; otherwise look at their page now and then.',
   },
   'not-located': {
-    label: 'Event page not found',
+    label: 'No event page found yet',
     icon: '?',
-    advice: 'We have not found a Brussels event page yet. Search for it or ask the organiser.',
+    advice: "We haven't found where they announce events. Their website or a quick email to them is the best bet.",
   },
   blocked: {
-    label: 'Blocks automated access',
+    label: "Can't be read automatically",
     icon: '⊘',
-    advice: 'The site refuses automated reading. Check it by hand or sign up for its newsletter.',
+    advice: 'Their website blocks automatic reading. Check their event page yourself, or sign up where a button is shown.',
   },
 } as const;
 

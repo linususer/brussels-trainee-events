@@ -4,6 +4,7 @@ import { CATEGORIES, REGISTRATION, isAllDay, type Category, type Event } from '.
 import { siteEvents } from '../lib/published';
 import { buildMonths } from '../lib/calendar';
 import { eventSlug, googleEventLink } from '../lib/subscribe';
+import { feedForCategory, feedIds, feedName, feedTitle } from '../lib/feeds';
 
 const events = siteEvents();
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -38,23 +39,27 @@ const timeOf = (e: Event, date: string) => {
   return e.end?.slice(0, 10) === date && e.end.includes('T') ? `until ${e.end.slice(11)}` : 'cont.';
 };
 const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
+
+// Calendar bar: which feed matches each filter, and the feeds' addresses.
+const site = Astro.site ?? new URL('https://example.org');
+const feedData = Object.fromEntries(
+  feedIds.map((id) => [id, { url: new URL(`${base}/calendar/${id}.ics`, site).href, name: feedTitle(id), label: feedName(id) }]),
+);
+const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'], ...used.map((c) => [c, feedForCategory(c)])]);
 ---
 
 <Base title="Brussels Trainee Events" description="Free-time events for EU trainees in Brussels in one place." current="events">
   <header>
     <h1>Upcoming events</h1>
     <p>Networking, receptions, culture and policy talks for trainees in Brussels.</p>
-    <p>
-      <a class="subscribe" href={`${base}/subscribe/`}>Add these events to your calendar</a> (updates automatically) ·
-      <a href={`${base}/sources/`}>Which sources are covered?</a>
-    </p>
+    <p><a href={`${base}/sources/`}>Which organisers are covered?</a></p>
   </header>
 
   <div class="toolbar">
     <nav class="filters" aria-label="Filter by category">
-      <button type="button" data-filter="all" aria-pressed="true">All</button>
-      {used.map((c) => <button type="button" data-filter={c} aria-pressed="false">{CATEGORIES[c]}</button>)}
-      {hasUnclassified && <button type="button" data-filter="unclassified" aria-pressed="false">Unclassified</button>}
+      <button type="button" data-filter="all" data-label="All" aria-pressed="true">All <span class="n"></span></button>
+      {used.map((c) => <button type="button" data-filter={c} data-label={CATEGORIES[c]} aria-pressed="false">{CATEGORIES[c]} <span class="n"></span></button>)}
+      {hasUnclassified && <button type="button" data-filter="unclassified" data-label="Unclassified" aria-pressed="false">Unclassified <span class="n"></span></button>}
     </nav>
     <div class="views" role="group" aria-label="View">
       <button type="button" data-view="list" aria-pressed="true">List</button>
@@ -62,8 +67,23 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
     </div>
   </div>
 
+  <div class="cal-bar" id="cal-bar" data-feeds={JSON.stringify(feedData)} data-filter-feeds={JSON.stringify(filterFeeds)}>
+    <p class="cal-bar-text">Get <strong data-bar-label>all events</strong> in your calendar. It updates by itself.</p>
+    <div class="cal-bar-actions">
+      <a class="btn btn-primary" data-bar-primary href={`${base}/subscribe/`}>Add to <span data-bar-app>my calendar</span></a>
+      <a class="btn" data-bar-more href={`${base}/subscribe/`}>Other apps</a>
+    </div>
+    <p class="status" id="bar-status" role="status" aria-live="polite" hidden></p>
+  </div>
+
+  <p class="showing" id="showing" aria-live="polite"></p>
+  <div class="empty-filter" id="empty-filter" hidden>
+    <p>No <span data-empty-label></span> events in the coming weeks.</p>
+    <button type="button" class="btn" data-filter-reset>Show all events</button>
+  </div>
+
   <main>
-    {events.length === 0 && <p class="empty">No upcoming events yet.</p>}
+    {events.length === 0 && <p class="empty">No upcoming events yet. New events are collected every night.</p>}
 
     <div class="view view-list" data-view-panel="list">
       {[...byMonth].map(([month, list]) => (
@@ -80,13 +100,16 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
                     {e.categories.map((c) => <span class="tag">{CATEGORIES[c]}</span>)}
                     {e.organiser}
                     {e.location && <> · {e.location}</>}
-                    {e.registration === 'required' && <> · <strong>{REGISTRATION.required}</strong></>}
                   </p>
                   {e.description && <p class="desc">{e.description}</p>}
-                  <p class="add">
-                    Add to calendar: <a href={googleEventLink(e)} target="_blank" rel="noopener">Google</a> ·{' '}
-                    <a href={icsHref(e)} download>Apple, Outlook, Thunderbird (.ics)</a>
-                  </p>
+                  {e.url && e.registration === 'required' && <p class="next-step"><a href={e.url} rel="noopener">Register on the organiser's page →</a></p>}
+                  {e.url && e.registration === 'invitation' && <p class="next-step"><a href={e.url} rel="noopener">Ask the organiser for an invitation →</a></p>}
+                  <div class="add">
+                    <span class="add-label">Add this event:</span>
+                    <a class="btn btn-small" href={googleEventLink(e)} target="_blank" rel="noopener" data-add="google">Google Calendar</a>
+                    <a class="btn btn-small" href={icsHref(e)} download data-add="ics">Apple, Outlook &amp; others</a>
+                  </div>
+                  <p class="status" role="status" aria-live="polite" hidden></p>
                 </div>
               </li>
             ))}
@@ -113,7 +136,7 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
                 )}
                 {day.inMonth &&
                   day.events.map((e) => (
-                    <a class="cal-chip" href={`#ev-${eventSlug(e.id)}`} data-categories={cats(e)} title={`${timeOf(e, day.date)} ${e.title}`}>
+                    <a class="cal-chip" href={`#day-${day.date}`} data-day={day.date} data-categories={cats(e)} title={`${timeOf(e, day.date)} ${e.title}`}>
                       <span class="cal-time">{timeOf(e, day.date)}</span> {e.title}
                     </a>
                   ))}
@@ -121,20 +144,22 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
             ))}
           </div>
           {m.weeks.flat().filter((d) => d.inMonth && d.events.length).map((day) => (
-            <div class="cal-panel" data-panel={day.date} hidden>
+            <div class="cal-panel" id={`day-${day.date}`} data-panel={day.date} hidden>
               <h3>{longDayFmt.format(asUtc(day.date))}</h3>
               <ul>
                 {day.events.map((e) => (
                   <li data-categories={cats(e)}>
                     <span class="cal-time">{timeOf(e, day.date)}</span>
-                    <a href={`#ev-${eventSlug(e.id)}`} class="cal-panel-title">{e.title}</a>
+                    {e.url ? <a href={e.url} rel="noopener" class="cal-panel-title">{e.title}</a> : <span class="cal-panel-title">{e.title}</span>}
                     <span class="cal-panel-meta">
                       {e.organiser}
                       {e.registration === 'invitation' && <> · {REGISTRATION.invitation}</>}
                     </span>
                     <span class="cal-panel-add">
-                      <a href={googleEventLink(e)} target="_blank" rel="noopener">Google</a> · <a href={icsHref(e)} download>.ics</a>
+                      <a class="btn btn-small" href={googleEventLink(e)} target="_blank" rel="noopener" data-add="google">Google Calendar</a>
+                      <a class="btn btn-small" href={icsHref(e)} download data-add="ics">Apple, Outlook &amp; others</a>
                     </span>
+                    <span class="status" role="status" aria-live="polite" hidden></span>
                   </li>
                 ))}
               </ul>
@@ -146,6 +171,8 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
   </main>
 
   <script>
+    import { APP_HINTS, APP_LABELS, appLink, detectApp, say } from '../scripts/subscribe-client';
+
     const today = new Date().toISOString().slice(0, 10);
     const thisMonth = today.slice(0, 7);
 
@@ -158,13 +185,45 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
       d.classList.toggle('cal-today', date === today);
     }
 
-    // Category filter: applies to list items, calendar chips and day panels.
-    let filter = 'all';
+    const events = [...document.querySelectorAll<HTMLElement>('.event')];
     const filterButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
-    const matches = (el: HTMLElement) => filter === 'all' || (el.dataset.categories ?? '').split(' ').includes(filter);
+    const inFilter = (el: HTMLElement, f: string) => f === 'all' || (el.dataset.categories ?? '').split(' ').includes(f);
+
+    // Counts on the filter buttons (after past events were removed).
+    for (const b of filterButtons) {
+      const n = events.filter((li) => inFilter(li, b.dataset.filter ?? 'all')).length;
+      b.querySelector('.n')!.textContent = String(n);
+      b.setAttribute('aria-label', `${b.dataset.label}: ${n} events`);
+    }
+
+    // Calendar bar: subscribe to the feed matching the current filter, with the device's usual app.
+    const bar = document.getElementById('cal-bar')!;
+    const feeds = JSON.parse(bar.dataset.feeds ?? '{}') as Record<string, { url: string; name: string; label: string }>;
+    const filterFeeds = JSON.parse(bar.dataset.filterFeeds ?? '{}') as Record<string, string>;
+    const app = detectApp();
+    const barPrimary = bar.querySelector<HTMLAnchorElement>('[data-bar-primary]')!;
+    const barMore = bar.querySelector<HTMLAnchorElement>('[data-bar-more]')!;
+    const barStatus = document.getElementById('bar-status')!;
+    bar.querySelector('[data-bar-app]')!.textContent = APP_LABELS[app];
+    if (app === 'google') (barPrimary.target = '_blank'), (barPrimary.rel = 'noopener');
+    barPrimary.addEventListener('click', () => say(barStatus, APP_HINTS[app]));
+
+    const updateBar = (filter: string) => {
+      const feedId = filterFeeds[filter] ?? 'all';
+      const feed = feeds[feedId];
+      bar.querySelector('[data-bar-label]')!.textContent = feedId === 'all' ? 'all events' : `${feed.label} events`;
+      barPrimary.href = appLink(app, feed.url, feed.name) ?? barPrimary.href;
+      barMore.href = `${barMore.pathname}?feed=${feedId}`;
+      barStatus.hidden = true;
+    };
+
+    // Category filter for list, calendar chips and day panels, with a status line and an empty state.
+    let filter = 'all';
+    const showing = document.getElementById('showing')!;
+    const emptyBox = document.getElementById('empty-filter')!;
     const applyFilter = () => {
       for (const b of filterButtons) b.setAttribute('aria-pressed', String(b.dataset.filter === filter));
-      for (const el of document.querySelectorAll<HTMLElement>('.event, .cal-chip, .cal-panel li')) el.hidden = !matches(el);
+      for (const el of document.querySelectorAll<HTMLElement>('.event, .cal-chip, .cal-panel li')) el.hidden = !inFilter(el, filter);
       for (const s of document.querySelectorAll<HTMLElement>('.month-list')) s.hidden = !s.querySelector('.event:not([hidden])');
       for (const btn of document.querySelectorAll<HTMLButtonElement>('.cal-daybtn')) {
         const n = btn.parentElement!.querySelectorAll('.cal-chip:not([hidden])').length;
@@ -172,8 +231,15 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
         btn.disabled = n === 0;
         btn.parentElement!.classList.toggle('cal-has', n > 0);
       }
+      const n = events.filter((li) => !li.hidden).length;
+      const label = filterButtons.find((b) => b.dataset.filter === filter)?.dataset.label ?? '';
+      showing.textContent = filter === 'all' ? `Showing all ${n} upcoming events` : `Showing ${n} ${label} ${n === 1 ? 'event' : 'events'}`;
+      emptyBox.hidden = n > 0 || events.length === 0;
+      emptyBox.querySelector('[data-empty-label]')!.textContent = label;
+      updateBar(filter);
     };
     for (const b of filterButtons) b.addEventListener('click', () => ((filter = b.dataset.filter ?? 'all'), applyFilter()));
+    document.querySelector('[data-filter-reset]')?.addEventListener('click', () => ((filter = 'all'), applyFilter()));
 
     // List / month view, remembered per browser.
     const viewButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-view]')];
@@ -194,28 +260,37 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
       // ignore
     }
 
-    // Day details in month view.
-    for (const btn of document.querySelectorAll<HTMLButtonElement>('.cal-daybtn')) {
-      btn.addEventListener('click', () => {
-        const month = btn.closest('.cal-month')!;
-        const open = btn.getAttribute('aria-expanded') === 'true';
-        for (const other of month.querySelectorAll('.cal-daybtn')) other.setAttribute('aria-expanded', 'false');
-        for (const p of month.querySelectorAll<HTMLElement>('.cal-panel')) p.hidden = open || p.dataset.panel !== btn.dataset.day;
-        btn.setAttribute('aria-expanded', String(!open));
+    // Month view: a day (or one of its events) opens that day's panel right below the month.
+    const openDay = (date: string) => {
+      const btn = document.querySelector<HTMLButtonElement>(`.cal-daybtn[data-day="${date}"]`);
+      if (!btn) return;
+      const month = btn.closest('.cal-month')!;
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      for (const other of month.querySelectorAll('.cal-daybtn')) other.setAttribute('aria-expanded', 'false');
+      for (const p of month.querySelectorAll<HTMLElement>('.cal-panel')) p.hidden = isOpen || p.dataset.panel !== date;
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      if (!isOpen) month.querySelector<HTMLElement>(`.cal-panel[data-panel="${date}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+    for (const btn of document.querySelectorAll<HTMLButtonElement>('.cal-daybtn')) btn.addEventListener('click', () => openDay(btn.dataset.day!));
+    for (const chip of document.querySelectorAll<HTMLAnchorElement>('.cal-chip')) {
+      chip.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        const btn = document.querySelector<HTMLButtonElement>(`.cal-daybtn[data-day="${chip.dataset.day}"]`);
+        if (btn?.getAttribute('aria-expanded') !== 'true') openDay(chip.dataset.day!);
       });
     }
 
-    // Links to an event from the calendar open it in the list.
-    for (const a of document.querySelectorAll<HTMLAnchorElement>('.view-month a[href^="#ev-"]')) {
-      a.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        filter = 'all';
-        applyFilter();
-        setView('list');
-        const target = document.querySelector<HTMLElement>(a.getAttribute('href')!);
-        target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        target?.classList.add('flash');
-        setTimeout(() => target?.classList.remove('flash'), 1600);
+    // Confirmation after adding a single event.
+    for (const a of document.querySelectorAll<HTMLAnchorElement>('[data-add]')) {
+      a.addEventListener('click', () => {
+        const status = a.closest('li')?.querySelector<HTMLElement>('.status');
+        if (!status) return;
+        say(
+          status,
+          a.dataset.add === 'google'
+            ? 'Google Calendar opens in a new tab. Click “Save” there.'
+            : 'Downloaded. Open the file (usually in your downloads) and your calendar app adds the event.',
+        );
       });
     }
 
@@ -224,7 +299,27 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
   </script>
 
   <style is:global>
-    .subscribe { font-weight: 600; }
+    .cal-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 12px;
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+    }
+    .cal-bar-text { margin: 0; font-size: 0.95rem; }
+    .cal-bar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cal-bar .status { flex-basis: 100%; margin: 0; }
+    .showing { margin: 4px 0 0; color: var(--muted); font-size: 0.88rem; }
+    .empty-filter { margin: 16px 0; padding: 14px; border: 1px dashed var(--line); border-radius: 8px; text-align: center; }
+    .empty-filter p { margin: 0 0 8px; }
+    .filters .n { font-size: 0.78rem; opacity: 0.75; font-variant-numeric: tabular-nums; margin-left: 2px; }
+    .filters .n:empty { display: none; }
+    .next-step { margin: 6px 0 0; font-weight: 600; font-size: 0.9rem; }
     .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin: 20px 0; }
     .filters, .views { display: flex; flex-wrap: wrap; gap: 8px; }
     .filters button, .views button {
@@ -245,8 +340,10 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
     .event.flash { background: var(--tag-bg); }
     .when { color: var(--muted); font-variant-numeric: tabular-nums; }
     .what h3 { margin: 0; font-size: 1rem; }
-    .meta, .desc, .add { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
-    .add { font-size: 0.82rem; }
+    .meta, .desc { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+    .add { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0 0; }
+    .add-label { color: var(--muted); font-size: 0.82rem; }
+    .event .status, .cal-panel .status { font-size: 0.85rem; padding: 6px 10px; margin-top: 6px; }
     .tag { background: var(--tag-bg); border-radius: 4px; padding: 1px 6px; margin-right: 6px; color: var(--fg); }
     .invite {
       display: inline-block;
@@ -293,7 +390,9 @@ const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
     .cal-panel li { display: grid; grid-template-columns: 4.2rem 1fr; gap: 2px 8px; padding: 6px 0; border-top: 1px solid var(--line); }
     .cal-panel li:first-child { border-top: 0; }
     .cal-panel-title { font-weight: 600; }
-    .cal-panel-meta, .cal-panel-add { grid-column: 2; color: var(--muted); font-size: 0.85rem; }
+    .cal-panel-meta { grid-column: 2; color: var(--muted); font-size: 0.85rem; }
+    .cal-panel-add { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .cal-panel .status { grid-column: 2; }
     .cal-month { margin-bottom: 8px; }
 
     @media (max-width: 560px) {

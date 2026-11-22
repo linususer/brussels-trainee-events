@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { EventSchema } from '../src/lib/event';
-import { FEEDS, eventsForFeed, feedTitle } from '../src/lib/feeds';
+import { eventsForFeed, feedForCategory, feedForSelection, feedIds, feedName, feedTitle } from '../src/lib/feeds';
 import { eventSlug, googleEventLink, subscribeLinks } from '../src/lib/subscribe';
 import { buildMonths } from '../src/lib/calendar';
 import { toIcs } from '../src/lib/ics';
@@ -11,13 +11,28 @@ const ev = (id: string, start: string, categories: string[], extra: object = {})
 describe('feeds', () => {
   const events = [ev('a', '2026-12-01T18:00', ['networking']), ev('b', '2026-12-02', ['christmas-market']), ev('c', '2026-12-03T19:00', ['policy', 'party']), ev('d', '2026-12-04', [])];
 
-  it('groups categories into subscribable feeds (no separate Christmas-market feed)', () => {
-    expect(Object.keys(FEEDS)).toEqual(['all', 'social', 'culture', 'policy']);
+  it('publishes every combination of groups as one feed (no separate Christmas-market feed)', () => {
+    expect(feedIds).toEqual(['all', 'social', 'culture', 'social-culture', 'policy', 'social-policy', 'culture-policy']);
     expect(eventsForFeed(events, 'all').map((e) => e.id)).toEqual(['a', 'b', 'c', 'd']);
     expect(eventsForFeed(events, 'social').map((e) => e.id)).toEqual(['a', 'b', 'c']);
     expect(eventsForFeed(events, 'policy').map((e) => e.id)).toEqual(['c']);
+    expect(eventsForFeed(events, 'culture-policy').map((e) => e.id)).toEqual(['c']);
     expect(eventsForFeed(events, 'culture')).toEqual([]);
-    expect(feedTitle('social')).toBe('Brussels trainee events: Networking & social');
+  });
+
+  it('maps a selection of groups to exactly one feed', () => {
+    expect(feedForSelection(['culture', 'social'])).toBe('social-culture');
+    expect(feedForSelection(['policy'])).toBe('policy');
+    expect(feedForSelection(['social', 'culture', 'policy'])).toBe('all');
+    expect(feedForSelection([])).toBe('all');
+  });
+
+  it('names feeds and maps event-page filters to feeds', () => {
+    expect(feedName('social-culture')).toBe('Networking & social + Culture');
+    expect(feedTitle('policy')).toBe('Brussels trainee events: Policy talks');
+    expect(feedForCategory('party')).toBe('social');
+    expect(feedForCategory('culture')).toBe('culture');
+    expect(feedForCategory('other')).toBe('all');
   });
 });
 
