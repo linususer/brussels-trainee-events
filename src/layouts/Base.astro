@@ -59,6 +59,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         }
       }
       * { box-sizing: border-box; }
+      /* The filters hide elements with the hidden attribute; layout rules like display: grid must not override it. */
+      [hidden] { display: none !important; }
       body {
         margin: 0 auto;
         max-width: 760px;
