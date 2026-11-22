@@ -6,7 +6,7 @@ import { wildApricotAdapter } from './adapters/ypfp';
 import { openEuropaAdapter } from './adapters/openeuropa';
 import { bruegelAdapter, ecfrAdapter, linkListAdapter, parseEpcPage, parseFriendsOfEuropePage } from './adapters/thinktanks';
 import { eclAdapter } from './adapters/ecl';
-import { corAdapter } from './adapters/cor';
+// import { corAdapter } from './adapters/cor'; // paused, see below
 import { eescAdapter } from './adapters/eesc';
 // import { jsonLdAdapter } from './adapters/jsonld';
 // import { icalAdapter } from './adapters/ical';
@@ -161,15 +161,18 @@ export const sources: Adapter[] = [
     listUrl: 'https://commission.europa.eu/get-involved/events_en',
     maxPages: 3,
   }),
-  corAdapter({
-    id: 'cor',
-    organiser: 'European Committee of the Regions',
-    group: 'eu-institution',
-    homepage: 'https://cor.europa.eu/en/plenaries-events/upcoming-events',
-    // Only public formats (conferences, exhibitions, ...) in Brussels; internal meetings are skipped.
-    listUrl: 'https://cor.europa.eu/en/plenaries-events/upcoming-events',
-    maxPages: 2,
-  }),
+  // Committee of the Regions: connector built and tested (scrapers/adapters/cor.ts, tests/cor.test.ts),
+  // paused for now. To enable it, uncomment this block and the corAdapter import above;
+  // then remove the 'cor' entry from scrapers/considered.ts.
+  // corAdapter({
+  //   id: 'cor',
+  //   organiser: 'European Committee of the Regions',
+  //   group: 'eu-institution',
+  //   homepage: 'https://cor.europa.eu/en/plenaries-events/upcoming-events',
+  //   // Only public formats (conferences, exhibitions, ...) in Brussels; internal meetings are skipped.
+  //   listUrl: 'https://cor.europa.eu/en/plenaries-events/upcoming-events',
+  //   maxPages: 2,
+  // }),
   eescAdapter({
     id: 'eesc',
     organiser: 'European Economic and Social Committee (EESC)',

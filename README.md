@@ -88,6 +88,8 @@ Scope: **public events in Brussels**. Events that are listed publicly but have a
 
 ## Decisions
 
+- **Committee of the Regions connector is paused** (2026-11-22): `scrapers/adapters/cor.ts` is implemented and tested but not in `scrapers/sources.ts`. Details and how to enable it: `docs/sources.md` → "Paused connectors".
+
 - **Classification is rule-based** (`src/lib/classify.ts`). An LLM classifier (Claude API) as a primary labeller, with rules as fallback and cached results, was considered on 2026-11-21 and **deferred**: with only a handful of events, sources are the bottleneck. Revisit when wording gaps keep showing up in the disagreement or unclassified lists.
 
 ## Project layout

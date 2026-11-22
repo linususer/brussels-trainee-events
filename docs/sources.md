@@ -149,7 +149,7 @@ Scope extended to sources open to all trainees regardless of nationality (no `co
 | Jacques Delors Centre | H | Events in **Berlin** (Hertie School): **not tracked** |
 | Committee of the Regions | G | Upcoming-events page answered 429: **watchlist (not located)** |
 | European Union portal (all institutions) | G | No event links in static HTML; Commission events are covered by `ec-events` |
-| Committee of the Regions | G | **Automated: `cor`** from the list cards (date, type, location, time). To avoid noise only exhibitions/open days/festivals/concerts and flagship conferences (forum, summit, awards) in Brussels are kept; project conferences and meetings are skipped. europa.eu throttles: page 2 often answers 429 |
+| Committee of the Regions | G | **Connector built, paused** (`cor`, see "Paused connectors" below) |
 | EESC | G | **Automated: `eesc`** from the list teasers. Only public events in Brussels: no meetings/JCC/DAG/plenaries, no online events, no year-long entries, no postponed/cancelled ones. List times are a 12:00 UTC placeholder; real times are taken from the summary ("from 14:30-16:30") |
 | JEF Europe | I | Event calendar not maintained (newest entries from 2022): **not tracked** |
 
@@ -160,6 +160,18 @@ Scope extended to sources open to all trainees regardless of nationality (no `co
 | European Commission Trainees' Committee (ECTA) | I | [traineescommittee.com](https://www.traineescommittee.com/) (Wix): T-Card, partner discounts, guides; no event calendar; blog feed has two guides (2025). Events are announced via social media/messenger groups. **On the watchlist** |
 | EUNIC Brussels (cultural institutes) | J | No public calendar found; announcements on Instagram/LinkedIn/X. **On the watchlist** (monthly reminder) |
 | European Parliament visitor offer | G | Lunchtime tours and visits are recurring offers on visiting.europarl.europa.eu, not dated events |
+
+## Paused connectors
+
+### Committee of the Regions (`cor`)
+
+- **Status:** implemented and tested, **not active**. The configuration is commented out in `scrapers/sources.ts`; the organiser appears under "Considered but not tracked" (`scrapers/considered.ts`).
+- **Code:** `scrapers/adapters/cor.ts`, tests in `tests/cor.test.ts` with `tests/fixtures/cor-list.html` (copied from the real list markup).
+- **Source:** `https://cor.europa.eu/en/plenaries-events/upcoming-events` (`?page=1` for the second page). `robots.txt` allows it.
+- **How it reads:** only the list pages, no detail pages. Each card (`article.c-event`) has a date pill ("25 November 2026", "03 - 04 December 2026", "27 November - 17 December 2026"), a type pill ("Conference", "Exhibition", "Local dialogue", "Meeting"), the title link, `.c-event__location` ("Brussels (Belgium)") and `.c-event__time` ("09:00 - 17:30 (Brussels time)" or "Multiple day event"). `parseCorDates` turns these into start/end, including ranges across months and years.
+- **Relevance rule (to avoid noise):** keep exhibitions, open days, festivals and concerts; keep conferences only if the title marks a flagship event (forum, summit, awards, Week of Regions); drop project conferences, meetings and local dialogues; keep only venues clearly in Brussels. On 22 Nov 2026 this left 2 exhibitions plus a forum and an awards ceremony out of ~24 cards.
+- **Caveat:** europa.eu throttles quickly; the second list page often answers 429. The adapter keeps page 1 results in that case, and the shared rate limit is 10 s for europa.eu.
+- **To enable:** uncomment the `corAdapter` import and block in `scrapers/sources.ts` and remove the `cor` entry from `scrapers/considered.ts`.
 
 ## Group C: business
 
