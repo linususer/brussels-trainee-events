@@ -38,6 +38,11 @@ describe('classify categories', () => {
   it('does not match short words inside other words', () => {
     expect(classify({ title: 'Festival of Regions' }).categories).toEqual([]);
     expect(classify({ title: 'Brunch' }).categories).toEqual([]);
+    expect(classify({ title: 'Insights that will anchor the debate' }).categories).toEqual(['policy']);
+    expect(classify({ title: 'Reading the new regulation' }).categories).toEqual([]);
+    expect(classify({ title: 'Third-party cookies and third party data' }).categories).toEqual([]);
+    expect(classify({ title: 'Christmas party' }).categories).toEqual(['party']);
+    expect(classify({ title: 'Book reading and Chor concert' }).categories).toEqual(['culture']);
   });
 });
 

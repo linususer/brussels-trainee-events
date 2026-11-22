@@ -300,6 +300,102 @@
     "source": "bruegel"
   },
   {
+    "id": "epc:epc-outlook-forum-democracy-under-pressure-navigating-europes-defining-choices-for-2027",
+    "title": "EPC Outlook Forum | Democracy under pressure: Navigating Europe's defining choices for 2027",
+    "start": "2026-12-02T14:00",
+    "end": "2026-12-02T18:30",
+    "organiser": "European Policy Centre (EPC)",
+    "url": "https://www.epc.eu/events/epc-outlook-forum-democracy-under-pressure-navigating-europes-defining-choices-for-2027",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "epc"
+  },
+  {
+    "id": "epc:ukraine-as-a-partner-strengthening-europes-food-security-and-competitiveness-on-the-path-to-eu-membership",
+    "title": "Ukraine as a Partner: Strengthening Europe’s food security and competitiveness on the path to EU membership",
+    "start": "2026-11-24T10:00",
+    "end": "2026-11-24T11:30",
+    "organiser": "European Policy Centre (EPC)",
+    "url": "https://www.epc.eu/events/ukraine-as-a-partner-strengthening-europes-food-security-and-competitiveness-on-the-path-to-eu-membership",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "epc"
+  },
+  {
+    "id": "epc:conditionality-to-safeguards-rethinking-rule-of-law-resilience-before-and-after-eu-accession",
+    "title": "From conditionality to safeguards: Rethinking rule of law resilience before and after EU accession",
+    "start": "2026-12-08T12:30",
+    "end": "2026-12-08T14:30",
+    "organiser": "European Policy Centre (EPC)",
+    "url": "https://www.epc.eu/events/conditionality-to-safeguards-rethinking-rule-of-law-resilience-before-and-after-eu-accession",
+    "description": "RESILIO-ACCESS Final Conference",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "epc"
+  },
+  {
+    "id": "friends-of-europe:from-satellites-to-policy-how-copernicus-can-support-sustainable-agriculture-forests-and-climate-resilience",
+    "title": "From satellites to policy: how Copernicus can support sustainable agriculture, forests and climate resilience",
+    "start": "2026-12-01T19:00",
+    "end": "2026-12-01T21:30",
+    "organiser": "Friends of Europe",
+    "url": "https://www.friendsofeurope.org/events/from-satellites-to-policy-how-copernicus-can-support-sustainable-agriculture-forests-and-climate-resilience",
+    "description": "European leaders and stakeholders discuss the future of Earth observation and how Copernicus can support agriculture, forestry and climate action.",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "friends-of-europe"
+  },
+  {
+    "id": "friends-of-europe:ai-choice-without-compromise-privacy-security-and-consumer-control",
+    "title": "AI Choice without compromise: privacy, security and consumer control",
+    "start": "2026-12-02T19:00",
+    "end": "2026-12-02T21:30",
+    "organiser": "Friends of Europe",
+    "url": "https://www.friendsofeurope.org/events/ai-choice-without-compromise-privacy-security-and-consumer-control",
+    "description": "Europe’s AI assistants raise new questions about privacy, consent and digital competition as policymakers seek a trusted, competitive market.",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "friends-of-europe"
+  },
+  {
+    "id": "friends-of-europe:necessity-and-adversity-driving-a-renewed-approach-to-european-enlargement",
+    "title": "Enlargement Summit 2026",
+    "start": "2026-12-10T09:00",
+    "end": "2026-12-10T15:30",
+    "organiser": "Friends of Europe",
+    "url": "https://www.friendsofeurope.org/events/necessity-and-adversity-driving-a-renewed-approach-to-european-enlargement",
+    "description": "European enlargement is regaining strategic momentum as EU accession advances amid heightened security and geopolitical pressures. This Enlargement Summit examines institutional reform, candidate countries, energy resilience and civil society to shape a credible, merits-based EU …",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "friends-of-europe"
+  },
+  {
+    "id": "friends-of-europe:peace-security-defence-forum-2027",
+    "title": "Peace, Security & Defence Forum 2027",
+    "start": "2027-03-02T09:30",
+    "end": "2027-03-02T15:00",
+    "organiser": "Friends of Europe",
+    "url": "https://www.friendsofeurope.org/events/peace-security-defence-forum-2027",
+    "description": "Europe’s defence self-reliance demands coordinated capabilities, industry and resilience. The 2027 Peace, Security and Defence Forum examines how.",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "friends-of-europe"
+  },
+  {
     "id": "ec-events:interpreting-europe-conference-2026-11-26",
     "title": "Interpreting Europe Conference",
     "start": "2026-11-26T14:00",

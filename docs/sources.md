@@ -125,15 +125,18 @@ Scope extended to sources open to all trainees regardless of nationality (no `co
 | JEF Europe | I | [jef.eu/events](https://jef.eu/events/) | The Events Calendar (WordPress): JSON-LD on detail pages | ★ most events outside Brussels; JSON-LD venue often empty | `?ical=1` returns HTML, not iCal |
 | EESC | G | [eesc.europa.eu › upcoming events](https://www.eesc.europa.eu/en/agenda/our-events/upcoming-events) | RSS (publication dates only) + detail pages | ★ mostly institutional (plenaries, hearings) | |
 
-### Needs a closer look
+### Closer look (done 2026-11-22)
 
-| Source | Group | Finding so far |
+| Source | Group | Result |
 |---|---|---|
-| EPC, Friends of Europe, CEPS | H | Event pages reachable; detail structure not yet checked (probe used truncated links). Friends of Europe has an events RSS (publication dates only) |
-| Carnegie Europe | H | List rendered by JavaScript; no links in static HTML |
-| Jacques Delors Centre | H | List with teaser date blocks (`c-teaser__date-sheet`); mostly Berlin events |
-| Committee of the Regions | G | `/en/plenaries-events/upcoming-events` answered 429 (rate limit) |
-| European Union portal (all institutions) | G | `european-union.europa.eu/news-and-events/events_en`: no event links in static HTML |
+| EPC | H | **Automated: `epc`**. Event pages show "Wed Dec 02, 2026 14:00-18:30 In Person" as text; online-only events skipped |
+| Friends of Europe | H | **Automated: `friends-of-europe`**. Event header has format (In person/Online), start/end times labelled `+00:00` but shown as local time (read as local); labels only from the event's own "About" text or description (speaker bios caused false labels) |
+| CEPS | H | Event pages perfect for trainees ("free and open to the public", When/Where), but **Cloudflare challenge** on repeated requests: **watchlist (blocked)** |
+| Carnegie Europe | H | List rendered by JavaScript: **watchlist** |
+| Jacques Delors Centre | H | Events in **Berlin** (Hertie School): **not tracked** |
+| Committee of the Regions | G | Upcoming-events page answered 429: **watchlist (not located)** |
+| European Union portal (all institutions) | G | No event links in static HTML; Commission events are covered by `ec-events` |
+| JEF Europe, EESC | I, G | Automatable but low priority (JEF mostly outside Brussels with empty venues; EESC mostly institutional); not built yet |
 
 ### Manual only
 

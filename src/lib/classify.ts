@@ -13,11 +13,11 @@ const CATEGORY_RULES: [Category, RegExp][] = [
     'policy',
     /podium|panel|diskussion|discussion|debatte|debate|débat|konferenz|conference|conférence|vortrag|lecture|fachgespräch|gespräch|roundtable|runder tisch|symposium|expert workshop|fachworkshop|briefing|hearing|anhörung/i,
   ],
-  ['party', /empfang|reception|réception|sommerfest|summer party|party|feier|cocktail|apéro|apero|\bfest\b/i],
+  ['party', /empfang|reception|réception|sommerfest|summer party|(?<!third[- ])\bparty\b|feier|cocktail|apéro|apero|\bfest\b/i],
   ['networking', /networking|netzwerk|stammtisch|after-?work|meet-?up|get-together|kennenlern|drinks|quiz/i],
   [
     'culture',
-    /konzert|concert|ausstellung|exhibition|exposition|vernissage|lesung|reading|film|kino|cinema|cinéma|theater|théâtre|musik|music|singen|chor\b|choir|carol|chorale|guided tour|lunchtime tour|führung|visite/i,
+    /konzert|concert|ausstellung|exhibition|exposition|vernissage|lesung|book reading|poetry reading|author reading|film|kino|cinema|cinéma|theater|théâtre|musik|music|singen|\bchor\b|choir|carol|chorale|guided tour|lunchtime tour|führung|visite/i,
   ],
   ['sport', /\blauf\b|\brun\b|running|fußball|football|yoga|radtour|wanderung|\bhike\b|sportfest|turnier|tournament/i],
 ];

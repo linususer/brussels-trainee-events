@@ -4,7 +4,7 @@ import { rosaluxAdapter } from './adapters/rosalux';
 import { eventManagerAdapter } from './adapters/eventmanager';
 import { wildApricotAdapter } from './adapters/ypfp';
 import { openEuropaAdapter } from './adapters/openeuropa';
-import { bruegelAdapter, ecfrAdapter } from './adapters/thinktanks';
+import { bruegelAdapter, ecfrAdapter, linkListAdapter, parseEpcPage, parseFriendsOfEuropePage } from './adapters/thinktanks';
 import { eclAdapter } from './adapters/ecl';
 // import { jsonLdAdapter } from './adapters/jsonld';
 // import { icalAdapter } from './adapters/ical';
@@ -111,6 +111,28 @@ export const sources: Adapter[] = [
     // Many events are online or in other capitals; only Brussels ones are kept.
     listUrl: 'https://ecfr.eu/events/',
   }),
+  linkListAdapter(
+    {
+      id: 'epc',
+      organiser: 'European Policy Centre (EPC)',
+      group: 'think-tank',
+      homepage: 'https://www.epc.eu/events/',
+      listUrl: 'https://www.epc.eu/events/',
+      linkPattern: /^https:\/\/www\.epc\.eu\/events\/[a-z0-9-]{12,}$/,
+    },
+    parseEpcPage,
+  ),
+  linkListAdapter(
+    {
+      id: 'friends-of-europe',
+      organiser: 'Friends of Europe',
+      group: 'think-tank',
+      homepage: 'https://www.friendsofeurope.org/events/',
+      listUrl: 'https://www.friendsofeurope.org/events/',
+      linkPattern: /^https:\/\/www\.friendsofeurope\.org\/events\/[a-z0-9-]{12,}$/,
+    },
+    parseFriendsOfEuropePage,
+  ),
   eclAdapter({
     id: 'ec-events',
     organiser: 'European Commission',

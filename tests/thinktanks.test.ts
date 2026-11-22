@@ -68,3 +68,51 @@ describe('ECFR', () => {
     ]);
   });
 });
+
+describe('EPC, Friends of Europe (event pages as text)', () => {
+  it('reads EPC date, times and format from the page text', async () => {
+    const { parseEpcPage } = await import('../scrapers/adapters/thinktanks');
+    expect(parseEpcPage(fixture('epc-event.html'))).toMatchObject({
+      title: "EPC Outlook Forum | Democracy under pressure: Navigating Europe's defining choices for 2027",
+      start: '2026-12-02T14:00',
+      end: '2026-12-02T18:30',
+      format: 'In Person',
+    });
+  });
+
+  it('reads Friends of Europe times as shown, despite the +00:00 label', async () => {
+    const { parseFriendsOfEuropePage } = await import('../scrapers/adapters/thinktanks');
+    expect(parseFriendsOfEuropePage(fixture('fofe-event.html'))).toMatchObject({
+      start: '2026-12-01T19:00',
+      end: '2026-12-01T21:30',
+      format: 'In person',
+      teaser: 'European leaders and stakeholders discuss the future of Earth observation.',
+    });
+  });
+
+  it('without an About block, labels come from the description, not the whole page', async () => {
+    const { parseFriendsOfEuropePage } = await import('../scrapers/adapters/thinktanks');
+    const html = `<html><head><meta name="description" content="A summit on EU enlargement."></head><body><main>
+      <div class="e-head"><span class="e-head__relative__label">In person</span><h1>Enlargement Summit</h1>
+      <div class="e-head__times"><time datetime="2026-12-10T09:00:00+00:00">09:00</time></div></div>
+      <div class="speakers">Former football player, runs a film festival, hosted the reception.</div></main></body></html>`;
+    expect(parseFriendsOfEuropePage(html)?.text.trim()).toBe('A summit on EU enlargement.');
+  });
+
+  it('collects unique event links and skips online-only events', async () => {
+    const { findEventLinks, linkListAdapter, parseFriendsOfEuropePage } = await import('../scrapers/adapters/thinktanks');
+    const LIST = 'https://www.friendsofeurope.org/events/';
+    const pattern = /^https:\/\/www\.friendsofeurope\.org\/events\/[a-z0-9-]{12,}$/;
+    expect(findEventLinks(fixture('linklist.html'), LIST, pattern)).toEqual([
+      'https://www.friendsofeurope.org/events/from-satellites-to-policy-how-copernicus',
+      'https://www.friendsofeurope.org/events/webinar-on-digital-markets',
+    ]);
+    const adapter = linkListAdapter({ id: 'fofe', organiser: 'Friends of Europe', listUrl: LIST, linkPattern: pattern }, parseFriendsOfEuropePage);
+    const events = await adapter.fetch({
+      get: async (url) => (url === LIST ? fixture('linklist.html') : url.includes('webinar') ? fixture('fofe-online.html') : fixture('fofe-event.html')),
+    });
+    expect(events).toEqual([
+      expect.objectContaining({ id: 'fofe:from-satellites-to-policy-how-copernicus', start: '2026-12-01T19:00', registration: 'invitation', categories: [] }),
+    ]);
+  });
+});

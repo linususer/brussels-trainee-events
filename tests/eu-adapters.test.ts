@@ -69,7 +69,7 @@ describe('OpenEuropa event lists (House of European History)', () => {
     expect(parseOeDetail(fixture('oe-detail.html'))).toEqual({
       dateText: '26 November 2026, 19:00-21:00 (CET)',
       location: 'House of European History, rue Belliard/straat 135, 1000 Brussels, Belgium',
-      overview: 'Event overview A talk and reading, followed by a book signing.',
+      overview: 'Event overview A talk and author reading, followed by a book signing.',
     });
   });
 
