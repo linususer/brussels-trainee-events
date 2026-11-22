@@ -136,7 +136,9 @@ Scope extended to sources open to all trainees regardless of nationality (no `co
 | Jacques Delors Centre | H | Events in **Berlin** (Hertie School): **not tracked** |
 | Committee of the Regions | G | Upcoming-events page answered 429: **watchlist (not located)** |
 | European Union portal (all institutions) | G | No event links in static HTML; Commission events are covered by `ec-events` |
-| JEF Europe, EESC | I, G | Automatable but low priority (JEF mostly outside Brussels with empty venues; EESC mostly institutional); not built yet |
+| Committee of the Regions | G | **Automated: `cor`** from the list cards (date, type, location, time). To avoid noise only exhibitions/open days/festivals/concerts and flagship conferences (forum, summit, awards) in Brussels are kept; project conferences and meetings are skipped. europa.eu throttles: page 2 often answers 429 |
+| EESC | G | **Automated: `eesc`** from the list teasers. Only public events in Brussels: no meetings/JCC/DAG/plenaries, no online events, no year-long entries, no postponed/cancelled ones. List times are a 12:00 UTC placeholder; real times are taken from the summary ("from 14:30-16:30") |
+| JEF Europe | I | Event calendar not maintained (newest entries from 2022): **not tracked** |
 
 ### Manual only
 

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { corAdapter, parseCorDates, parseCorList } from '../scrapers/adapters/cor';
+import { corAdapter, isTraineeRelevant, parseCorDates, parseCorList } from '../scrapers/adapters/cor';
 import { buildMonths } from '../src/lib/calendar';
 import { EventSchema } from '../src/lib/event';
 
@@ -28,13 +28,19 @@ describe('Committee of the Regions', () => {
     expect(parseCorDates(date, time)).toEqual(expected);
   });
 
-  it('keeps only public formats in Brussels (no internal meetings, no events elsewhere)', async () => {
+  it('keeps exhibitions and flagship events in Brussels; no project conferences, meetings or events elsewhere', async () => {
     const events = await corAdapter({ id: 'cor', organiser: 'CoR', listUrl: LIST, maxPages: 1 }).fetch({ get: async () => fixture('cor-list.html') });
-    expect(events.map((e) => [e.id, e.start, e.categories])).toEqual([
-      ['cor:bioeast-conference', '2026-11-25T09:00', ['policy']],
-      ['cor:shadow-night', '2026-11-27', ['culture']],
-      ['cor:housing-conference', '2026-12-03', ['policy']],
-    ]);
+    expect(events.map((e) => [e.id, e.start, e.categories])).toEqual([['cor:shadow-night', '2026-11-27', ['culture']]]);
+  });
+
+  it.each([
+    ['First Zero Pollution Forum', 'Conference', true],
+    ['European Charter for Sustainable Tourism & Star Awards', 'Conference', true],
+    ['BIOEAST conference', 'Conference', false],
+    ['Shadow of the Night', 'Exhibition', true],
+    ['Multi-Level Dialogue', 'Meeting', false],
+  ])('%s (%s) → %s', (title, type, expected) => {
+    expect(isTraineeRelevant({ title, type })).toBe(expected);
   });
 
   it('shows long events (exhibitions) on their first day and at the start of later months only', () => {

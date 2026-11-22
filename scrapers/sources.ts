@@ -7,6 +7,7 @@ import { openEuropaAdapter } from './adapters/openeuropa';
 import { bruegelAdapter, ecfrAdapter, linkListAdapter, parseEpcPage, parseFriendsOfEuropePage } from './adapters/thinktanks';
 import { eclAdapter } from './adapters/ecl';
 import { corAdapter } from './adapters/cor';
+import { eescAdapter } from './adapters/eesc';
 // import { jsonLdAdapter } from './adapters/jsonld';
 // import { icalAdapter } from './adapters/ical';
 // import { htmlListAdapter } from './adapters/html';
@@ -150,6 +151,15 @@ export const sources: Adapter[] = [
     homepage: 'https://cor.europa.eu/en/plenaries-events/upcoming-events',
     // Only public formats (conferences, exhibitions, ...) in Brussels; internal meetings are skipped.
     listUrl: 'https://cor.europa.eu/en/plenaries-events/upcoming-events',
+    maxPages: 2,
+  }),
+  eescAdapter({
+    id: 'eesc',
+    organiser: 'European Economic and Social Committee (EESC)',
+    group: 'eu-institution',
+    homepage: 'https://www.eesc.europa.eu/en/agenda/our-events/upcoming-events',
+    // Only public events in Brussels; meetings, online events and year-long entries are skipped.
+    listUrl: 'https://www.eesc.europa.eu/en/agenda/our-events/upcoming-events',
     maxPages: 2,
   }),
 ];

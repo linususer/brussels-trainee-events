@@ -17,6 +17,7 @@ describe('classify categories', () => {
     ['Upcycling workshop', []], // a workshop alone is not a policy event
     ['YPFP Ambassador Series: Moldova’s European Future', ['policy']],
     ['Fireside chat with the Director-General', ['policy']],
+    ['EESC Consumer Policy Dialogue', ['policy']],
     ['Adventsbasar', ['christmas-market']],
     ['Adventssingen', ['culture']],
     ['Chorprobe', []], // "chor" only as a word

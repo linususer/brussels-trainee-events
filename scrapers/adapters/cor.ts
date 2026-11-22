@@ -8,10 +8,18 @@ import { sourceInfo, type Adapter, type SourceDefaults } from '../types';
 /**
  * European Committee of the Regions (cor.europa.eu). The upcoming-events list
  * has everything per card (date pill, type pill, title, location, time), so no
- * detail pages are requested. Only formats open to the public and interesting
- * to trainees are kept (allowlist), so internal meetings never show up.
+ * detail pages are requested. To avoid noise, only events interesting to most
+ * trainees are kept: cultural formats always, conferences only when they are
+ * flagship events (forums, summits, awards). Project conferences and internal
+ * meetings never show up.
  */
-export const COR_PUBLIC_FORMATS = /conference|exhibition|open day|forum|festival|concert|award|debate|summit|seminar/i;
+export const COR_CULTURE_FORMATS = /exhibition|open day|festival|concert/i;
+export const COR_PUBLIC_FORMATS = /conference|forum|summit|award|debate/i;
+export const COR_FLAGSHIP_TITLES = /\bforum\b|\bsummit\b|\bawards?\b|week of (the )?regions|open day/i;
+
+/** Whether a card is worth showing to trainees (see the rules above). */
+export const isTraineeRelevant = (i: Pick<CorItem, 'title' | 'type'>) =>
+  COR_CULTURE_FORMATS.test(i.type ?? '') || (COR_PUBLIC_FORMATS.test(i.type ?? '') && COR_FLAGSHIP_TITLES.test(i.title));
 
 export interface CorItem {
   title: string;
@@ -101,7 +109,7 @@ export function corAdapter(cfg: CorConfig): Adapter {
 
       const events: EventInput[] = [];
       for (const item of items.values()) {
-        if (!COR_PUBLIC_FORMATS.test(item.type ?? '') || inBrussels(item.location) !== 'yes') continue;
+        if (!isTraineeRelevant(item) || inBrussels(item.location) !== 'yes') continue;
         const { start, end } = parseCorDates(item.dateText, item.timeText);
         if (!start) continue;
         const labels = item.type ? [item.type] : [];
