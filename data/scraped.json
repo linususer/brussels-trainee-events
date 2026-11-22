@@ -298,5 +298,23 @@
     ],
     "registration": "unknown",
     "source": "bruegel"
+  },
+  {
+    "id": "ec-events:interpreting-europe-conference-2026-11-26",
+    "title": "Interpreting Europe Conference",
+    "start": "2026-11-26T14:00",
+    "end": "2026-11-27T13:15",
+    "location": "Brussels, Belgium",
+    "organiser": "European Commission",
+    "url": "https://commission.europa.eu/get-involved/events/interpreting-europe-conference-2026-11-26_en",
+    "description": "Live streaming available.",
+    "labels": [
+      "Conferences and summits"
+    ],
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "ec-events"
   }
 ]

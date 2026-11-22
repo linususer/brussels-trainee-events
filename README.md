@@ -44,7 +44,7 @@ One-time setup: in the repository on GitHub, open **Settings → Pages** and set
    - `jsonLdAdapter({ id, organiser, listUrl, linkPattern, exclude? })` when detail pages carry schema.org `Event` JSON-LD (Wix, many WordPress plugins). Check for it first: it is the most robust format
    - a dedicated adapter when a site needs more (see `scrapers/adapters/boell.ts`, `rosalux.ts`)
 3. Save a copy of the page/feed into `tests/fixtures/` and add a test, so a site redesign shows up as a failing test rather than silently missing events.
-4. Check the site's terms first. `robots.txt` is enforced automatically: every request goes through `politeGet` (`scrapers/http.ts`), which evaluates `robots.txt` per RFC 9309 (longest match, wildcards, `Crawl-delay`) and refuses disallowed URLs. It keeps a minimum interval per site (1 s; 6 s for europa.eu, which rate-limits quickly).
+4. Check the site's terms first. `robots.txt` is enforced automatically: every request goes through `politeGet` (`scrapers/http.ts`), which evaluates `robots.txt` per RFC 9309 (longest match, wildcards, `Crawl-delay`) and refuses disallowed URLs. It keeps a minimum interval per site (1 s; 10 s for europa.eu, which rate-limits quickly) and backs off on HTTP 429 (honours `Retry-After`, retries twice, slows that site down for the rest of the run).
 5. Drop events that are clearly not in Brussels with `inBrussels()` from `src/lib/location.ts` (unknown locations are kept).
 
 If a source fails during `npm run fetch`, its previously scraped events are kept.

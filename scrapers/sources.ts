@@ -5,6 +5,7 @@ import { eventManagerAdapter } from './adapters/eventmanager';
 import { wildApricotAdapter } from './adapters/ypfp';
 import { openEuropaAdapter } from './adapters/openeuropa';
 import { bruegelAdapter, ecfrAdapter } from './adapters/thinktanks';
+import { eclAdapter } from './adapters/ecl';
 // import { jsonLdAdapter } from './adapters/jsonld';
 // import { icalAdapter } from './adapters/ical';
 // import { htmlListAdapter } from './adapters/html';
@@ -109,5 +110,14 @@ export const sources: Adapter[] = [
     homepage: 'https://ecfr.eu/events/',
     // Many events are online or in other capitals; only Brussels ones are kept.
     listUrl: 'https://ecfr.eu/events/',
+  }),
+  eclAdapter({
+    id: 'ec-events',
+    organiser: 'European Commission',
+    group: 'eu-institution',
+    homepage: 'https://commission.europa.eu/get-involved/events_en',
+    // List pages carry date, time and location; europa.eu is fetched at 1 request per 6 s.
+    listUrl: 'https://commission.europa.eu/get-involved/events_en',
+    maxPages: 3,
   }),
 ];

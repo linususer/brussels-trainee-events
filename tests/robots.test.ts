@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { isAllowed, parseRobots } from '../scrapers/robots';
+import { retryAfterMs } from '../scrapers/http';
 
 const TOKEN = 'brussels-trainee-events';
 
@@ -34,5 +35,15 @@ describe('robots.txt', () => {
 
   it('blocks everything for "Disallow: /"', () => {
     expect(isAllowed(parseRobots('User-agent: *\nDisallow: /', TOKEN), '/events')).toBe(false);
+  });
+});
+
+describe('Retry-After', () => {
+  it('reads seconds and HTTP dates', () => {
+    const now = Date.parse('2026-11-22T12:00:00Z');
+    expect(retryAfterMs('30', now)).toBe(30_000);
+    expect(retryAfterMs('Sun, 22 Nov 2026 12:00:45 GMT', now)).toBe(45_000);
+    expect(retryAfterMs(null, now)).toBeUndefined();
+    expect(retryAfterMs('soon', now)).toBeUndefined();
   });
 });
