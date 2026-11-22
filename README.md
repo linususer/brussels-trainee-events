@@ -29,6 +29,12 @@ npm run add        # add a manual event interactively (invitations, newsletters,
 npm run build      # static site in dist/
 ```
 
+## Deployment (GitHub Pages)
+
+`.github/workflows/deploy.yml` tests, builds and publishes the site on every push to `main`. Event data is **not** fetched in CI: run `npm run fetch` locally, commit `data/`, and push.
+
+One-time setup: in the repository on GitHub, open **Settings → Pages** and set **Source** to **GitHub Actions**. The site URL and base path come from that Pages configuration, so the repository name does not need to be hard-coded.
+
 ## Adding a source
 
 1. Look for an `.ics`/iCal or RSS link on the organiser's event page. That's the most robust option.
@@ -81,7 +87,7 @@ tests/           Vitest tests + fixtures
 
 - [x] Automated sources: Böll EU office, Rosa-Luxemburg-Stiftung Brussels, state representations of NRW, Rheinland-Pfalz and Mecklenburg-Vorpommern (shared registration portal)
 - [ ] More sources (see `docs/sources.md`); get on the invitation lists in `docs/invitation-lists.md`
-- [ ] Deploy to GitHub Pages
-- [ ] Optional: nightly GitHub Action that runs `npm run fetch` and redeploys (not set up yet)
+- [x] Deploy workflow for GitHub Pages (on push)
+- [ ] Optional later: nightly fetch in CI (decided against for now)
 
 *Not an official service. Always check the organiser's page before attending.*
