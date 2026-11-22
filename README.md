@@ -49,6 +49,10 @@ One-time setup: in the repository on GitHub, open **Settings → Pages** and set
 
 If a source fails during `npm run fetch`, its previously scraped events are kept.
 
+## Sources page
+
+`/sources/` shows every organiser that was considered: a bar of coverage (read automatically, no public calendar, event page not found, blocks automated access), the same split per kind of organiser, and a list with links for checking each uncovered source by hand. It is built from `scrapers/sources.ts` (active connectors, with `group` and `homepage`), `scrapers/watchlist.ts` (inactive, with `group`) and `scrapers/considered.ts` (researched but not tracked), so it always matches the configuration.
+
 ## Watchlist: sources without automation
 
 Sources we could not automate (no calendar, blocked, or not located yet) are listed in `scrapers/watchlist.ts` and **re-checked on every fetch**. Each run compares against `data/watch-state.json` and reports only what is new:

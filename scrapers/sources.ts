@@ -38,6 +38,8 @@ export const sources: Adapter[] = [
     id: 'boell-eu',
     organiser: 'Heinrich-Böll-Stiftung, EU office',
     country: 'DE',
+    group: 'foundation',
+    homepage: 'https://eu.boell.org/en/events',
     // Calendar filtered to events of the Brussels EU office.
     listUrl: 'https://calendar.boell.de/en/calendar/advancedsearch?f%5B0%5D=webseiten_zuordnung_des_termins%3A3619',
   }),
@@ -45,6 +47,8 @@ export const sources: Adapter[] = [
     id: 'rosalux-bxl',
     organiser: 'Rosa-Luxemburg-Stiftung, Brussels office',
     country: 'DE',
+    group: 'foundation',
+    homepage: 'https://rosalux.eu/termine/',
     baseUrl: 'https://rosalux.eu',
   }),
   // State representations using the same online registration portal ("Offene Veranstaltungen").
@@ -52,18 +56,24 @@ export const sources: Adapter[] = [
     id: 'lv-nrw',
     organiser: 'Vertretung des Landes Nordrhein-Westfalen bei der EU',
     country: 'DE',
+    group: 'state',
+    homepage: 'https://bruessel.veranstaltungen.land.nrw/index.php?Locale=de_DE',
     startUrl: 'https://bruessel.veranstaltungen.land.nrw/index.php?Locale=de_DE',
   }),
   eventManagerAdapter({
     id: 'lv-rp',
     organiser: 'Vertretung des Landes Rheinland-Pfalz bei der EU',
     country: 'DE',
+    group: 'state',
+    homepage: 'https://bruessel.landesvertretung-rlp.de/',
     startUrl: 'https://bruessel.landesvertretung-rlp.de/',
   }),
   eventManagerAdapter({
     id: 'lv-mv',
     organiser: 'Vertretung des Landes Mecklenburg-Vorpommern bei der EU',
     country: 'DE',
+    group: 'state',
+    homepage: 'https://eu.landesvertretung-mv.de/',
     startUrl: 'https://eu.landesvertretung-mv.de/',
   }),
 ];

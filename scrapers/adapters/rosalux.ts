@@ -4,7 +4,7 @@ import { classify } from '../../src/lib/classify';
 import { inBrussels } from '../../src/lib/location';
 import { parseDate } from './html';
 import { htmlToText, summarize } from '../text';
-import type { Adapter, SourceDefaults } from '../types';
+import { sourceInfo, type Adapter, type SourceDefaults } from '../types';
 
 /**
  * Rosa-Luxemburg-Stiftung Brussels (rosalux.eu), a WordPress site with an
@@ -84,6 +84,7 @@ export function rosaluxAdapter(cfg: RosaluxConfig): Adapter {
   return {
     id: cfg.id,
     organiser: cfg.organiser,
+    info: sourceInfo(cfg),
     async fetch(ctx) {
       const api = `${cfg.baseUrl}/wp-json/wp/v2/termine?per_page=50&_embed=wp:term`;
       const items = parseRosaluxApi(JSON.parse(await ctx.get(api)));

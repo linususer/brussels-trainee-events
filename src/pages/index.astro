@@ -1,4 +1,5 @@
 ---
+import Base from '../layouts/Base.astro';
 import { loadEvents } from '../lib/load';
 import { upcoming } from '../lib/merge';
 import { CATEGORIES, REGISTRATION, isAllDay, type Category, type Event } from '../lib/event';
@@ -28,19 +29,11 @@ const when = (e: Event) => {
 };
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Brussels Trainee Events</title>
-    <meta name="description" content="Free-time events for EU trainees in Brussels in one place." />
-  </head>
-  <body>
+<Base title="Brussels Trainee Events" description="Free-time events for EU trainees in Brussels in one place." current="events">
     <header>
-      <h1>Brussels Trainee Events</h1>
+      <h1>Upcoming events</h1>
       <p>Networking, receptions, culture and Christmas markets for trainees in Brussels, all in one list.</p>
-      <p><a class="subscribe" href={`${base}/events.ics`}>Subscribe in your calendar (.ics)</a></p>
+      <p><a class="subscribe" href={`${base}/events.ics`}>Subscribe in your calendar (.ics)</a> · <a href={`${base}/sources/`}>Which sources are covered?</a></p>
     </header>
 
     <nav class="filters" aria-label="Filter by category">
@@ -76,10 +69,6 @@ const when = (e: Event) => {
       ))}
     </main>
 
-    <footer>
-      <p>Not official. Always check the organiser's page before you go.</p>
-    </footer>
-
     <script>
       // Hide events that ended since the last build, and handle category filters.
       const today = new Date().toISOString().slice(0, 10);
@@ -101,41 +90,6 @@ const when = (e: Event) => {
     </script>
 
     <style is:global>
-      :root {
-        --bg: #fafaf7;
-        --fg: #1d1d1f;
-        --muted: #5f6368;
-        --line: #e3e3de;
-        --accent: #0b4ea2;
-        --tag-bg: #e8eef8;
-        --invite-bg: #fff1d6;
-        --invite-fg: #7a4b00;
-        color-scheme: light dark;
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #141518;
-          --fg: #ececec;
-          --muted: #a0a4aa;
-          --line: #2c2e33;
-          --accent: #7fb0ff;
-          --tag-bg: #1f2a3d;
-          --invite-bg: #3d2e12;
-          --invite-fg: #ffd28a;
-        }
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0 auto;
-        max-width: 760px;
-        padding: 24px 16px 48px;
-        background: var(--bg);
-        color: var(--fg);
-        font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
-      }
-      a { color: var(--accent); }
-      header h1 { margin: 0 0 4px; font-size: 1.8rem; }
-      header p { margin: 4px 0; color: var(--muted); }
       .subscribe { font-weight: 600; }
       .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
       .filters button {
@@ -148,8 +102,6 @@ const when = (e: Event) => {
         cursor: pointer;
       }
       .filters button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-      h2 { font-size: 1.1rem; margin: 28px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
-      ul { list-style: none; margin: 0; padding: 0; }
       .event { display: grid; grid-template-columns: 9.5rem 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
       .when { color: var(--muted); font-variant-numeric: tabular-nums; }
       .what h3 { margin: 0; font-size: 1rem; }
@@ -165,11 +117,9 @@ const when = (e: Event) => {
         font-size: 0.8rem;
         font-weight: 600;
       }
-      .empty, footer { color: var(--muted); }
-      footer { margin-top: 40px; font-size: 0.85rem; }
+      .empty { color: var(--muted); }
       @media (max-width: 520px) {
         .event { grid-template-columns: 1fr; gap: 2px; }
       }
     </style>
-  </body>
-</html>
+</Base>

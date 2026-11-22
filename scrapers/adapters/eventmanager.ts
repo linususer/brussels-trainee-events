@@ -5,7 +5,7 @@ import { inBrussels } from '../../src/lib/location';
 import { parseDate } from './html';
 import { parseJsonLdEvents } from './jsonld';
 import { htmlToText, summarize } from '../text';
-import type { Adapter, SourceDefaults } from '../types';
+import { sourceInfo, type Adapter, type SourceDefaults } from '../types';
 
 /**
  * Online registration portals ("Online Veranstaltungs-Anmeldung") used by
@@ -85,6 +85,7 @@ export function eventManagerAdapter(cfg: EventManagerConfig): Adapter {
   return {
     id: cfg.id,
     organiser: cfg.organiser,
+    info: sourceInfo(cfg),
     async fetch(ctx) {
       const items = parsePortalList(await ctx.get(cfg.startUrl), cfg.startUrl);
       const events: EventInput[] = [];

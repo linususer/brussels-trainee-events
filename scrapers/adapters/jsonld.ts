@@ -3,7 +3,7 @@ import { toBrusselsLocal, type EventInput } from '../../src/lib/event';
 import { classify } from '../../src/lib/classify';
 import { inBrussels } from '../../src/lib/location';
 import { htmlToText, summarize } from '../text';
-import type { Adapter, SourceDefaults } from '../types';
+import { sourceInfo, type Adapter, type SourceDefaults } from '../types';
 
 /**
  * Generic adapter for sites whose event pages carry schema.org `Event`
@@ -111,6 +111,7 @@ export function jsonLdAdapter(cfg: JsonLdConfig): Adapter {
   return {
     id: cfg.id,
     organiser: cfg.organiser,
+    info: sourceInfo(cfg),
     async fetch(ctx) {
       const links = findLinks(await ctx.get(cfg.listUrl), cfg.listUrl, cfg.linkPattern);
       const events: EventInput[] = [];

@@ -3,7 +3,7 @@ import { toBrusselsLocal, type EventInput } from '../../src/lib/event';
 import { classify } from '../../src/lib/classify';
 import { inBrussels } from '../../src/lib/location';
 import { htmlToText, summarize } from '../text';
-import type { Adapter, SourceDefaults } from '../types';
+import { sourceInfo, type Adapter, type SourceDefaults } from '../types';
 
 /**
  * Heinrich-Böll-Stiftung calendar (calendar.boell.de), filtered to one office.
@@ -75,6 +75,7 @@ export function boellAdapter(cfg: BoellConfig): Adapter {
   return {
     id: cfg.id,
     organiser: cfg.organiser,
+    info: sourceInfo(cfg),
     async fetch(ctx) {
       // The type can say "Online discussion" when no city is given.
       const where = (i: BoellListItem, place?: string) => [place ?? i.city, i.type].filter(Boolean).join(', ');

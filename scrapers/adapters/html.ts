@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import { makeId, type EventInput } from '../../src/lib/event';
 import { classify } from '../../src/lib/classify';
-import type { Adapter, SourceDefaults } from '../types';
+import { sourceInfo, type Adapter, type SourceDefaults } from '../types';
 
 const MONTHS: Record<string, number> = {
   januar: 1, jan: 1, january: 1, janvier: 1,
@@ -99,6 +99,7 @@ export function htmlListAdapter(cfg: HtmlListConfig): Adapter {
   return {
     id: cfg.id,
     organiser: cfg.organiser,
+    info: sourceInfo(cfg),
     fetch: async (ctx) => parseHtmlList(await ctx.get(cfg.url), cfg),
   };
 }

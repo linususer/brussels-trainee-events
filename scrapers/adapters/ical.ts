@@ -1,7 +1,7 @@
 import ical, { type VEvent } from 'node-ical';
 import { makeId, toBrusselsLocal, type EventInput } from '../../src/lib/event';
 import { classify } from '../../src/lib/classify';
-import type { Adapter, SourceDefaults } from '../types';
+import { sourceInfo, type Adapter, type SourceDefaults } from '../types';
 
 type Param = VEvent['summary'];
 const text = (v: Param | undefined) => (v === undefined ? undefined : typeof v === 'string' ? v : v.val);
@@ -60,6 +60,7 @@ export function icalAdapter(src: SourceDefaults & { url: string }): Adapter {
   return {
     id: src.id,
     organiser: src.organiser,
+    info: sourceInfo(src),
     fetch: async (ctx) => parseIcs(await ctx.get(src.url), src),
   };
 }

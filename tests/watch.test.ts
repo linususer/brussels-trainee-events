@@ -5,7 +5,7 @@ import type { WatchEntry } from '../scrapers/watchlist';
 
 const html = readFileSync(new URL('./fixtures/watch-page.html', import.meta.url), 'utf8');
 const today = '2026-11-21';
-const entry: WatchEntry = { id: 'lv-x', organiser: 'LV X', status: 'no-calendar', reviewed: today, url: 'https://lv.example/va' };
+const entry: WatchEntry = { id: 'lv-x', organiser: 'LV X', status: 'no-calendar', group: 'state', reviewed: today, url: 'https://lv.example/va' };
 const state = (s: Partial<WatchState> = {}): WatchState => ({ status: 200, failures: 0, feeds: [], futureDates: [], checkedAt: today, ...s });
 
 describe('findFutureDates', () => {

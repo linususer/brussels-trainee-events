@@ -1,0 +1,92 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  current: 'events' | 'sources';
+}
+const { title, description, current } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Site">
+      <a href={`${base}/`} class="brand">Brussels Trainee Events</a>
+      <span class="links">
+        <a href={`${base}/`} aria-current={current === 'events' ? 'page' : undefined}>Events</a>
+        <a href={`${base}/sources/`} aria-current={current === 'sources' ? 'page' : undefined}>Sources</a>
+      </span>
+    </nav>
+    <slot />
+    <footer>
+      <p>Not official. Always check the organiser's page before you go.</p>
+    </footer>
+
+    <style is:global>
+      :root {
+        --bg: #fafaf7;
+        --fg: #1d1d1f;
+        --muted: #5f6368;
+        --line: #e3e3de;
+        --accent: #0b4ea2;
+        --tag-bg: #e8eef8;
+        --invite-bg: #fff1d6;
+        --invite-fg: #7a4b00;
+        /* Status colours (fixed in both modes; always paired with icon + label). */
+        --status-good: #0ca30c;
+        --status-warning: #fab219;
+        --status-critical: #d03b3b;
+        --status-neutral: #898781;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #141518;
+          --fg: #ececec;
+          --muted: #a0a4aa;
+          --line: #2c2e33;
+          --accent: #7fb0ff;
+          --tag-bg: #1f2a3d;
+          --invite-bg: #3d2e12;
+          --invite-fg: #ffd28a;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0 auto;
+        max-width: 760px;
+        padding: 16px 16px 48px;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      a { color: var(--accent); }
+      .site-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px;
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--line);
+        font-size: 0.95rem;
+      }
+      .site-nav .brand { font-weight: 700; color: var(--fg); text-decoration: none; }
+      .site-nav .links { display: flex; gap: 16px; }
+      .site-nav .links a { text-decoration: none; color: var(--muted); }
+      .site-nav .links a[aria-current='page'] { color: var(--fg); font-weight: 600; }
+      header h1 { margin: 0 0 4px; font-size: 1.8rem; }
+      header p { margin: 4px 0; color: var(--muted); }
+      h2 { font-size: 1.1rem; margin: 28px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+      ul { list-style: none; margin: 0; padding: 0; }
+      footer { margin-top: 40px; font-size: 0.85rem; color: var(--muted); }
+    </style>
+  </body>
+</html>

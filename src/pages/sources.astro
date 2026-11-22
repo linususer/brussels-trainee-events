@@ -1,0 +1,228 @@
+---
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import Base from '../layouts/Base.astro';
+import { sources } from '../../scrapers/sources';
+import { watchlist } from '../../scrapers/watchlist';
+import { considered } from '../../scrapers/considered';
+import { SOURCE_GROUPS, type SourceGroup } from '../../scrapers/types';
+import { loadEvents } from '../lib/load';
+import { upcoming } from '../lib/merge';
+import { COVERAGE, buildOverview, type Coverage, type SourceRow } from '../lib/overview';
+
+const statePath = resolve(process.cwd(), 'data/watch-state.json');
+const watchState = existsSync(statePath) ? JSON.parse(readFileSync(statePath, 'utf8')) : {};
+const today = new Date().toISOString().slice(0, 10);
+const overview = buildOverview(sources, watchlist, considered, watchState, upcoming(loadEvents(), today));
+
+const order = Object.keys(COVERAGE) as Coverage[];
+const pct = (n: number, of: number) => (of ? Math.round((n / of) * 100) : 0);
+const inactive = overview.total - overview.counts.active;
+
+// Per-group bars share one count scale so their lengths compare.
+const groups = (Object.keys(SOURCE_GROUPS) as SourceGroup[])
+  .map((g) => ({ id: g, rows: overview.rows.filter((r) => r.group === g) }))
+  .filter((g) => g.rows.length > 0);
+const maxGroup = Math.max(...groups.map((g) => g.rows.length));
+
+const names = (rows: SourceRow[]) => rows.map((r) => r.organiser).join('; ');
+const segments = (rows: SourceRow[]) =>
+  order
+    .map((c) => ({ coverage: c, rows: rows.filter((r) => r.coverage === c) }))
+    .filter((s) => s.rows.length > 0);
+const tip = (c: Coverage, rows: SourceRow[], total: number) =>
+  `${COVERAGE[c].icon} ${COVERAGE[c].label}: ${rows.length} of ${total} (${pct(rows.length, total)} %)\n${names(rows)}`;
+---
+
+<Base title="Sources | Brussels Trainee Events" description="Which event sources are read automatically, and which ones trainees need to check by hand." current="sources">
+  <header>
+    <h1>Sources</h1>
+    <p>
+      We considered <strong>{overview.total + overview.notTracked.length}</strong> organisers.{' '}
+      Of the <strong>{overview.total}</strong> we track, <strong>{overview.counts.active}</strong> are read automatically.{' '}
+      The other <strong>{inactive}</strong> have no connector: check them yourself, using the links below.
+    </p>
+  </header>
+
+  <section aria-labelledby="coverage-title" class="chart">
+    <h2 id="coverage-title">Coverage of tracked sources</h2>
+    <div class="bar bar-total" role="img" aria-label={order.map((c) => `${COVERAGE[c].label}: ${overview.counts[c]}`).join(', ')}>
+      {segments(overview.rows).map((s) => (
+        <span
+          class={`seg seg-${s.coverage}`}
+          style={`flex-grow: ${s.rows.length}`}
+          tabindex="0"
+          data-tip={tip(s.coverage, s.rows, overview.total)}
+          aria-label={`${COVERAGE[s.coverage].label}: ${s.rows.length}`}
+        >
+          {pct(s.rows.length, overview.total) >= 8 && <span class="seg-label">{s.rows.length}</span>}
+        </span>
+      ))}
+    </div>
+    <ul class="legend">
+      {order.map((c) => (
+        <li>
+          <span class={`swatch seg-${c}`} aria-hidden="true">{COVERAGE[c].icon}</span>
+          {COVERAGE[c].label} <span class="count">{overview.counts[c]}</span>
+        </li>
+      ))}
+    </ul>
+
+    <h3 class="sub">By kind of organiser</h3>
+    <div class="groups">
+      {groups.map((g) => (
+        <div class="group-row">
+          <span class="group-name">{SOURCE_GROUPS[g.id]}</span>
+          <div class="group-track">
+            <div class="bar bar-small" style={`width: ${(g.rows.length / maxGroup) * 100}%`}>
+              {segments(g.rows).map((s) => (
+                <span
+                  class={`seg seg-${s.coverage}`}
+                  style={`flex-grow: ${s.rows.length}`}
+                  tabindex="0"
+                  data-tip={tip(s.coverage, s.rows, g.rows.length)}
+                  aria-label={`${SOURCE_GROUPS[g.id]}, ${COVERAGE[s.coverage].label}: ${s.rows.length}`}
+                />
+              ))}
+            </div>
+          </div>
+          <span class="group-count">
+            {g.rows.filter((r) => r.coverage === 'active').length} of {g.rows.length} automated
+          </span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {order.map((c) => {
+    const rows = overview.rows.filter((r) => r.coverage === c);
+    if (rows.length === 0) return null;
+    return (
+      <section class="status-section" aria-labelledby={`sec-${c}`}>
+        <h2 id={`sec-${c}`}>
+          <span class={`badge seg-${c}`} aria-hidden="true">{COVERAGE[c].icon}</span>
+          {COVERAGE[c].label} <span class="count">({rows.length})</span>
+        </h2>
+        <p class="advice">{COVERAGE[c].advice}</p>
+        <ul class="source-list">
+          {rows.map((r) => (
+            <li>
+              <div class="source-name">
+                {r.homepage ? <a href={r.homepage} rel="noopener">{r.organiser}</a> : r.organiser}
+              </div>
+              <div class="source-meta">
+                {SOURCE_GROUPS[r.group]}
+                {r.upcoming !== undefined && <> · {r.upcoming} upcoming {r.upcoming === 1 ? 'event' : 'events'}</>}
+                {r.note && <> · {r.note}</>}
+                {r.lastChecked && <> · last checked {r.lastChecked}</>}
+                {!r.homepage && c !== 'active' && <> · no page to check yet</>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  })}
+
+  <details class="not-tracked">
+    <summary>Considered but not tracked ({overview.notTracked.length})</summary>
+    <ul class="source-list">
+      {overview.notTracked.map((s) => (
+        <li>
+          <div class="source-name">{s.homepage ? <a href={s.homepage} rel="noopener">{s.organiser}</a> : s.organiser}</div>
+          <div class="source-meta">{SOURCE_GROUPS[s.group]} · {s.reason}</div>
+        </li>
+      ))}
+    </ul>
+  </details>
+
+  <div class="tooltip" role="tooltip" hidden></div>
+
+  <script>
+    // One shared tooltip for bar segments (hover and keyboard focus).
+    const tooltip = document.querySelector<HTMLElement>('.tooltip')!;
+    const show = (el: HTMLElement, x: number, y: number) => {
+      tooltip.textContent = el.dataset.tip ?? '';
+      tooltip.hidden = false;
+      const w = tooltip.offsetWidth;
+      tooltip.style.left = `${Math.max(8, Math.min(x - w / 2, window.innerWidth - w - 8))}px`;
+      tooltip.style.top = `${y + 14}px`;
+    };
+    for (const seg of document.querySelectorAll<HTMLElement>('[data-tip]')) {
+      seg.addEventListener('mousemove', (e) => show(seg, e.clientX, e.clientY));
+      seg.addEventListener('mouseleave', () => (tooltip.hidden = true));
+      seg.addEventListener('focus', () => {
+        const r = seg.getBoundingClientRect();
+        show(seg, r.left + r.width / 2, r.bottom - 8);
+      });
+      seg.addEventListener('blur', () => (tooltip.hidden = true));
+    }
+  </script>
+
+  <style is:global>
+    .chart { margin-top: 8px; }
+    .bar { display: flex; gap: 2px; border-radius: 4px; overflow: hidden; }
+    .bar-total { height: 32px; }
+    .bar-small { height: 14px; min-width: 6px; }
+    .seg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-basis: 0;
+      min-width: 6px;
+      cursor: default;
+      outline-offset: 2px;
+    }
+    .seg:focus-visible { outline: 2px solid var(--fg); }
+    .seg-label { font-weight: 700; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+    .seg-active { background: var(--status-good); color: #fff; }
+    .seg-no-calendar { background: var(--status-warning); color: #0b0b0b; }
+    .seg-not-located { background: var(--status-neutral); color: #fff; }
+    .seg-blocked { background: var(--status-critical); color: #fff; }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 0; font-size: 0.9rem; color: var(--muted); }
+    .legend li { display: flex; align-items: center; gap: 6px; }
+    .legend .count { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .swatch, .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .sub { font-size: 0.95rem; margin: 24px 0 8px; color: var(--muted); font-weight: 600; }
+    .groups { display: grid; gap: 8px; }
+    .group-row { display: grid; grid-template-columns: 13rem 1fr auto; gap: 12px; align-items: center; font-size: 0.9rem; }
+    .group-name { color: var(--fg); }
+    .group-count { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .status-section h2 { display: flex; align-items: center; gap: 8px; }
+    .status-section h2 .count { color: var(--muted); font-weight: 400; }
+    .advice { margin: 0 0 8px; color: var(--muted); font-size: 0.9rem; }
+    .source-list li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .source-name { font-weight: 600; }
+    .source-meta { color: var(--muted); font-size: 0.85rem; }
+    .not-tracked { margin-top: 28px; }
+    .not-tracked summary { cursor: pointer; font-weight: 600; }
+    .tooltip {
+      position: fixed;
+      z-index: 10;
+      max-width: min(360px, calc(100vw - 16px));
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: var(--fg);
+      color: var(--bg);
+      font-size: 0.8rem;
+      white-space: pre-line;
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+    }
+    @media (max-width: 560px) {
+      .groups { gap: 14px; }
+      .group-row { grid-template-columns: 1fr auto; row-gap: 4px; }
+      .group-track { grid-column: 1 / -1; grid-row: 2; }
+    }
+  </style>
+</Base>
