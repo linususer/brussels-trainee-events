@@ -68,6 +68,19 @@ NRW, Rheinland-Pfalz and Mecklenburg-Vorpommern (and Baden-Württemberg, without
 | Neujahrsempfang (New Year reception) | AHK debelux with German Embassy | January | party, networking |
 | Sommerfest (summer party) | AHK debelux | June | party |
 
+### Other public channels checked for the "no public calendar" sources (2026-11-22)
+
+None of these announces the representations' own events in advance:
+
+| Channel | Result |
+|---|---|
+| Ministers' appointment calendars (Sachsen Ministerpräsident, Brandenburg, MV) | Sachsen: Brussels only in the navigation; Brandenburg and MV render their lists only with JavaScript and showed no Brussels events in static HTML |
+| Hessen "Bericht aus Brüssel" (PDF, every two weeks) | The "Vorschau" lists EU institution meetings (Council, Commission, EP plenary), not events of the representation |
+| Bayern "Europabericht" (PDF, monthly) | Policy reporting; no event announcements |
+| FES central event database (fes.de/veranstaltungen) | Has a place filter, but filter URLs are signed (TYPO3 cHash), and the Brussels office list is empty anyway |
+
+Conclusion: for these sources the information exists only in **invitations and newsletters** (email).
+
 ## Group B: political foundations (Brussels offices)
 
 ### Key finding
