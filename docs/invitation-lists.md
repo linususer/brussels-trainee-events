@@ -17,7 +17,7 @@ Collected on 2026-11-21 from the organisers' pages and search results. **Verify 
 | Hamburg + Schleswig-Holstein (Hanse-Office) | events@hanse-office.de, +32 2 285 46 40 | Registration codes come with the invitations | hanse-office.de invitations |
 | Hessen | n/a | Rue Montoyer 21; "Bericht aus Brüssel" reports every two weeks on staatskanzlei.hessen.de | staatskanzlei.hessen.de |
 | Niedersachsen | n/a | Rue Montoyer 61; ask via the contact page of stk.niedersachsen.de | stk.niedersachsen.de |
-| Sachsen | veranstaltung@bxl.sachsen.de | Registration address for its events | bxl.sachsen.de |
+| Sachsen | veranstaltung@bxl.sachsen.de | Invitation list: send name, interests, institution and contact details (per the events page) | bxl.sachsen.de |
 | Sachsen-Anhalt | n/a | Newsletter "EU-Wochenspiegel" on europa.sachsen-anhalt.de | europa.sachsen-anhalt.de |
 | Saarland | +32 2 48 600 40 (*unconfirmed*, older page) | Moving out of Rue du Luxembourg 15; X account @saarland_eu | saarland.de |
 | Thüringen | +32 2 736 20 60 (*unconfirmed*, sources disagree) | Rue Frédéric Pelletier 111, 1030 | belgieninfo.net |
