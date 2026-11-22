@@ -222,9 +222,10 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
     const calLink = document.getElementById('cal-link') as HTMLAnchorElement;
     const filterFeeds = JSON.parse(calLink.dataset.filterFeeds ?? '{}') as Record<string, string>;
     const updateCalLink = (filter: string, label: string) => {
-      const feed = filterFeeds[filter] ?? 'all';
+      const feed = (filterFeeds[filter] ?? 'all') + (afterWork ? '-afterwork' : '');
       calLink.href = feed === 'all' ? calLink.pathname : `${calLink.pathname}?feed=${feed}`;
-      calLink.setAttribute('aria-label', feed === 'all' ? 'Add all events to your calendar' : `Add ${label} events to your calendar`);
+      const scope = filter === 'all' || filter === 'unclassified' ? 'all' : label;
+      calLink.setAttribute('aria-label', `Add ${scope} events${afterWork ? ' outside work hours' : ''} to your calendar`);
     };
 
     // Category filter for list, calendar chips and day panels, with a status line and an empty state.

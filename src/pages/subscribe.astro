@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { GROUPS, eventsForFeed, feedIds, feedName, feedTitle, groupIds } from '../lib/feeds';
+import { GROUPS, eventsForFeed, feedIds, feedName, feedTitle, groupIds, parseFeed } from '../lib/feeds';
+import { AFTER_WORK_FROM } from '../lib/workday';
 import { siteEvents } from '../lib/published';
 import { subscribeLinks } from '../lib/subscribe';
 
@@ -10,7 +11,17 @@ const upcomingEvents = siteEvents();
 
 // Everything the page script needs per feed: address, name and current event count.
 const feeds = Object.fromEntries(
-  feedIds.map((id) => [id, { url: new URL(`${base}/calendar/${id}.ics`, site).href, name: feedTitle(id), label: feedName(id), count: eventsForFeed(upcomingEvents, id).length }]),
+  feedIds.map((id) => [
+    id,
+    {
+      url: new URL(`${base}/calendar/${id}.ics`, site).href,
+      name: feedTitle(id),
+      // Group names without the work-hours suffix; the summary adds that in words.
+      label: feedName(parseFeed(id).base),
+      afterWork: parseFeed(id).afterWork,
+      count: eventsForFeed(upcomingEvents, id).length,
+    },
+  ]),
 );
 const groups = groupIds.map((id) => ({ id, ...GROUPS[id], count: eventsForFeed(upcomingEvents, id).length }));
 const fallback = subscribeLinks(feeds.all.url, feeds.all.name); // works without JavaScript
@@ -37,6 +48,13 @@ const fallback = subscribeLinks(feeds.all.url, feeds.all.name); // works without
           </label>
         ))}
       </div>
+      <label class="choice choice-option">
+        <input type="checkbox" name="afterwork" />
+        <span class="choice-body">
+          <span class="choice-name">🕑 Only events outside work hours</span>
+          <span class="choice-desc">Weekday events from {AFTER_WORK_FROM}; weekend and all-day events at any time.</span>
+        </span>
+      </label>
       <p class="summary" id="selection-summary" aria-live="polite">You'll get all {feeds.all.count} upcoming events, and new ones as they appear.</p>
     </fieldset>
 
@@ -93,12 +111,13 @@ const fallback = subscribeLinks(feeds.all.url, feeds.all.name); // works without
 
   <script>
     import { APP_HINTS, APP_LABELS, appLink, copyText, detectApp, opensNewTab, say, type AppId } from '../scripts/subscribe-client';
-    import { feedForSelection, type GroupId } from '../lib/feeds';
+    import { feedForSelection, parseFeed, type GroupId } from '../lib/feeds';
 
-    type Feed = { url: string; name: string; label: string; count: number };
+    type Feed = { url: string; name: string; label: string; afterWork: boolean; count: number };
     const form = document.getElementById('subscribe') as HTMLFormElement;
     const feeds = JSON.parse(form.dataset.feeds ?? '{}') as Record<string, Feed>;
     const boxes = [...form.querySelectorAll<HTMLInputElement>('input[name="group"]')];
+    const afterWorkBox = form.querySelector<HTMLInputElement>('input[name="afterwork"]')!;
     const summary = document.getElementById('selection-summary')!;
     const status = document.getElementById('subscribe-status')!;
     const appsStep = document.getElementById('step-apps')!;
@@ -110,14 +129,16 @@ const fallback = subscribeLinks(feeds.all.url, feeds.all.name); // works without
     primary.querySelector('[data-primary-label]')!.textContent = APP_LABELS[preferred];
     form.querySelector<HTMLElement>(`.others [data-app="${preferred}"]`)?.remove();
 
-    // Preselect from ?feed=culture or ?feed=social-culture (used by the events page).
+    // Preselect from ?feed=culture, ?feed=social-culture or ?feed=culture-afterwork (used by the events page).
     const wanted = new URLSearchParams(location.search).get('feed');
-    if (wanted && wanted !== 'all' && feeds[wanted]) {
-      const ids = wanted.split('-');
-      for (const b of boxes) b.checked = ids.includes(b.value);
+    if (wanted && feeds[wanted]) {
+      const { base, afterWork } = parseFeed(wanted);
+      afterWorkBox.checked = afterWork;
+      if (base !== 'all') for (const b of boxes) b.checked = base.split('-').includes(b.value);
     }
 
-    const currentFeed = () => feeds[feedForSelection(boxes.filter((b) => b.checked).map((b) => b.value as GroupId))];
+    const currentFeed = () =>
+      feeds[feedForSelection(boxes.filter((b) => b.checked).map((b) => b.value as GroupId), afterWorkBox.checked)];
     const nothingChosen = () => !boxes.some((b) => b.checked);
 
     const update = () => {
@@ -129,11 +150,12 @@ const fallback = subscribeLinks(feeds.all.url, feeds.all.name); // works without
       }
       appsStep.removeAttribute('aria-disabled');
       const feed = currentFeed();
-      const what = feed.label === 'Everything' ? 'all' : `${feed.count}`;
+      const events = feed.count === 1 ? 'event' : 'events';
+      const when = feed.afterWork ? ' outside work hours' : '';
       summary.textContent =
         feed.label === 'Everything'
-          ? `You'll get all ${feed.count} upcoming events, and new ones as they appear.`
-          : `You'll get ${what} upcoming ${feed.count === 1 ? 'event' : 'events'} (${feed.label}), and new ones as they appear.`;
+          ? `You'll get ${feed.afterWork ? '' : 'all '}${feed.count} upcoming ${events}${when}, and new ones as they appear.`
+          : `You'll get ${feed.count} upcoming ${feed.label} ${events}${when}, and new ones as they appear.`;
       for (const el of form.querySelectorAll<HTMLAnchorElement>('a[data-app]')) {
         const href = appLink(el.dataset.app as AppId, feed.url, feed.name);
         if (href) el.href = href;
@@ -153,7 +175,7 @@ const fallback = subscribeLinks(feeds.all.url, feeds.all.name); // works without
         if (!opensNewTab(app)) status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
     }
-    for (const b of boxes) b.addEventListener('change', update);
+    for (const b of [...boxes, afterWorkBox]) b.addEventListener('change', update);
     update();
   </script>
 
@@ -177,6 +199,7 @@ const fallback = subscribeLinks(feeds.all.url, feeds.all.name); // works without
     .choice:has(input:checked) { border-color: var(--accent); background: var(--tag-bg); }
     .choice input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); flex-shrink: 0; }
     .choice-body { display: grid; gap: 2px; }
+    .choice-option { margin-top: 10px; border-style: dashed; }
     .choice-name { font-weight: 600; }
     .choice-desc, .choice-count { color: var(--muted); font-size: 0.88rem; }
     .summary { margin: 10px 0 0; font-size: 0.95rem; }

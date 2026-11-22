@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { EventSchema } from '../src/lib/event';
-import { eventsForFeed, feedForCategory, feedForSelection, feedIds, feedName, feedTitle } from '../src/lib/feeds';
+import { eventsForFeed, feedDescription, feedForCategory, feedForSelection, feedIds, feedName, feedTitle, parseFeed } from '../src/lib/feeds';
 import { eventSlug, googleEventLink, subscribeLinks } from '../src/lib/subscribe';
 import { buildMonths } from '../src/lib/calendar';
 import { toIcs } from '../src/lib/ics';
@@ -12,7 +12,8 @@ describe('feeds', () => {
   const events = [ev('a', '2026-12-01T18:00', ['networking']), ev('b', '2026-12-02', ['christmas-market']), ev('c', '2026-12-03T19:00', ['policy', 'party']), ev('d', '2026-12-04', [])];
 
   it('publishes every combination of groups as one feed (no separate Christmas-market feed)', () => {
-    expect(feedIds).toEqual(['all', 'social', 'culture', 'social-culture', 'policy', 'social-policy', 'culture-policy']);
+    const base = ['all', 'social', 'culture', 'social-culture', 'policy', 'social-policy', 'culture-policy'];
+    expect(feedIds).toEqual([...base, ...base.map((f) => `${f}-afterwork`)]);
     expect(eventsForFeed(events, 'all').map((e) => e.id)).toEqual(['a', 'b', 'c', 'd']);
     expect(eventsForFeed(events, 'social').map((e) => e.id)).toEqual(['a', 'b', 'c']);
     expect(eventsForFeed(events, 'policy').map((e) => e.id)).toEqual(['c']);
@@ -25,6 +26,18 @@ describe('feeds', () => {
     expect(feedForSelection(['policy'])).toBe('policy');
     expect(feedForSelection(['social', 'culture', 'policy'])).toBe('all');
     expect(feedForSelection([])).toBe('all');
+  });
+
+  it('offers every feed also outside work hours', () => {
+    const mixed = [ev('m', '2026-11-24T10:00', ['policy']), ev('n', '2026-11-24T18:30', ['policy']), ev('w', '2026-11-28T10:00', ['culture'])];
+    expect(eventsForFeed(mixed, 'policy-afterwork').map((e) => e.id)).toEqual(['n']);
+    expect(eventsForFeed(mixed, 'all-afterwork').map((e) => e.id)).toEqual(['n', 'w']);
+    expect(feedForSelection(['culture'], true)).toBe('culture-afterwork');
+    expect(feedForSelection(['social', 'culture', 'policy'], true)).toBe('all-afterwork');
+    expect(parseFeed('social-culture-afterwork')).toEqual({ base: 'social-culture', afterWork: true });
+    expect(feedName('culture-afterwork')).toBe('Culture (outside work hours)');
+    expect(feedTitle('all-afterwork')).toBe('Brussels trainee events: Everything (outside work hours)');
+    expect(feedDescription('policy-afterwork')).toContain('Only weekday events from 14:00');
   });
 
   it('names feeds and maps event-page filters to feeds', () => {
