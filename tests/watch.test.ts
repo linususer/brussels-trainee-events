@@ -65,6 +65,13 @@ describe('compareWatch', () => {
     expect(compareWatch(entry, fail2, nextState(fail2, 404, undefined, today))).toEqual([]);
   });
 
+  it('reports a robots.txt block once, and when it is lifted', () => {
+    const blocked = nextState(state(), -1, undefined, today);
+    expect(compareWatch(entry, state(), blocked)).toEqual(['robots.txt now disallows automated access: check by hand']);
+    expect(compareWatch(entry, blocked, nextState(blocked, -1, undefined, today))).toEqual([]);
+    expect(compareWatch(entry, blocked, state())).toEqual(['robots.txt allows access again']);
+  });
+
   it('does not re-report old signals after recovering from a failure', () => {
     const good = state({ feeds: ['https://lv.example/feed/'], futureDates: ['2027-01-26'] });
     const failed = nextState(good, 0, undefined, today);

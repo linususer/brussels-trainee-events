@@ -2,12 +2,12 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import * as cheerio from 'cheerio';
 import { parseDate } from './adapters/html';
-import { politeGet } from './http';
+import { politeGet, RobotsDisallowedError } from './http';
 import { watchlist, type WatchEntry } from './watchlist';
 
 /** What we remember about a watched page between runs. */
 export interface WatchState {
-  /** HTTP status of the last check, or 0 if the request failed. */
+  /** HTTP status of the last check, 0 if the request failed, -1 if robots.txt disallows it. */
   status: number;
   /** Consecutive checks that were not successful (one-off timeouts are ignored). */
   failures: number;
@@ -89,6 +89,11 @@ export function extractSignals(html: string, pageUrl: string, today: string): Pi
 export function compareWatch(entry: WatchEntry, prev: WatchState | undefined, next: WatchState): string[] {
   const findings: string[] = [];
 
+  if (next.status === -1) {
+    return prev?.status === -1 ? [] : ['robots.txt now disallows automated access: check by hand'];
+  }
+  if (prev?.status === -1) findings.push('robots.txt allows access again');
+
   // A blocked site answering is news right away; otherwise ignore one-off failures.
   const wasDown = prev && !ok(prev.status) && (entry.status === 'blocked' || prev.failures >= 2);
   if (wasDown && ok(next.status)) findings.push(`now reachable (was ${prev.status || 'error'})`);
@@ -135,8 +140,9 @@ export async function runWatch(today = new Date().toISOString().slice(0, 10)): P
       const res = await politeGet(entry.url);
       const signals = res.ok ? extractSignals(await res.text(), res.url || entry.url, today) : undefined;
       next = nextState(state[entry.id], res.status, signals, today);
-    } catch {
-      next = nextState(state[entry.id], 0, undefined, today);
+    } catch (err) {
+      const status = err instanceof RobotsDisallowedError ? -1 : 0;
+      next = nextState(state[entry.id], status, undefined, today);
     }
 
     const findings = compareWatch(entry, state[entry.id], next);
