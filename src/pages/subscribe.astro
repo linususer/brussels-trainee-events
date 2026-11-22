@@ -1,0 +1,163 @@
+---
+import Base from '../layouts/Base.astro';
+import { FEEDS, eventsForFeed, feedIds, feedTitle } from '../lib/feeds';
+import { siteEvents } from '../lib/published';
+import { subscribeLinks } from '../lib/subscribe';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const site = Astro.site ?? new URL('https://example.org');
+const upcomingEvents = siteEvents();
+
+const feeds = feedIds.map((id) => {
+  const url = new URL(`${base}/calendar/${id}.ics`, site).href;
+  return { id, ...FEEDS[id], count: eventsForFeed(upcomingEvents, id).length, links: subscribeLinks(url, feedTitle(id)) };
+});
+---
+
+<Base title="Subscribe | Brussels Trainee Events" description="Add the Brussels trainee events to Google, Apple, Outlook or Thunderbird calendar. Subscriptions update themselves." current="subscribe">
+  <header>
+    <h1>Subscribe to the calendar</h1>
+    <p>
+      Add the events to the calendar you already use. A subscription <strong>updates itself</strong>: new events
+      appear in your calendar without you visiting this site again.
+    </p>
+  </header>
+
+  <aside class="note">
+    <strong>Subscribe or download?</strong> The buttons below <em>subscribe</em>, so your calendar stays up to date.
+    Downloading a <code>.ics</code> file instead only adds a one-time copy that never updates.
+  </aside>
+
+  <h2>1. Pick what you want to see</h2>
+  <div class="feeds">
+    {feeds.map((f) => (
+      <section class="feed" aria-labelledby={`feed-${f.id}`}>
+        <div class="feed-head">
+          <h3 id={`feed-${f.id}`}>{f.name}</h3>
+          <span class="feed-count">{f.count} upcoming {f.count === 1 ? 'event' : 'events'}</span>
+        </div>
+        <p class="feed-desc">{f.description}</p>
+        <p class="feed-step">2. Choose your calendar app:</p>
+        <div class="apps">
+          <a class="app" href={f.links.google} target="_blank" rel="noopener">Google Calendar<span>web &amp; Android</span></a>
+          <a class="app" href={f.links.apple}>Apple Calendar<span>iPhone, iPad, Mac</span></a>
+          <a class="app" href={f.links.outlookPersonal} target="_blank" rel="noopener">Outlook<span>personal account</span></a>
+          <a class="app" href={f.links.outlookWork} target="_blank" rel="noopener">Outlook<span>work or school account</span></a>
+          <button type="button" class="app" data-copy={f.links.https} data-show="thunderbird-help">Thunderbird<span>copies the link, see steps</span></button>
+          <button type="button" class="app" data-copy={f.links.https}>Copy link<span>for any other app</span></button>
+        </div>
+        <p class="copied" role="status" aria-live="polite" hidden>Link copied.</p>
+      </section>
+    ))}
+  </div>
+
+  <section id="thunderbird-help" class="help" hidden>
+    <h2>Thunderbird: three steps</h2>
+    <ol>
+      <li>The link is now copied (use “Copy link” again if needed).</li>
+      <li>In Thunderbird, open the <strong>Calendar</strong>, then choose <strong>New Calendar… → On the Network</strong>.</li>
+      <li>Paste the link into <strong>Location</strong>, click <strong>Find Calendars</strong> / <strong>Next</strong>, pick a name and colour, and finish.</li>
+    </ol>
+  </section>
+
+  <h2>Good to know</h2>
+  <details>
+    <summary>How quickly do new events show up?</summary>
+    <p>
+      Calendar apps check subscriptions on their own schedule. Apple, Outlook and Thunderbird usually check every few
+      hours; Google Calendar can take up to a day. The events themselves are collected and published here regularly.
+    </p>
+  </details>
+  <details>
+    <summary>Do these events make me look busy?</summary>
+    <p>No. They are marked as free time, so they don't block your calendar for meeting invitations.</p>
+  </details>
+  <details>
+    <summary>What does “[Invitation]” in a title mean?</summary>
+    <p>The organiser lists the event publicly, but you need an invitation first. The event notes say how to ask for one.</p>
+  </details>
+  <details>
+    <summary>How do I remove a subscription?</summary>
+    <p>
+      Delete the subscribed calendar in your app: in Google Calendar under Settings, in Apple Calendar via the
+      calendar list, in Outlook by right-clicking the calendar, in Thunderbird via the calendar's context menu.
+      Nothing else is stored anywhere.
+    </p>
+  </details>
+  <details>
+    <summary>Just one event?</summary>
+    <p>Every event on the <a href={`${base}/`}>events page</a> has its own “Add to calendar” links.</p>
+  </details>
+
+  <script>
+    // Copy feed links; show the Thunderbird steps when that button is used.
+    for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+      btn.addEventListener('click', async () => {
+        const text = btn.dataset.copy ?? '';
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          window.prompt('Copy this link:', text);
+        }
+        const status = btn.closest('.feed')?.querySelector<HTMLElement>('.copied');
+        if (status) {
+          status.hidden = false;
+          setTimeout(() => (status.hidden = true), 3000);
+        }
+        if (btn.dataset.show) {
+          const help = document.getElementById(btn.dataset.show);
+          if (help) {
+            help.hidden = false;
+            help.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      });
+    }
+  </script>
+
+  <style is:global>
+    .note {
+      margin: 16px 0 8px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    .note code { font-size: 0.9em; }
+    .feeds { display: grid; gap: 16px; }
+    .feed { border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+    .feed-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .feed h3 { margin: 0; font-size: 1.1rem; }
+    .feed-count { color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+    .feed-desc { margin: 4px 0 10px; color: var(--muted); font-size: 0.9rem; }
+    .feed-step { margin: 0 0 6px; font-size: 0.85rem; color: var(--muted); }
+    .apps { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+    .app {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--fg);
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .app:hover, .app:focus-visible { border-color: var(--accent); }
+    .app span { font-weight: 400; font-size: 0.78rem; color: var(--muted); }
+    .copied { margin: 8px 0 0; font-size: 0.85rem; color: var(--fg); }
+    .help { margin-top: 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; }
+    .help h2 { margin-top: 0; }
+    .help ol { margin: 0; padding-left: 1.2rem; }
+    .help li { margin: 4px 0; }
+    details { border-bottom: 1px solid var(--line); padding: 10px 0; }
+    details summary { cursor: pointer; font-weight: 600; }
+    details p { margin: 8px 0 0; color: var(--muted); font-size: 0.92rem; }
+  </style>
+</Base>

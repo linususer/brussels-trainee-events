@@ -1,15 +1,19 @@
 ---
 import Base from '../layouts/Base.astro';
-import { loadEvents } from '../lib/load';
-import { upcoming } from '../lib/merge';
 import { CATEGORIES, REGISTRATION, isAllDay, type Category, type Event } from '../lib/event';
+import { siteEvents } from '../lib/published';
+import { buildMonths } from '../lib/calendar';
+import { eventSlug, googleEventLink } from '../lib/subscribe';
 
-const today = new Date().toISOString().slice(0, 10);
-const events = upcoming(loadEvents(), today);
+const events = siteEvents();
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const thisMonth = new Date().toISOString().slice(0, 7);
+// Months without events are skipped (except the current one), so a far-off event doesn't add empty grids.
+const months = buildMonths(events, thisMonth, 12).filter((m) => m.key === thisMonth || m.weeks.flat().some((d) => d.inMonth && d.events.length));
 
 const monthFmt = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 const dayFmt = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+const longDayFmt = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
 const asUtc = (local: string) => new Date(`${local.slice(0, 10)}T00:00:00Z`);
 
 const byMonth = new Map<string, Event[]>();
@@ -20,6 +24,7 @@ for (const e of events) {
 
 const used = Object.keys(CATEGORIES).filter((c) => events.some((e) => e.categories.includes(c as Category))) as Category[];
 const hasUnclassified = events.some((e) => e.categories.length === 0);
+const cats = (e: Event) => (e.categories.length ? e.categories.join(' ') : 'unclassified');
 const when = (e: Event) => {
   const day = dayFmt.format(asUtc(e.start));
   if (isAllDay(e)) return e.end && e.end !== e.start ? `${day} – ${dayFmt.format(asUtc(e.end))}` : day;
@@ -27,29 +32,46 @@ const when = (e: Event) => {
   const endTime = e.end?.slice(0, 10) === e.start.slice(0, 10) ? `–${e.end.slice(11)}` : '';
   return `${day}, ${time}${endTime}`;
 };
+const timeOf = (e: Event, date: string) => {
+  if (e.start.slice(0, 10) === date) return isAllDay(e) ? 'All day' : e.start.slice(11);
+  // Later days of a multi-day event.
+  return e.end?.slice(0, 10) === date && e.end.includes('T') ? `until ${e.end.slice(11)}` : 'cont.';
+};
+const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
 ---
 
 <Base title="Brussels Trainee Events" description="Free-time events for EU trainees in Brussels in one place." current="events">
-    <header>
-      <h1>Upcoming events</h1>
-      <p>Networking, receptions, culture and Christmas markets for trainees in Brussels, all in one list.</p>
-      <p><a class="subscribe" href={`${base}/events.ics`}>Subscribe in your calendar (.ics)</a> · <a href={`${base}/sources/`}>Which sources are covered?</a></p>
-    </header>
+  <header>
+    <h1>Upcoming events</h1>
+    <p>Networking, receptions, culture and policy talks for trainees in Brussels.</p>
+    <p>
+      <a class="subscribe" href={`${base}/subscribe/`}>Add these events to your calendar</a> (updates automatically) ·
+      <a href={`${base}/sources/`}>Which sources are covered?</a>
+    </p>
+  </header>
 
+  <div class="toolbar">
     <nav class="filters" aria-label="Filter by category">
       <button type="button" data-filter="all" aria-pressed="true">All</button>
       {used.map((c) => <button type="button" data-filter={c} aria-pressed="false">{CATEGORIES[c]}</button>)}
       {hasUnclassified && <button type="button" data-filter="unclassified" aria-pressed="false">Unclassified</button>}
     </nav>
+    <div class="views" role="group" aria-label="View">
+      <button type="button" data-view="list" aria-pressed="true">List</button>
+      <button type="button" data-view="month" aria-pressed="false">Month</button>
+    </div>
+  </div>
 
-    <main>
-      {events.length === 0 && <p class="empty">No upcoming events yet.</p>}
+  <main>
+    {events.length === 0 && <p class="empty">No upcoming events yet.</p>}
+
+    <div class="view view-list" data-view-panel="list">
       {[...byMonth].map(([month, list]) => (
-        <section>
+        <section class="month-list">
           <h2>{month}</h2>
           <ul>
             {list.map((e) => (
-              <li class="event" data-categories={e.categories.length ? e.categories.join(' ') : 'unclassified'} data-end={(e.end ?? e.start).slice(0, 10)}>
+              <li class="event" id={`ev-${eventSlug(e.id)}`} data-categories={cats(e)} data-end={(e.end ?? e.start).slice(0, 10)}>
                 <div class="when">{when(e)}</div>
                 <div class="what">
                   {e.registration === 'invitation' && <p class="invite">{REGISTRATION.invitation}</p>}
@@ -61,65 +83,237 @@ const when = (e: Event) => {
                     {e.registration === 'required' && <> · <strong>{REGISTRATION.required}</strong></>}
                   </p>
                   {e.description && <p class="desc">{e.description}</p>}
+                  <p class="add">
+                    Add to calendar: <a href={googleEventLink(e)} target="_blank" rel="noopener">Google</a> ·{' '}
+                    <a href={icsHref(e)} download>Apple, Outlook, Thunderbird (.ics)</a>
+                  </p>
                 </div>
               </li>
             ))}
           </ul>
         </section>
       ))}
-    </main>
+    </div>
 
-    <script>
-      // Hide events that ended since the last build, and handle category filters.
-      const today = new Date().toISOString().slice(0, 10);
-      const items = [...document.querySelectorAll<HTMLElement>('.event')];
-      for (const li of items) if ((li.dataset.end ?? '') < today) li.remove();
+    <div class="view view-month" data-view-panel="month" hidden>
+      {months.map((m) => (
+        <section class="cal-month" data-month={m.key}>
+          <h2>{m.label}</h2>
+          <div class="cal-grid" role="grid" aria-label={m.label}>
+            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => <div class="cal-dow" role="columnheader">{d}</div>)}
+            {m.weeks.flat().map((day) => (
+              <div class={`cal-day${day.inMonth ? '' : ' cal-out'}`} data-date={day.date} role="gridcell">
+                {day.inMonth && day.events.length > 0 ? (
+                  <button type="button" class="cal-daybtn" data-day={day.date} aria-label={`${longDayFmt.format(asUtc(day.date))}: show events`}>
+                    <span class="cal-num">{Number(day.date.slice(8))}</span>
+                    <span class="cal-count" aria-hidden="true">{day.events.length}</span>
+                  </button>
+                ) : (
+                  <span class="cal-num">{day.inMonth ? Number(day.date.slice(8)) : ''}</span>
+                )}
+                {day.inMonth &&
+                  day.events.map((e) => (
+                    <a class="cal-chip" href={`#ev-${eventSlug(e.id)}`} data-categories={cats(e)} title={`${timeOf(e, day.date)} ${e.title}`}>
+                      <span class="cal-time">{timeOf(e, day.date)}</span> {e.title}
+                    </a>
+                  ))}
+              </div>
+            ))}
+          </div>
+          {m.weeks.flat().filter((d) => d.inMonth && d.events.length).map((day) => (
+            <div class="cal-panel" data-panel={day.date} hidden>
+              <h3>{longDayFmt.format(asUtc(day.date))}</h3>
+              <ul>
+                {day.events.map((e) => (
+                  <li data-categories={cats(e)}>
+                    <span class="cal-time">{timeOf(e, day.date)}</span>
+                    <a href={`#ev-${eventSlug(e.id)}`} class="cal-panel-title">{e.title}</a>
+                    <span class="cal-panel-meta">
+                      {e.organiser}
+                      {e.registration === 'invitation' && <> · {REGISTRATION.invitation}</>}
+                    </span>
+                    <span class="cal-panel-add">
+                      <a href={googleEventLink(e)} target="_blank" rel="noopener">Google</a> · <a href={icsHref(e)} download>.ics</a>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+      ))}
+    </div>
+  </main>
 
-      const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
-      const apply = (filter: string) => {
-        for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.filter === filter));
-        for (const li of document.querySelectorAll<HTMLElement>('.event')) {
-          li.hidden = filter !== 'all' && !(li.dataset.categories ?? '').split(' ').includes(filter);
-        }
-        for (const section of document.querySelectorAll<HTMLElement>('main section')) {
-          section.hidden = !section.querySelector('.event:not([hidden])');
-        }
-      };
-      for (const b of buttons) b.addEventListener('click', () => apply(b.dataset.filter ?? 'all'));
-      apply('all');
-    </script>
+  <script>
+    const today = new Date().toISOString().slice(0, 10);
+    const thisMonth = today.slice(0, 7);
 
-    <style is:global>
-      .subscribe { font-weight: 600; }
-      .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
-      .filters button {
-        border: 1px solid var(--line);
-        background: transparent;
-        color: var(--fg);
-        padding: 4px 12px;
+    // Drop what has ended since the last build.
+    for (const li of document.querySelectorAll<HTMLElement>('.event')) if ((li.dataset.end ?? '') < today) li.remove();
+    for (const m of document.querySelectorAll<HTMLElement>('.cal-month')) if ((m.dataset.month ?? '') < thisMonth) m.remove();
+    for (const d of document.querySelectorAll<HTMLElement>('.cal-day')) {
+      const date = d.dataset.date ?? '';
+      d.classList.toggle('cal-past', date < today);
+      d.classList.toggle('cal-today', date === today);
+    }
+
+    // Category filter: applies to list items, calendar chips and day panels.
+    let filter = 'all';
+    const filterButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const matches = (el: HTMLElement) => filter === 'all' || (el.dataset.categories ?? '').split(' ').includes(filter);
+    const applyFilter = () => {
+      for (const b of filterButtons) b.setAttribute('aria-pressed', String(b.dataset.filter === filter));
+      for (const el of document.querySelectorAll<HTMLElement>('.event, .cal-chip, .cal-panel li')) el.hidden = !matches(el);
+      for (const s of document.querySelectorAll<HTMLElement>('.month-list')) s.hidden = !s.querySelector('.event:not([hidden])');
+      for (const btn of document.querySelectorAll<HTMLButtonElement>('.cal-daybtn')) {
+        const n = btn.parentElement!.querySelectorAll('.cal-chip:not([hidden])').length;
+        btn.querySelector('.cal-count')!.textContent = String(n);
+        btn.disabled = n === 0;
+        btn.parentElement!.classList.toggle('cal-has', n > 0);
+      }
+    };
+    for (const b of filterButtons) b.addEventListener('click', () => ((filter = b.dataset.filter ?? 'all'), applyFilter()));
+
+    // List / month view, remembered per browser.
+    const viewButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-view]')];
+    const setView = (view: string) => {
+      for (const b of viewButtons) b.setAttribute('aria-pressed', String(b.dataset.view === view));
+      for (const p of document.querySelectorAll<HTMLElement>('[data-view-panel]')) p.hidden = p.dataset.viewPanel !== view;
+      try {
+        localStorage.setItem('bte-view', view);
+      } catch {
+        // storage unavailable (private mode): the choice just isn't remembered
+      }
+    };
+    for (const b of viewButtons) b.addEventListener('click', () => setView(b.dataset.view ?? 'list'));
+    let saved = 'list';
+    try {
+      saved = localStorage.getItem('bte-view') ?? 'list';
+    } catch {
+      // ignore
+    }
+
+    // Day details in month view.
+    for (const btn of document.querySelectorAll<HTMLButtonElement>('.cal-daybtn')) {
+      btn.addEventListener('click', () => {
+        const month = btn.closest('.cal-month')!;
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        for (const other of month.querySelectorAll('.cal-daybtn')) other.setAttribute('aria-expanded', 'false');
+        for (const p of month.querySelectorAll<HTMLElement>('.cal-panel')) p.hidden = open || p.dataset.panel !== btn.dataset.day;
+        btn.setAttribute('aria-expanded', String(!open));
+      });
+    }
+
+    // Links to an event from the calendar open it in the list.
+    for (const a of document.querySelectorAll<HTMLAnchorElement>('.view-month a[href^="#ev-"]')) {
+      a.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        filter = 'all';
+        applyFilter();
+        setView('list');
+        const target = document.querySelector<HTMLElement>(a.getAttribute('href')!);
+        target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target?.classList.add('flash');
+        setTimeout(() => target?.classList.remove('flash'), 1600);
+      });
+    }
+
+    setView(saved === 'month' ? 'month' : 'list');
+    applyFilter();
+  </script>
+
+  <style is:global>
+    .subscribe { font-weight: 600; }
+    .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin: 20px 0; }
+    .filters, .views { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filters button, .views button {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--fg);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .views { gap: 0; }
+    .views button { border-radius: 0; }
+    .views button:first-child { border-radius: 999px 0 0 999px; }
+    .views button:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
+    .filters button[aria-pressed='true'], .views button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+    .event { display: grid; grid-template-columns: 9.5rem 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 12px; transition: background 0.6s; }
+    .event.flash { background: var(--tag-bg); }
+    .when { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .what h3 { margin: 0; font-size: 1rem; }
+    .meta, .desc, .add { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+    .add { font-size: 0.82rem; }
+    .tag { background: var(--tag-bg); border-radius: 4px; padding: 1px 6px; margin-right: 6px; color: var(--fg); }
+    .invite {
+      display: inline-block;
+      margin: 0 0 4px;
+      padding: 1px 8px;
+      border-radius: 4px;
+      background: var(--invite-bg);
+      color: var(--invite-fg);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .empty { color: var(--muted); }
+
+    /* Month view */
+    .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+    .cal-dow { padding: 4px 6px; font-size: 0.75rem; color: var(--muted); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .cal-day { min-height: 92px; padding: 4px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .cal-out { background: color-mix(in srgb, var(--line) 25%, transparent); }
+    .cal-past { opacity: 0.45; }
+    /* Today: an outlined ring, distinct from the filled count badges on phones. */
+    .cal-today .cal-num { box-shadow: inset 0 0 0 2px var(--accent); border-radius: 999px; padding: 0 6px; font-weight: 700; }
+    .cal-num { font-size: 0.8rem; font-variant-numeric: tabular-nums; align-self: flex-start; }
+    .cal-daybtn { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0; border: 0; background: transparent; color: var(--fg); font: inherit; cursor: pointer; }
+    .cal-daybtn:disabled { cursor: default; }
+    .cal-daybtn[aria-expanded='true'] .cal-num { text-decoration: underline; font-weight: 700; }
+    .cal-count { display: none; }
+    .cal-chip {
+      display: block;
+      padding: 2px 4px;
+      border-radius: 4px;
+      background: var(--tag-bg);
+      color: var(--fg);
+      font-size: 0.72rem;
+      line-height: 1.25;
+      text-decoration: none;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .cal-chip:hover, .cal-chip:focus-visible { outline: 1px solid var(--accent); }
+    .cal-time { font-variant-numeric: tabular-nums; color: var(--muted); }
+    .cal-panel { margin: 10px 0 4px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; }
+    .cal-panel h3 { margin: 0 0 6px; font-size: 1rem; }
+    .cal-panel li { display: grid; grid-template-columns: 4.2rem 1fr; gap: 2px 8px; padding: 6px 0; border-top: 1px solid var(--line); }
+    .cal-panel li:first-child { border-top: 0; }
+    .cal-panel-title { font-weight: 600; }
+    .cal-panel-meta, .cal-panel-add { grid-column: 2; color: var(--muted); font-size: 0.85rem; }
+    .cal-month { margin-bottom: 8px; }
+
+    @media (max-width: 560px) {
+      .event { grid-template-columns: 1fr; gap: 2px; }
+      .cal-day { min-height: 52px; padding: 3px; }
+      .cal-chip { display: none; }
+      .cal-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 18px;
+        height: 18px;
         border-radius: 999px;
-        font: inherit;
-        cursor: pointer;
+        background: var(--accent);
+        color: var(--bg);
+        font-size: 0.7rem;
+        font-weight: 700;
       }
-      .filters button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-      .event { display: grid; grid-template-columns: 9.5rem 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-      .when { color: var(--muted); font-variant-numeric: tabular-nums; }
-      .what h3 { margin: 0; font-size: 1rem; }
-      .meta, .desc { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
-      .tag { background: var(--tag-bg); border-radius: 4px; padding: 1px 6px; margin-right: 6px; color: var(--fg); }
-      .invite {
-        display: inline-block;
-        margin: 0 0 4px;
-        padding: 1px 8px;
-        border-radius: 4px;
-        background: var(--invite-bg);
-        color: var(--invite-fg);
-        font-size: 0.8rem;
-        font-weight: 600;
-      }
-      .empty { color: var(--muted); }
-      @media (max-width: 520px) {
-        .event { grid-template-columns: 1fr; gap: 2px; }
-      }
-    </style>
+      .cal-day:not(.cal-has) .cal-count { display: none; }
+      .cal-daybtn { flex-direction: column; align-items: flex-start; gap: 4px; min-height: 44px; }
+    }
+  </style>
 </Base>

@@ -66,15 +66,25 @@ function dateLines(e: Event): string[] {
   return lines;
 }
 
-export function toIcs(events: Event[], now = new Date()): string {
+export interface CalendarInfo {
+  name?: string;
+  description?: string;
+}
+
+export function toIcs(events: Event[], now = new Date(), info: CalendarInfo = {}): string {
   const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//brussels-trainee-events//EN',
     'CALSCALE:GREGORIAN',
-    'X-WR-CALNAME:Brussels trainee events',
+    'METHOD:PUBLISH',
+    `X-WR-CALNAME:${escapeText(info.name ?? 'Brussels trainee events')}`,
+    ...(info.description ? [`X-WR-CALDESC:${escapeText(info.description)}`] : []),
     'X-WR-TIMEZONE:Europe/Brussels',
+    // Suggested polling interval for subscribed calendars (honoured by Apple, Outlook, Thunderbird).
+    'REFRESH-INTERVAL;VALUE=DURATION:PT6H',
+    'X-PUBLISHED-TTL:PT6H',
     ...VTIMEZONE,
   ];
 
@@ -90,6 +100,9 @@ export function toIcs(events: Event[], now = new Date()): string {
       ...dateLines(e),
       `SUMMARY:${escapeText(prefix + e.title)}`,
       `DESCRIPTION:${escapeText(description)}`,
+      'STATUS:CONFIRMED',
+      // Optional events should not block the subscriber's time as "busy".
+      'TRANSP:TRANSPARENT',
     );
     if (e.categories.length) lines.push(`CATEGORIES:${e.categories.map(escapeText).join(',')}`);
     if (e.location) lines.push(`LOCATION:${escapeText(e.location)}`);

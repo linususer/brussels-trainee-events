@@ -1,12 +1,10 @@
 import type { APIRoute } from 'astro';
-import { loadEvents } from '../lib/load';
-import { upcoming } from '../lib/merge';
+import { feedEvents } from '../lib/published';
 import { toIcs } from '../lib/ics';
+import { FEEDS, feedTitle } from '../lib/feeds';
 
-// Subscribable calendar feed with all events from the last 30 days on.
-export const GET: APIRoute = () => {
-  const since = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
-  return new Response(toIcs(upcoming(loadEvents(), since)), {
+// Original feed address, kept so existing subscriptions keep working (same as /calendar/all.ics).
+export const GET: APIRoute = () =>
+  new Response(toIcs(feedEvents(), new Date(), { name: feedTitle('all'), description: FEEDS.all.description }), {
     headers: { 'Content-Type': 'text/calendar; charset=utf-8' },
   });
-};

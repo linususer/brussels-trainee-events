@@ -49,6 +49,15 @@ One-time setup: in the repository on GitHub, open **Settings → Pages** and set
 
 If a source fails during `npm run fetch`, its previously scraped events are kept.
 
+## Calendar subscriptions and views
+
+- **Subscribe page** (`/subscribe/`): one-click buttons per feed for Google Calendar, Apple Calendar (webcal), Outlook (personal and work/school), Thunderbird (copy link + steps) and "copy link". Explains subscribe vs. download.
+- **Feeds** (`/calendar/<feed>.ics`, defined in `src/lib/feeds.ts`): `all`, `social` (networking, receptions, Christmas markets, sport), `culture`, `policy`. `/events.ics` stays as an alias of `all` for existing subscriptions. Feeds carry a name, description and a 6-hour refresh hint; events are marked as free time (`TRANSP:TRANSPARENT`).
+- **Single events**: every event has "Add to calendar" links (Google template link and `/calendar/event/<slug>.ics`).
+- **Month view**: the events page switches between list and a Monday-first month grid (choice remembered per browser). On phones, days show counts; clicking a day opens its events.
+
+Subscriptions update automatically, but the feeds only change when the site is rebuilt with new data (`npm run fetch` + push).
+
 ## Sources page
 
 `/sources/` shows every organiser that was considered: a bar of coverage (read automatically, no public calendar, event page not found, blocks automated access), the same split per kind of organiser, and a list with links for checking each uncovered source by hand. It is built from `scrapers/sources.ts` (active connectors, with `group` and `homepage`), `scrapers/watchlist.ts` (inactive, with `group`) and `scrapers/considered.ts` (researched but not tracked), so it always matches the configuration.
