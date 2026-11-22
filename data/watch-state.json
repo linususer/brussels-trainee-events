@@ -4,14 +4,14 @@
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-by": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-be": {
     "status": 200,
@@ -20,7 +20,7 @@
       "https://www.berlin.de/sen/europa/buero-bruessel/index.php/rss"
     ],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-hanse": {
     "status": 200,
@@ -31,14 +31,14 @@
       "https://hanse-office.de/feed/"
     ],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-he": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-ni": {
     "status": 200,
@@ -47,97 +47,97 @@
       "https://www.stk.niedersachsen.de/rss/"
     ],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-sn": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-st": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "staev": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "botschaft-be": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "goethe-bxl": {
     "status": 403,
-    "failures": 5,
+    "failures": 6,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-sl": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "euagenda": {
     "status": 403,
-    "failures": 5,
+    "failures": 6,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "fes-bxl": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "kas-bxl": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "fnf-europe": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-bw-portal": {
-    "status": 0,
-    "failures": 1,
+    "status": 200,
+    "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-bb": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   },
   "lv-hb": {
     "status": 403,
-    "failures": 1,
+    "failures": 2,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-21"
+    "checkedAt": "2026-11-22"
   }
 }
