@@ -93,7 +93,9 @@
     "organiser": "YPFP Brussels (Young Professionals in Foreign Policy)",
     "url": "https://members.ypfp.org/event-6914392",
     "description": "YPFP Brussels is pleased to invite you to a special Ambassador Series event hosted at the Mission of the Republic of Moldova to the European Union. Join us for an exclusive fireside chat with H.E.",
-    "categories": [],
+    "categories": [
+      "policy"
+    ],
     "registration": "unknown",
     "source": "ypfp-bxl"
   },
