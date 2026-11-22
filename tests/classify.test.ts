@@ -15,6 +15,8 @@ describe('classify categories', () => {
     ['European perspectives on German rearmament (Discussion)', ['policy']],
     ['EU-India Climate Expert Workshop', ['policy']],
     ['Upcycling workshop', []], // a workshop alone is not a policy event
+    ['YPFP Ambassador Series: Moldova’s European Future', ['policy']],
+    ['Fireside chat with the Director-General', ['policy']],
     ['Adventsbasar', ['christmas-market']],
     ['Adventssingen', ['culture']],
     ['Chorprobe', []], // "chor" only as a word

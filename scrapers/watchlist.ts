@@ -46,7 +46,7 @@ export const watchlist: WatchEntry[] = [
   { id: 'lv-th', group: 'state', organiser: 'Vertretung des Freistaats Thüringen bei der EU', status: 'not-located', reviewed: '2026-11-21', note: 'Rue Frédéric Pelletier 111, 1030; shared with Hauts-de-France; no event page found' },
   { id: 'staev', group: 'state', organiser: 'Ständige Vertretung Deutschlands bei der EU', status: 'no-calendar', reviewed: '2026-11-21', url: 'https://bruessel-eu.diplo.de/eu-de' },
   { id: 'botschaft-be', group: 'state', organiser: 'Deutsche Botschaft Brüssel', status: 'no-calendar', reviewed: '2026-11-21', url: 'https://bruessel.diplo.de/be-de' },
-  { id: 'goethe-bxl', group: 'state', organiser: 'Goethe-Institut Brüssel', status: 'blocked', reviewed: '2026-11-21', url: 'https://www.goethe.de/ins/be/de/ver.cfm', note: 'real calendar; 403 for non-browser clients, ask for permission/feed', signup: { url: 'https://www.goethe.de/ins/be/de/new.html', label: 'Newsletter "Agenda" (cultural events)' } },
+  { id: 'goethe-bxl', group: 'culture', organiser: 'Goethe-Institut Brüssel', status: 'blocked', reviewed: '2026-11-21', url: 'https://www.goethe.de/ins/be/de/ver.cfm', note: 'real calendar; 403 for non-browser clients, ask for permission/feed', signup: { url: 'https://www.goethe.de/ins/be/de/new.html', label: 'Newsletter "Agenda" (cultural events)' } },
   { id: 'euagenda', group: 'aggregator', organiser: 'EU Agenda (aggregator)', status: 'blocked', reviewed: '2026-11-21', url: 'https://euagenda.eu/', note: 'Cloudflare; check terms/API' },
 
   // EU-wide: young professional & trainee networks, culture
