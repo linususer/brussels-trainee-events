@@ -6,6 +6,20 @@ Verified sign-up links are shown on the website's **Sources** page (from `signup
 
 Collected on 2026-11-21 from the organisers' pages and search results. **Verify before use**: some details come from older documents (marked *unconfirmed*). Only functional addresses are listed, no personal names.
 
+## Check for invitation lists like Saxony's (2026-11-22)
+
+All sources without a connector were checked (entry page plus linked contact/event/newsletter pages, blocked sites in a browser) for an invitation list or an events address. **Only Saxony and Hanse-Office have one**; the event newsletters of Berlin, Hessen, FES and the Goethe-Institut are listed on the Sources page.
+
+| Source | Finding |
+|---|---|
+| Baden-Württemberg, Bayern, Niedersachsen | Only general government newsletters or press distribution lists ("Presseverteiler"), not event invitations |
+| Bremen | `veranstaltungen@lvhb.bremen.de` belongs to the **Berlin** representation, not Brussels |
+| Saarland | Events handled by the secretariat via a personal staff address; no list (personal addresses are not listed here) |
+| Thüringen | Registration portal `lv.thueringen.de` (same software as Hanse-Office): empty public overview, booking codes from personal invitations; unclear whether it serves Brussels |
+| KAS Europabüro | Only the policy newsletter and a general office address |
+| EU Agenda | Sign-up creates an account with a "weekly newsletter by policy area"; not stated to be about events |
+| Sachsen-Anhalt, Brandenburg, Ständige Vertretung, Botschaft, Naumann, Hanns-Seidel, BW portal | Nothing found |
+
 ## State representations
 
 | Organiser | Contact | Where to sign up / notes | Found on |
