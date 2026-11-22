@@ -31,7 +31,7 @@ const REGISTRATION_RULES: [Event['registration'], RegExp][] = [
   ['not-required', /ohne anmeldung|keine anmeldung|no registration|sans inscription/i],
   [
     'required',
-    /anmeldung (erforderlich|notwendig|nötig|bis)|um anmeldung wird gebeten|bitte melden sie sich|registration (is )?(required|needed|mandatory)|please register|register here|inscription (obligatoire|requise)/i,
+    /anmeldung (erforderlich|notwendig|nötig|bis)|um anmeldung wird gebeten|bitte melden sie sich|registration (is )?(required|needed|mandatory)|please register|register here|register your interest|inscription (obligatoire|requise)/i,
   ],
 ];
 

@@ -4,6 +4,7 @@ import { rosaluxAdapter } from './adapters/rosalux';
 import { eventManagerAdapter } from './adapters/eventmanager';
 import { wildApricotAdapter } from './adapters/ypfp';
 import { openEuropaAdapter } from './adapters/openeuropa';
+import { bruegelAdapter, ecfrAdapter } from './adapters/thinktanks';
 // import { jsonLdAdapter } from './adapters/jsonld';
 // import { icalAdapter } from './adapters/ical';
 // import { htmlListAdapter } from './adapters/html';
@@ -93,5 +94,20 @@ export const sources: Adapter[] = [
     group: 'eu-institution',
     homepage: 'https://historia.europa.eu/en/exhibitions-events/events',
     listUrl: 'https://historia.europa.eu/en/exhibitions-events/events',
+  }),
+  bruegelAdapter({
+    id: 'bruegel',
+    organiser: 'Bruegel',
+    group: 'think-tank',
+    homepage: 'https://www.bruegel.org/events',
+    listUrl: 'https://www.bruegel.org/events',
+  }),
+  ecfrAdapter({
+    id: 'ecfr',
+    organiser: 'European Council on Foreign Relations (ECFR)',
+    group: 'think-tank',
+    homepage: 'https://ecfr.eu/events/',
+    // Many events are online or in other capitals; only Brussels ones are kept.
+    listUrl: 'https://ecfr.eu/events/',
   }),
 ];

@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { parseEventFeed, parseWildApricotEvent, to24h, wildApricotAdapter } from '../scrapers/adapters/ypfp';
-import { openEuropaAdapter, parseOeDates, parseOeDetail, parseOeList } from '../scrapers/adapters/openeuropa';
+import { openEuropaAdapter, parseOeDetail, parseOeList } from '../scrapers/adapters/openeuropa';
+import { parseDateTimeRange as parseOeDates } from '../scrapers/dates';
 
 const fixture = (name: string) => readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8');
 
