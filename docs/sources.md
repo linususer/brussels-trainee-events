@@ -48,6 +48,19 @@ Most state representations (Landesvertretungen) publish **write-ups after events
 
 NRW, Rheinland-Pfalz and Mecklenburg-Vorpommern (and Baden-Württemberg, without a public list) use the same registration software ("Online Veranstaltungs-Anmeldung", `eventmanager-system`). The start page lists public events under **"Offene Veranstaltungen"**; event pages carry schema.org JSON-LD, which disappears once registration closes, so the adapter (`scrapers/adapters/eventmanager.ts`) falls back to the date spans shown on the page. Events in the portal are marked "registration required" unless their text says otherwise. `robots.txt` only blocks the software's internal folders. The adapter only reads pages and never submits the registration form.
 
+### More portal instances (2026-11-22)
+
+A search for other installations of the same registration software found:
+
+| Source | Portal | Result |
+|---|---|---|
+| Sachsen-Anhalt | [lv-bxl.sachsen-anhalt-events.de](https://lv-bxl.sachsen-anhalt-events.de/) | Public list: **automated (`lv-st`)** |
+| Baden-Württemberg | [event-bw.eu (German)](https://event-bw.eu/index.php?Locale=de_DE) | Public list only in the **German** version; older portal version states the date only in a sentence ("Veranstaltung am Montag, 30.11.2026 um 16:30 Uhr"), read as a fallback: **automated (`lv-bw`)**. The earlier "times out" finding was a curl-specific problem |
+| Niedersachsen | [bruessel.protokoll-nds.de](https://bruessel.protokoll-nds.de/index.php?Locale=de_DE) | Same software, no public list in any language: watchlist |
+| Commission Representation in Belgium | belgium.representation.ec.europa.eu events | One entry (French business dialogue), fields not in the usual places: not worth it now |
+
+No further installations of the Hanse-Office/Thüringen software were found, so no adapter for it yet.
+
 ### Aggregators seen along the way
 
 | Source | Notes |

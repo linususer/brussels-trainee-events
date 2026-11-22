@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import * as cheerio from 'cheerio';
-import { eventManagerAdapter, parsePortalDates, parsePortalDescription, parsePortalList } from '../scrapers/adapters/eventmanager';
+import { eventManagerAdapter, parsePortalDates, parsePortalDescription, parsePortalList, parsePortalSentenceDate } from '../scrapers/adapters/eventmanager';
 
 const fixture = (name: string) => readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8');
 const START = 'https://bruessel.veranstaltungen.land.nrw/index.php?Locale=de_DE';
@@ -36,6 +36,19 @@ describe('registration portal (eventmanager-system)', () => {
     const adapter = eventManagerAdapter({ id: 'lv-rp', organiser: 'LV RP', startUrl: 'https://bruessel.landesvertretung-rlp.de/' });
     const events = await adapter.fetch({ get: async (url) => (url.endsWith('/') ? list : closed) });
     expect(events).toEqual([expect.objectContaining({ id: 'lv-rp:1E55', start: '2026-12-16T18:00', end: '2026-12-16T22:00', categories: [] })]);
+  });
+
+  it('keeps address lines apart', () => {
+    const html = `<div id="OffeneVeranstaltungen"><ul><li class="OLVListEvent_9A1"><h2 class="OVListEventname"><a href="/event.php?x=1">Lesung</a></h2>
+      <p class="OVListLocation">Vertretung des Landes Sachsen-Anhalt bei der EU<br>Boulevard Saint Michel 80<br>1040 Brüssel</p></li></ul></div>`;
+    expect(parsePortalList(html, START)[0].location).toBe('Vertretung des Landes Sachsen-Anhalt bei der EU Boulevard Saint Michel 80 1040 Brüssel');
+  });
+
+  it('reads the date sentence of older portal versions, and only that sentence', () => {
+    const page = `<html><body><p>Stand 01.01.2026</p><h1>Debriefing zum Europäischen Rat</h1>
+      <p>Schön, dass Sie sich für die Veranstaltung am Montag, 30.11.2026 um 16:30 Uhr (Einlass ab 16:00 Uhr) in der Vertretung anmelden möchten.</p></body></html>`;
+    expect(parsePortalSentenceDate(page)).toEqual({ start: '2026-11-30T16:30' });
+    expect(parsePortalSentenceDate('<p>Stand 01.01.2026</p>')).toEqual({});
   });
 
   it('accepts an empty list but fails loudly when the layout changed', () => {

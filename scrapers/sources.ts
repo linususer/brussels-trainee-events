@@ -82,6 +82,23 @@ export const sources: Adapter[] = [
     homepage: 'https://eu.landesvertretung-mv.de/',
     startUrl: 'https://eu.landesvertretung-mv.de/',
   }),
+  eventManagerAdapter({
+    id: 'lv-st',
+    organiser: 'Vertretung des Landes Sachsen-Anhalt bei der EU',
+    country: 'DE',
+    group: 'state',
+    homepage: 'https://lv-bxl.sachsen-anhalt-events.de/',
+    startUrl: 'https://lv-bxl.sachsen-anhalt-events.de/',
+  }),
+  eventManagerAdapter({
+    id: 'lv-bw',
+    organiser: 'Vertretung des Landes Baden-Württemberg bei der EU',
+    country: 'DE',
+    group: 'state',
+    homepage: 'https://event-bw.eu/index.php?Locale=de_DE',
+    // The public list only appears in the German version of the portal.
+    startUrl: 'https://event-bw.eu/index.php?Locale=de_DE',
+  }),
   // EU-wide sources (no country tag).
   wildApricotAdapter({
     id: 'ypfp-bxl',

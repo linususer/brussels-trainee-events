@@ -58,7 +58,8 @@ export function parsePortalList(html: string, pageUrl: string): PortalListItem[]
       eventId,
       title,
       url: new URL(link.attr('href')!, pageUrl).href,
-      location: clean(li.find('.OVListLocation').first().text()) || undefined,
+      // Address lines are separated by <br>, which plain .text() would glue together.
+      location: htmlToText(li.find('.OVListLocation').first().html() ?? '').replace(/\s+,/g, ',') || undefined,
       ...parsePortalDates(li),
     });
   });
@@ -74,6 +75,19 @@ export function parsePortalDescription(html: string): string | undefined {
     .join(' ')
     .trim();
   return text || undefined;
+}
+
+/**
+ * Older portal versions (e.g. Baden-Württemberg) only state the date in a
+ * sentence: "… für die Veranstaltung am Montag, 30.11.2026 um 16:30 Uhr …".
+ * Only that phrase is read, so other dates on the page are never picked up.
+ */
+export function parsePortalSentenceDate(html: string): { start?: string } {
+  const $ = cheerio.load(html);
+  $('script, style').remove();
+  const text = $('body').text().replace(/\s+/g, ' ');
+  const m = text.match(/Veranstaltung am\s+(?:[A-Za-zÄÖÜäöü]+,\s*)?(\d{1,2}\.\d{1,2}\.\d{4}(?:\s+um\s+\d{1,2}[:.]\d{2})?)/);
+  return m ? { start: parseDate(m[1].replace(/\s+um\s+/, ' ')) } : {};
 }
 
 export interface EventManagerConfig extends SourceDefaults {
@@ -95,7 +109,11 @@ export function eventManagerAdapter(cfg: EventManagerConfig): Adapter {
         const [ld] = parseJsonLdEvents(page);
         if (ld?.cancelled) continue;
         // Pages lose their JSON-LD once registration closes; fall back to the shown dates.
-        const dates = ld ?? (item.start ? item : parsePortalDates(cheerio.load(page)('body')));
+        const fromPage = () => {
+          const spans = parsePortalDates(cheerio.load(page)('body'));
+          return spans.start ? spans : parsePortalSentenceDate(page);
+        };
+        const dates = ld ?? (item.start ? item : fromPage());
         if (!dates.start) continue;
 
         const location = item.location ?? ld?.location;
