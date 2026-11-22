@@ -13,6 +13,17 @@ function readList(file: string, parser: (text: string) => unknown): unknown[] {
   return Array.isArray(data) ? data : [];
 }
 
+/** Time of the last fetch (ISO), if recorded. */
+export function lastFetch(): string | undefined {
+  const path = resolve(DATA_DIR, 'last-fetch.json');
+  if (!existsSync(path)) return undefined;
+  try {
+    return (JSON.parse(readFileSync(path, 'utf8')) as { fetchedAt?: string }).fetchedAt;
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * Loads scraped events and manual entries. Manual fields override scraped ones
  * with the same id; entries without a scraped counterpart get `source: manual`

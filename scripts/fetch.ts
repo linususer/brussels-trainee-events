@@ -13,6 +13,8 @@ import type { FetchContext } from '../scrapers/types';
 import type { EventInput } from '../src/lib/event';
 
 const OUT = resolve(import.meta.dirname, '../data/scraped.json');
+/** When events were last collected; shown on the start page. */
+const META = resolve(import.meta.dirname, '../data/last-fetch.json');
 
 const ctx: FetchContext = {
   async get(url) {
@@ -43,6 +45,7 @@ for (const source of sources) {
 }
 
 writeFileSync(OUT, JSON.stringify(result, null, 2) + '\n');
+writeFileSync(META, JSON.stringify({ fetchedAt: new Date().toISOString(), sources: sources.length, failed: failures }, null, 2) + '\n');
 console.log(`Wrote ${result.length} events from ${sources.length} sources to data/scraped.json`);
 if (sources.length === 0) console.log('No sources configured yet: add some in scrapers/sources.ts.');
 

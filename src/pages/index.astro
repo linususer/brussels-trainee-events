@@ -5,6 +5,7 @@ import { siteEvents } from '../lib/published';
 import { buildMonths } from '../lib/calendar';
 import { eventSlug, googleEventLink } from '../lib/subscribe';
 import { feedForCategory } from '../lib/feeds';
+import { lastFetch } from '../lib/load';
 
 const events = siteEvents();
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -40,6 +41,12 @@ const timeOf = (e: Event, date: string) => {
 };
 const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
 
+// When events were last collected, in Brussels time.
+const fetchedAt = lastFetch();
+const updated = fetchedAt
+  ? new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Brussels' }).format(new Date(fetchedAt))
+  : undefined;
+
 // "Add to calendar" preselects the feed matching the current filter.
 const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'], ...used.map((c) => [c, feedForCategory(c)])]);
 ---
@@ -48,7 +55,15 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
   <header>
     <h1>Upcoming events</h1>
     <p>Networking, receptions, culture and policy talks for trainees in Brussels.</p>
-    <p><a href={`${base}/sources/`}>Which organisers are covered?</a></p>
+    <p class="updated">
+      New events are collected <strong>every night</strong> (around 05:30 Brussels time){updated && <>. Last update: <time datetime={fetchedAt}>{updated}</time></>}.
+      {' '}<a href={`${base}/sources/`}>Which organisers are covered?</a>
+    </p>
+    <p class="calendar-tip">
+      <span aria-hidden="true">📅</span>
+      <span><strong>Tip:</strong> <a href={`${base}/subscribe/`}>add these events to your calendar</a>. They update by
+      themselves every night, so you don't need to come back to this website.</span>
+    </p>
   </header>
 
   <div class="toolbar">
@@ -281,6 +296,18 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
 
   <style is:global>
     .toolbar-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .updated { font-size: 0.9rem; }
+    .calendar-tip {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--tag-bg);
+      color: var(--fg) !important;
+      font-size: 0.92rem;
+    }
     .showing { margin: 4px 0 0; color: var(--muted); font-size: 0.88rem; }
     .empty-filter { margin: 16px 0; padding: 14px; border: 1px dashed var(--line); border-radius: 8px; text-align: center; }
     .empty-filter p { margin: 0 0 8px; }
