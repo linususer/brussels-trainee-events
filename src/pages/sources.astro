@@ -18,6 +18,7 @@ const overview = buildOverview(sources, watchlist, considered, watchState, upcom
 const order = Object.keys(COVERAGE) as Coverage[];
 const pct = (n: number, of: number) => (of ? Math.round((n / of) * 100) : 0);
 const inactive = overview.total - overview.counts.active;
+const withSignup = overview.rows.filter((r) => r.coverage !== 'active' && r.signup).length;
 
 // Per-group bars share one count scale so their lengths compare.
 const groups = (Object.keys(SOURCE_GROUPS) as SourceGroup[])
@@ -40,7 +41,8 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
     <p>
       We considered <strong>{overview.total + overview.notTracked.length}</strong> organisers.{' '}
       Of the <strong>{overview.total}</strong> we track, <strong>{overview.counts.active}</strong> are read automatically.{' '}
-      The other <strong>{inactive}</strong> have no connector: check them yourself, using the links below.
+      The other <strong>{inactive}</strong> have no connector: check them yourself, using the links below.{' '}
+      <strong>{withSignup}</strong> of them offer a newsletter or a contact for invitations.
     </p>
   </header>
 
@@ -117,6 +119,18 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
                 {r.lastChecked && <> · last checked {r.lastChecked}</>}
                 {!r.homepage && c !== 'active' && <> · no page to check yet</>}
               </div>
+              {c !== 'active' && (
+                <div class="source-signup">
+                  {r.signup ? (
+                    <>
+                      <span class="signup-icon" aria-hidden="true">✉</span>
+                      <a href={r.signup.url} rel="noopener">{r.signup.label}</a>
+                    </>
+                  ) : (
+                    <span class="no-signup">No newsletter or sign-up found</span>
+                  )}
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -204,6 +218,9 @@ const tip = (c: Coverage, rows: SourceRow[], total: number) =>
     .source-list li { padding: 8px 0; border-bottom: 1px solid var(--line); }
     .source-name { font-weight: 600; }
     .source-meta { color: var(--muted); font-size: 0.85rem; }
+    .source-signup { margin-top: 2px; font-size: 0.85rem; display: flex; gap: 6px; align-items: baseline; }
+    .signup-icon { color: var(--muted); }
+    .no-signup { color: var(--muted); font-style: italic; }
     .not-tracked { margin-top: 28px; }
     .not-tracked summary { cursor: pointer; font-weight: 600; }
     .tooltip {

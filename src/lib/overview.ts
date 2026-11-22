@@ -14,7 +14,7 @@ export const COVERAGE = {
   'no-calendar': {
     label: 'No public calendar',
     icon: '✉',
-    advice: 'Events are announced by invitation or newsletter. Get on the mailing list and check the page now and then.',
+    advice: 'Events are announced by invitation or newsletter. Sign up where a link is given, otherwise check the page now and then.',
   },
   'not-located': {
     label: 'Event page not found',
@@ -24,7 +24,7 @@ export const COVERAGE = {
   blocked: {
     label: 'Blocks automated access',
     icon: '⊘',
-    advice: 'The site refuses automated reading. Check it by hand.',
+    advice: 'The site refuses automated reading. Check it by hand or sign up for its newsletter.',
   },
 } as const;
 
@@ -41,6 +41,8 @@ export interface SourceRow {
   upcoming?: number;
   /** Last automatic check of a watched page. */
   lastChecked?: string;
+  /** Newsletter or invitation sign-up, where one exists. */
+  signup?: { url: string; label: string };
 }
 
 export interface Overview {
@@ -78,6 +80,7 @@ export function buildOverview(
       homepage: w.url,
       note: w.note,
       lastChecked: watchState[w.id]?.checkedAt,
+      signup: w.signup,
     })),
   ];
 

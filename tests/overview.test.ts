@@ -8,7 +8,7 @@ const adapters = [
 ];
 const watch: WatchEntry[] = [
   { id: 'kas', organiser: 'KAS', status: 'blocked', group: 'foundation', reviewed: '2026-11-21', url: 'https://kas.example' },
-  { id: 'lv-bw', organiser: 'LV BW', status: 'no-calendar', group: 'state', reviewed: '2026-11-21', url: 'https://bw.example' },
+  { id: 'lv-bw', organiser: 'LV BW', status: 'no-calendar', group: 'state', reviewed: '2026-11-21', url: 'https://bw.example', signup: { url: 'https://bw.example/newsletter', label: 'Newsletter' } },
   { id: 'lv-th', organiser: 'LV TH', status: 'not-located', group: 'state', reviewed: '2026-11-21' },
 ];
 const state = { 'lv-bw': { status: 200, failures: 0, feeds: [], futureDates: [], checkedAt: '2026-11-22' } };
@@ -31,6 +31,6 @@ describe('buildOverview', () => {
     ]);
     expect(o.rows[0]).toMatchObject({ upcoming: 2, homepage: 'https://eu.boell.org/en/events' });
     expect(o.rows[1]).toMatchObject({ upcoming: 0 });
-    expect(o.rows[2]).toMatchObject({ lastChecked: '2026-11-22', homepage: 'https://bw.example' });
+    expect(o.rows[2]).toMatchObject({ lastChecked: '2026-11-22', homepage: 'https://bw.example', signup: { label: 'Newsletter' } });
   });
 });

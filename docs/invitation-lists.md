@@ -2,6 +2,8 @@
 
 Organisers whose events are announced mainly by **invitation** (no public calendar), so the way to get their events is to be on their mailing list. Entries from these invitations go into `data/manual-events.yaml`.
 
+Verified newsletter and invitation sign-up links are shown on the website's **Sources** page (from `signup` in `scrapers/watchlist.ts`); this file keeps the wider research notes (addresses, phone numbers).
+
 Collected on 2026-11-21 from the organisers' pages and search results. **Verify before use**: some details come from older documents (marked *unconfirmed*). Only functional addresses are listed, no personal names.
 
 ## State representations
