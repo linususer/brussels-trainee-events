@@ -1,28 +1,27 @@
-# Builds the site and publishes it to GitHub Pages on every push to main.
-# Event data is fetched locally (`npm run fetch`) and committed; this workflow
-# only tests and builds what is in the repository.
+# Builds the site and publishes it to GitHub Pages: on every push to main, by
+# hand, and after the nightly fetch (nightly.yml calls this workflow, because a
+# push made by a workflow does not trigger other workflows).
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# One deployment at a time; don't cancel a running one.
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Latest main, so a run called after the nightly commit builds the new data.
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
@@ -48,6 +47,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # One deployment at a time; don't cancel a running one.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

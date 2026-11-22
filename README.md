@@ -31,7 +31,10 @@ npm run build      # static site in dist/
 
 ## Deployment (GitHub Pages)
 
-`.github/workflows/deploy.yml` tests, builds and publishes the site on every push to `main`. Event data is **not** fetched in CI: run `npm run fetch` locally, commit `data/`, and push.
+- `.github/workflows/deploy.yml` tests, builds and publishes the site on every push to `main` (and when called by the nightly run).
+- `.github/workflows/nightly.yml` runs **every night at 04:30 UTC**: tests, `npm run fetch` (all sources plus the watchlist), commits changed `data/` as `github-actions[bot]`, then deploys. A failing source keeps its previous events. The run page shows a summary table of all sources and the watchlist findings. Start it by hand under **Actions → Nightly fetch → Run workflow**.
+- Because the bot commits to `main` every night, run `git pull` before working locally. Manual runs of `npm run fetch` are still possible but no longer needed.
+- GitHub may start scheduled runs late, and disables schedules in repositories without activity for 60 days (the nightly commits count as activity).
 
 One-time setup: in the repository on GitHub, open **Settings → Pages** and set **Source** to **GitHub Actions**. The site URL and base path come from that Pages configuration, so the repository name does not need to be hard-coded.
 
@@ -56,7 +59,7 @@ If a source fails during `npm run fetch`, its previously scraped events are kept
 - **Single events**: every event has "Add to calendar" links (Google template link and `/calendar/event/<slug>.ics`).
 - **Month view**: the events page switches between list and a Monday-first month grid (choice remembered per browser). On phones, days show counts; clicking a day opens its events.
 
-Subscriptions update automatically, but the feeds only change when the site is rebuilt with new data (`npm run fetch` + push).
+Subscriptions update automatically; the feeds are rebuilt every night by the nightly run.
 
 ## Sources page
 
@@ -101,6 +104,6 @@ tests/           Vitest tests + fixtures
 - [x] Automated sources: Böll EU office, Rosa-Luxemburg-Stiftung Brussels, state representations of NRW, Rheinland-Pfalz and Mecklenburg-Vorpommern (shared registration portal)
 - [ ] More sources (see `docs/sources.md`); get on the invitation lists in `docs/invitation-lists.md`
 - [x] Deploy workflow for GitHub Pages (on push)
-- [ ] Optional later: nightly fetch in CI (decided against for now)
+- [x] Nightly fetch in CI (`nightly.yml`)
 
 *Not an official service. Always check the organiser's page before attending.*

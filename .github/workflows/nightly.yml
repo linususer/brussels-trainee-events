@@ -1,0 +1,61 @@
+# Every night: fetch events from all sources, re-check the watchlist, commit
+# changed data to main and publish the site. Can also be started by hand
+# (Actions → Nightly fetch → Run workflow). The run summary lists which sources
+# worked and what the watchlist found.
+name: Nightly fetch
+
+on:
+  schedule:
+    # 04:30 UTC = 05:30 in Brussels (06:30 in summer). GitHub may start scheduled runs late.
+    - cron: '30 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: nightly-fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Fetch events and re-check the watchlist
+        run: npm run fetch
+        env:
+          TZ: Europe/Brussels
+        # A failing source keeps its previous events; the rest is still published.
+        continue-on-error: true
+
+      - name: Commit updated data
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data
+          if git diff --cached --quiet; then
+            echo "No data changes."
+            exit 0
+          fi
+          git commit -m "Update events (nightly)"
+          # Someone may have pushed while the fetch was running.
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+  deploy:
+    needs: fetch
+    uses: ./.github/workflows/deploy.yml

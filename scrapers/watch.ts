@@ -121,16 +121,19 @@ export function reviewReminder(entry: WatchEntry, today: string): string | undef
 
 const STATE_FILE = resolve(import.meta.dirname, '../data/watch-state.json');
 
-/** Checks every watched page, prints findings and saves the new state. */
-export async function runWatch(today = new Date().toISOString().slice(0, 10)): Promise<number> {
+/**
+ * Checks every watched page, prints findings and saves the new state.
+ * Returns the items to look at (one line each) for summaries.
+ */
+export async function runWatch(today = new Date().toISOString().slice(0, 10)): Promise<string[]> {
   const state: Record<string, WatchState> = existsSync(STATE_FILE) ? JSON.parse(readFileSync(STATE_FILE, 'utf8')) : {};
-  let flagged = 0;
+  const items: string[] = [];
 
   console.log(`\nWatchlist (${watchlist.length} sources without automation):`);
   for (const entry of watchlist) {
     const reminder = reviewReminder(entry, today);
     if (reminder) {
-      flagged++;
+      items.push(`⏰ ${reminder}`);
       console.log(`  ⏰ ${reminder}`);
     }
     if (!entry.url) continue;
@@ -147,7 +150,7 @@ export async function runWatch(today = new Date().toISOString().slice(0, 10)): P
 
     const findings = compareWatch(entry, state[entry.id], next);
     if (findings.length) {
-      flagged++;
+      items.push(`👀 ${entry.id} (${entry.url}): ${findings.join('; ')}`);
       console.log(`  👀 ${entry.id} (${entry.url})`);
       for (const f of findings) console.log(`     - ${f}`);
     }
@@ -155,6 +158,6 @@ export async function runWatch(today = new Date().toISOString().slice(0, 10)): P
   }
 
   writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + '\n');
-  console.log(flagged ? `${flagged} watchlist item(s) to look at.` : 'Nothing new on the watchlist.');
-  return flagged;
+  console.log(items.length ? `${items.length} watchlist item(s) to look at.` : 'Nothing new on the watchlist.');
+  return items;
 }
