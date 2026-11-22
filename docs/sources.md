@@ -107,6 +107,42 @@ The foundations publish **real lists of upcoming events**, unlike the state repr
 | KAS Europe Talks, Brüsseler Gespräch | KAS Europabüro | policy |
 | European Forum | Rosa-Luxemburg-Stiftung | policy |
 
+## Groups G–J: EU-wide sources (researched 2026-11-22)
+
+Scope extended to sources open to all trainees regardless of nationality (no `country` tag). `robots.txt` was evaluated per RFC 9309 (longest match, wildcards); **all candidates below allow access**. Python's `urllib.robotparser` reported false "blocked" results for several of them because it ignores wildcards and rule precedence.
+
+**europa.eu sites throttle quickly** (HTTP 429 after a few requests at 1 req/s on commission.europa.eu and cor.europa.eu): adapters for them need a much slower rate.
+
+### Automatable
+
+| Source | Group | Event page | How | Fit | Notes |
+|---|---|---|---|---|---|
+| YPFP Brussels (Young Professionals in Foreign Policy) | I | [members.ypfp.org/events](https://members.ypfp.org/events/) | RSS `/events/RSS` (event date in title) + detail page ("Location …") | ★★★ networking, e.g. Christmas Pub Quiz | Feed mixes branches (London…): filter by location |
+| House of European History | G | [historia.europa.eu › events](https://historia.europa.eu/en/exhibitions-events/events) | List + detail pages in the OpenEuropa template (`oe-sc-event__…` dates/location fields, `<time datetime>`) | ★★★ free talks, film, culture | europa.eu rate limits |
+| European Commission events | G | [commission.europa.eu › events](https://commission.europa.eu/get-involved/events_en) | Detail pages carry schema.org `Event` JSON-LD | ★★ conferences, many online or elsewhere | Strict rate limits; paginated list; Brussels filter needed |
+| Bruegel | H | [bruegel.org/events](https://www.bruegel.org/events) | List page has `<time datetime>` per event | ★★ policy | |
+| ECFR | H | [ecfr.eu/events](https://ecfr.eu/events/) | Detail pages have `<time datetime>` start/end | ★★ policy | RSS feed returns 403; use the HTML pages |
+| JEF Europe | I | [jef.eu/events](https://jef.eu/events/) | The Events Calendar (WordPress): JSON-LD on detail pages | ★ most events outside Brussels; JSON-LD venue often empty | `?ical=1` returns HTML, not iCal |
+| EESC | G | [eesc.europa.eu › upcoming events](https://www.eesc.europa.eu/en/agenda/our-events/upcoming-events) | RSS (publication dates only) + detail pages | ★ mostly institutional (plenaries, hearings) | |
+
+### Needs a closer look
+
+| Source | Group | Finding so far |
+|---|---|---|
+| EPC, Friends of Europe, CEPS | H | Event pages reachable; detail structure not yet checked (probe used truncated links). Friends of Europe has an events RSS (publication dates only) |
+| Carnegie Europe | H | List rendered by JavaScript; no links in static HTML |
+| Jacques Delors Centre | H | List with teaser date blocks (`c-teaser__date-sheet`); mostly Berlin events |
+| Committee of the Regions | G | `/en/plenaries-events/upcoming-events` answered 429 (rate limit) |
+| European Union portal (all institutions) | G | `european-union.europa.eu/news-and-events/events_en`: no event links in static HTML |
+
+### Manual only
+
+| Source | Group | Finding |
+|---|---|---|
+| European Commission Trainees' Committee (ECTA) | I | [traineescommittee.com](https://www.traineescommittee.com/) (Wix): T-Card, partner discounts, guides; no event calendar. Events are announced via social media/messenger groups |
+| EUNIC Brussels (cultural institutes) | J | No public calendar found; announcements on Instagram/LinkedIn/X |
+| European Parliament visitor offer | G | Lunchtime tours and visits are recurring offers on visiting.europarl.europa.eu, not dated events |
+
 ## Group C: business
 
 | Source | Event page | What's there | Feed / API | Automatable? | Status |
