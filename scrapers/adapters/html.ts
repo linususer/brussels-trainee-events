@@ -22,7 +22,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 /**
  * Parses common German/English/French date strings into Brussels local time, e.g.
- * `05.12.2026, 18:00 Uhr`, `5. Dezember 2026, 18.30 Uhr`, `5 December 2026 6:00` or `2026-12-05 18:00`.
+ * `05.12.2026, 18:00 Uhr`, `5. Dezember 2026, 18.30 Uhr`, `5 December 2026 6:00`, `December 5, 2026` or `2026-12-05 18:00`.
  * Returns undefined if no date is found.
  */
 export function parseDate(input: string): string | undefined {
@@ -36,6 +36,9 @@ export function parseDate(input: string): string | undefined {
     [d, m, y] = [Number(match[1]), Number(match[2]), Number(match[3])];
   } else if ((match = s.match(/(\d{1,2})\.? ?([a-zäéû]+)\.? (\d{4})/)) && MONTHS[match[2]]) {
     [d, m, y] = [Number(match[1]), MONTHS[match[2]], Number(match[3])];
+  } else if ((match = s.match(/([a-zäéû]+)\.? (\d{1,2}),? (\d{4})/)) && MONTHS[match[1]]) {
+    // US order: "December 5, 2026"
+    [d, m, y] = [Number(match[2]), MONTHS[match[1]], Number(match[3])];
   } else {
     return undefined;
   }

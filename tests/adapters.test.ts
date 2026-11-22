@@ -49,6 +49,8 @@ describe('parseDate', () => {
     ['jeudi 3 décembre 2026 19h00', '2026-12-03T19:00'],
     ['2026-12-05 09:15', '2026-12-05T09:15'],
     ['5 März 2027', '2027-03-05'],
+    ['When December 25, 2026', '2026-12-25'],
+    ['Nov. 3 2026, 6:30', '2026-11-03T06:30'],
     ['demnächst', undefined],
   ])('%s → %s', (input, expected) => {
     expect(parseDate(input)).toBe(expected);

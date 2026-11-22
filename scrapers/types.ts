@@ -3,6 +3,10 @@ import type { EventInput } from '../src/lib/event';
 /** Kind of organiser, used to group sources on the overview page. */
 export const SOURCE_GROUPS = {
   state: 'State & federal institutions',
+  'eu-institution': 'EU institutions',
+  'think-tank': 'Think tanks',
+  network: 'Young professional & trainee networks',
+  culture: 'Culture',
   foundation: 'Political foundations',
   business: 'Business',
   community: 'Community',

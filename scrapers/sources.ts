@@ -2,6 +2,8 @@ import type { Adapter } from './types';
 import { boellAdapter } from './adapters/boell';
 import { rosaluxAdapter } from './adapters/rosalux';
 import { eventManagerAdapter } from './adapters/eventmanager';
+import { wildApricotAdapter } from './adapters/ypfp';
+import { openEuropaAdapter } from './adapters/openeuropa';
 // import { jsonLdAdapter } from './adapters/jsonld';
 // import { icalAdapter } from './adapters/ical';
 // import { htmlListAdapter } from './adapters/html';
@@ -75,5 +77,21 @@ export const sources: Adapter[] = [
     group: 'state',
     homepage: 'https://eu.landesvertretung-mv.de/',
     startUrl: 'https://eu.landesvertretung-mv.de/',
+  }),
+  // EU-wide sources (no country tag).
+  wildApricotAdapter({
+    id: 'ypfp-bxl',
+    organiser: 'YPFP Brussels (Young Professionals in Foreign Policy)',
+    group: 'network',
+    homepage: 'https://www.ypfp.org/brussels',
+    // Feed covers all branches; the adapter keeps events located in Brussels.
+    feedUrl: 'https://members.ypfp.org/events/RSS',
+  }),
+  openEuropaAdapter({
+    id: 'hoeh',
+    organiser: 'House of European History',
+    group: 'eu-institution',
+    homepage: 'https://historia.europa.eu/en/exhibitions-events/events',
+    listUrl: 'https://historia.europa.eu/en/exhibitions-events/events',
   }),
 ];
