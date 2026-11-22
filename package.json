@@ -10,7 +10,8 @@
     "test": "TZ=Europe/Brussels vitest run",
     "test:watch": "TZ=Europe/Brussels vitest",
     "check": "astro check",
-    "watch": "tsx scripts/watch.ts"
+    "watch": "tsx scripts/watch.ts",
+    "add": "tsx scripts/add.ts"
   },
   "keywords": [],
   "author": "Linus Szillat",

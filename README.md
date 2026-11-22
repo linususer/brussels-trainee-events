@@ -11,6 +11,8 @@ The site is static (Astro) and meant for GitHub Pages. It also publishes an **`.
 | **Adapters** (automated) | Sources with a feed, an API or a parsable listing page | `scrapers/sources.ts` → `npm run fetch` → `data/scraped.json` |
 | **Manual entries** | Newsletters, LinkedIn, WhatsApp groups, flyers | `data/manual-events.yaml` |
 
+Manual entries are easiest with `npm run add`: it accepts dates as written in invitations ("5. Dezember 2026, 18:30 Uhr", end "21:00"), suggests categories and registration from the text, warns about non-Brussels locations and validates before saving.
+
 Both are merged at build time. Manual entries win when the ids match, so you can correct a scraped event.
 
 ## Getting started
@@ -23,6 +25,7 @@ npm run dev        # local site at http://localhost:4321/brussels-trainee-events
 npm test           # unit tests (Vitest), no network access
 npm run fetch      # run all adapters, update data/scraped.json, then re-check the watchlist
 npm run watch      # re-check the watchlist only
+npm run add        # add a manual event interactively (invitations, newsletters, LinkedIn, ...)
 npm run build      # static site in dist/
 ```
 
