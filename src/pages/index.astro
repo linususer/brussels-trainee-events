@@ -35,8 +35,15 @@ const when = (e: Event) => {
   const endTime = e.end?.slice(0, 10) === e.start.slice(0, 10) ? `–${e.end.slice(11)}` : '';
   return `${day}, ${time}${endTime}`;
 };
+const shortDay = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 const timeOf = (e: Event, date: string) => {
-  if (e.start.slice(0, 10) === date) return isAllDay(e) ? 'All day' : e.start.slice(11);
+  if (e.start.slice(0, 10) === date) {
+    if (!isAllDay(e)) return e.start.slice(11);
+    // Long all-day events (exhibitions) are shown once, with their end date.
+    return e.end && e.end.slice(0, 10) !== date ? `until ${shortDay.format(asUtc(e.end))}` : 'All day';
+  }
+  // Long events reappear on the 1st of later months.
+  if (isAllDay(e) && e.end && e.end.slice(0, 10) > date && date.endsWith('-01')) return `until ${shortDay.format(asUtc(e.end))}`;
   // Later days of a multi-day event.
   return e.end?.slice(0, 10) === date && e.end.includes('T') ? `until ${e.end.slice(11)}` : 'cont.';
 };

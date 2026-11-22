@@ -6,6 +6,7 @@ import { wildApricotAdapter } from './adapters/ypfp';
 import { openEuropaAdapter } from './adapters/openeuropa';
 import { bruegelAdapter, ecfrAdapter, linkListAdapter, parseEpcPage, parseFriendsOfEuropePage } from './adapters/thinktanks';
 import { eclAdapter } from './adapters/ecl';
+import { corAdapter } from './adapters/cor';
 // import { jsonLdAdapter } from './adapters/jsonld';
 // import { icalAdapter } from './adapters/ical';
 // import { htmlListAdapter } from './adapters/html';
@@ -141,5 +142,14 @@ export const sources: Adapter[] = [
     // List pages carry date, time and location; europa.eu is fetched at 1 request per 6 s.
     listUrl: 'https://commission.europa.eu/get-involved/events_en',
     maxPages: 3,
+  }),
+  corAdapter({
+    id: 'cor',
+    organiser: 'European Committee of the Regions',
+    group: 'eu-institution',
+    homepage: 'https://cor.europa.eu/en/plenaries-events/upcoming-events',
+    // Only public formats (conferences, exhibitions, ...) in Brussels; internal meetings are skipped.
+    listUrl: 'https://cor.europa.eu/en/plenaries-events/upcoming-events',
+    maxPages: 2,
   }),
 ];

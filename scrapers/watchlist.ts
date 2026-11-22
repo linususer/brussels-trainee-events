@@ -55,7 +55,6 @@ export const watchlist: WatchEntry[] = [
 
   { id: 'ceps', group: 'think-tank', organiser: 'Centre for European Policy Studies (CEPS)', status: 'blocked', reviewed: '2026-11-22', url: 'https://www.ceps.eu/ceps-events/', note: 'Cloudflare challenge on event pages; events are free and open to the public' },
   { id: 'carnegie-europe', group: 'think-tank', organiser: 'Carnegie Europe', status: 'no-calendar', reviewed: '2026-11-22', url: 'https://carnegieendowment.org/europe/events', note: 'event list rendered by JavaScript' },
-  { id: 'cor', group: 'eu-institution', organiser: 'European Committee of the Regions', status: 'not-located', reviewed: '2026-11-22', note: 'upcoming-events page answered 429 (rate limit); retry by hand' },
 
   // Group B: political foundations (Böll and Rosa-Luxemburg are candidates for adapters)
   { id: 'fes-bxl', group: 'foundation', organiser: 'Friedrich-Ebert-Stiftung EU Office', status: 'no-calendar', reviewed: '2026-11-21', url: 'https://brussels.fes.de/events.html', note: 'event list exists but is empty', signup: { url: 'https://brussels.fes.de/newsletter.html', label: 'Newsletter (publications and events)' } },

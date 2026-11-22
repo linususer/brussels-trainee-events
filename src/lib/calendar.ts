@@ -17,10 +17,26 @@ export interface CalendarMonth {
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 const monthLabel = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
-/** All days an event covers (multi-day events appear on each day). */
+/** Events longer than this appear only on their first day (e.g. exhibitions), not on every day. */
+export const LONG_EVENT_DAYS = 3;
+
+/**
+ * Days an event appears on: each day of short multi-day events; long ones only
+ * on their first day and on the 1st of every later month they run into.
+ */
 function daysOf(e: Event): string[] {
   const first = e.start.slice(0, 10);
   const last = (e.end ?? e.start).slice(0, 10);
+  const span = (Date.parse(`${last}T00:00:00Z`) - Date.parse(`${first}T00:00:00Z`)) / 864e5 + 1;
+  if (span > LONG_EVENT_DAYS) {
+    const days = [first];
+    for (let d = new Date(`${first.slice(0, 7)}-01T00:00:00Z`); ; ) {
+      d.setUTCMonth(d.getUTCMonth() + 1);
+      if (iso(d) > last) break;
+      days.push(iso(d));
+    }
+    return days;
+  }
   const days: string[] = [];
   for (let d = new Date(`${first}T00:00:00Z`); iso(d) <= last && days.length < 62; d.setUTCDate(d.getUTCDate() + 1)) {
     days.push(iso(d));
