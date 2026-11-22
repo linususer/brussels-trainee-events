@@ -4,7 +4,7 @@ import { CATEGORIES, REGISTRATION, isAllDay, type Category, type Event } from '.
 import { siteEvents } from '../lib/published';
 import { buildMonths } from '../lib/calendar';
 import { eventSlug, googleEventLink } from '../lib/subscribe';
-import { feedForCategory, feedIds, feedName, feedTitle } from '../lib/feeds';
+import { feedForCategory } from '../lib/feeds';
 
 const events = siteEvents();
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -40,11 +40,7 @@ const timeOf = (e: Event, date: string) => {
 };
 const icsHref = (e: Event) => `${base}/calendar/event/${eventSlug(e.id)}.ics`;
 
-// Calendar bar: which feed matches each filter, and the feeds' addresses.
-const site = Astro.site ?? new URL('https://example.org');
-const feedData = Object.fromEntries(
-  feedIds.map((id) => [id, { url: new URL(`${base}/calendar/${id}.ics`, site).href, name: feedTitle(id), label: feedName(id) }]),
-);
+// "Add to calendar" preselects the feed matching the current filter.
 const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'], ...used.map((c) => [c, feedForCategory(c)])]);
 ---
 
@@ -61,20 +57,17 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
       {used.map((c) => <button type="button" data-filter={c} data-label={CATEGORIES[c]} aria-pressed="false">{CATEGORIES[c]} <span class="n"></span></button>)}
       {hasUnclassified && <button type="button" data-filter="unclassified" data-label="Unclassified" aria-pressed="false">Unclassified <span class="n"></span></button>}
     </nav>
-    <div class="views" role="group" aria-label="View">
-      <button type="button" data-view="list" aria-pressed="true">List</button>
-      <button type="button" data-view="month" aria-pressed="false">Month</button>
+    <div class="toolbar-right">
+      <div class="views" role="group" aria-label="View">
+        <button type="button" data-view="list" aria-pressed="true">List</button>
+        <button type="button" data-view="month" aria-pressed="false">Month</button>
+      </div>
+      <a class="btn btn-small" id="cal-link" href={`${base}/subscribe/`} data-filter-feeds={JSON.stringify(filterFeeds)}>
+        <span aria-hidden="true">📅</span> Add to calendar
+      </a>
     </div>
   </div>
 
-  <div class="cal-bar" id="cal-bar" data-feeds={JSON.stringify(feedData)} data-filter-feeds={JSON.stringify(filterFeeds)}>
-    <p class="cal-bar-text">Get <strong data-bar-label>all events</strong> in your calendar. It updates by itself.</p>
-    <div class="cal-bar-actions">
-      <a class="btn btn-primary" data-bar-primary href={`${base}/subscribe/`}>Add to <span data-bar-app>my calendar</span></a>
-      <a class="btn" data-bar-more href={`${base}/subscribe/`}>Other apps</a>
-    </div>
-    <p class="status" id="bar-status" role="status" aria-live="polite" hidden></p>
-  </div>
 
   <p class="showing" id="showing" aria-live="polite"></p>
   <div class="empty-filter" id="empty-filter" hidden>
@@ -171,7 +164,7 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
   </main>
 
   <script>
-    import { APP_HINTS, APP_LABELS, appLink, detectApp, say } from '../scripts/subscribe-client';
+    import { say } from '../scripts/subscribe-client';
 
     const today = new Date().toISOString().slice(0, 10);
     const thisMonth = today.slice(0, 7);
@@ -196,25 +189,13 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
       b.setAttribute('aria-label', `${b.dataset.label}: ${n} events`);
     }
 
-    // Calendar bar: subscribe to the feed matching the current filter, with the device's usual app.
-    const bar = document.getElementById('cal-bar')!;
-    const feeds = JSON.parse(bar.dataset.feeds ?? '{}') as Record<string, { url: string; name: string; label: string }>;
-    const filterFeeds = JSON.parse(bar.dataset.filterFeeds ?? '{}') as Record<string, string>;
-    const app = detectApp();
-    const barPrimary = bar.querySelector<HTMLAnchorElement>('[data-bar-primary]')!;
-    const barMore = bar.querySelector<HTMLAnchorElement>('[data-bar-more]')!;
-    const barStatus = document.getElementById('bar-status')!;
-    bar.querySelector('[data-bar-app]')!.textContent = APP_LABELS[app];
-    if (app === 'google') (barPrimary.target = '_blank'), (barPrimary.rel = 'noopener');
-    barPrimary.addEventListener('click', () => say(barStatus, APP_HINTS[app]));
-
-    const updateBar = (filter: string) => {
-      const feedId = filterFeeds[filter] ?? 'all';
-      const feed = feeds[feedId];
-      bar.querySelector('[data-bar-label]')!.textContent = feedId === 'all' ? 'all events' : `${feed.label} events`;
-      barPrimary.href = appLink(app, feed.url, feed.name) ?? barPrimary.href;
-      barMore.href = `${barMore.pathname}?feed=${feedId}`;
-      barStatus.hidden = true;
+    // "Add to calendar" opens the subscription page with the current filter preselected.
+    const calLink = document.getElementById('cal-link') as HTMLAnchorElement;
+    const filterFeeds = JSON.parse(calLink.dataset.filterFeeds ?? '{}') as Record<string, string>;
+    const updateCalLink = (filter: string, label: string) => {
+      const feed = filterFeeds[filter] ?? 'all';
+      calLink.href = feed === 'all' ? calLink.pathname : `${calLink.pathname}?feed=${feed}`;
+      calLink.setAttribute('aria-label', feed === 'all' ? 'Add all events to your calendar' : `Add ${label} events to your calendar`);
     };
 
     // Category filter for list, calendar chips and day panels, with a status line and an empty state.
@@ -236,7 +217,7 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
       showing.textContent = filter === 'all' ? `Showing all ${n} upcoming events` : `Showing ${n} ${label} ${n === 1 ? 'event' : 'events'}`;
       emptyBox.hidden = n > 0 || events.length === 0;
       emptyBox.querySelector('[data-empty-label]')!.textContent = label;
-      updateBar(filter);
+      updateCalLink(filter, label);
     };
     for (const b of filterButtons) b.addEventListener('click', () => ((filter = b.dataset.filter ?? 'all'), applyFilter()));
     document.querySelector('[data-filter-reset]')?.addEventListener('click', () => ((filter = 'all'), applyFilter()));
@@ -299,21 +280,7 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
   </script>
 
   <style is:global>
-    .cal-bar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px 12px;
-      margin: 0 0 12px;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--accent);
-      border-radius: 8px;
-    }
-    .cal-bar-text { margin: 0; font-size: 0.95rem; }
-    .cal-bar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .cal-bar .status { flex-basis: 100%; margin: 0; }
+    .toolbar-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .showing { margin: 4px 0 0; color: var(--muted); font-size: 0.88rem; }
     .empty-filter { margin: 16px 0; padding: 14px; border: 1px dashed var(--line); border-radius: 8px; text-align: center; }
     .empty-filter p { margin: 0 0 8px; }
