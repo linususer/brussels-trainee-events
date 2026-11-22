@@ -117,11 +117,11 @@ Scope extended to sources open to all trainees regardless of nationality (no `co
 
 | Source | Group | Event page | How | Fit | Notes |
 |---|---|---|---|---|---|
-| YPFP Brussels (Young Professionals in Foreign Policy) | I | [members.ypfp.org/events](https://members.ypfp.org/events/) | RSS `/events/RSS` (event date in title) + detail page ("Location …") | ★★★ networking, e.g. Christmas Pub Quiz | Feed mixes branches (London…): filter by location |
-| House of European History | G | [historia.europa.eu › events](https://historia.europa.eu/en/exhibitions-events/events) | List + detail pages in the OpenEuropa template (`oe-sc-event__…` dates/location fields, `<time datetime>`) | ★★★ free talks, film, culture | europa.eu rate limits |
-| European Commission events | G | [commission.europa.eu › events](https://commission.europa.eu/get-involved/events_en) | Detail pages carry schema.org `Event` JSON-LD | ★★ conferences, many online or elsewhere | Strict rate limits; paginated list; Brussels filter needed |
-| Bruegel | H | [bruegel.org/events](https://www.bruegel.org/events) | List page has `<time datetime>` per event | ★★ policy | |
-| ECFR | H | [ecfr.eu/events](https://ecfr.eu/events/) | Detail pages have `<time datetime>` start/end | ★★ policy | RSS feed returns 403; use the HTML pages |
+| YPFP Brussels (Young Professionals in Foreign Policy) | I | [members.ypfp.org/events](https://members.ypfp.org/events/) | RSS `/events/RSS` (event date in title) + detail page ("Location …") | ★★★ networking, e.g. Christmas Pub Quiz | **Automated: `ypfp-bxl`** (only events with a Brussels venue) |
+| House of European History | G | [historia.europa.eu › events](https://historia.europa.eu/en/exhibitions-events/events) | List + detail pages in the OpenEuropa template (`oe-sc-event__…` dates/location fields, `<time datetime>`) | ★★★ free talks, film, culture | **Automated: `hoeh`** |
+| European Commission events | G | [commission.europa.eu › events](https://commission.europa.eu/get-involved/events_en) | Detail pages carry schema.org `Event` JSON-LD | ★★ conferences, many online or elsewhere | **Automated: `ec-events`** from the list pages alone (ECL meta icons); 10 s interval and 429 back-off |
+| Bruegel | H | [bruegel.org/events](https://www.bruegel.org/events) | List page has `<time datetime>` per event; event page has a "Time and location" block | ★★ policy | **Automated: `bruegel`** (labels from the event page text) |
+| ECFR | H | [ecfr.eu/events](https://ecfr.eu/events/) | Detail pages have `<time datetime>` start/end | ★★ policy | **Automated: `ecfr`** (RSS returns 403; HTML used; only events clearly in Brussels, most are online) |
 | JEF Europe | I | [jef.eu/events](https://jef.eu/events/) | The Events Calendar (WordPress): JSON-LD on detail pages | ★ most events outside Brussels; JSON-LD venue often empty | `?ical=1` returns HTML, not iCal |
 | EESC | G | [eesc.europa.eu › upcoming events](https://www.eesc.europa.eu/en/agenda/our-events/upcoming-events) | RSS (publication dates only) + detail pages | ★ mostly institutional (plenaries, hearings) | |
 
@@ -139,8 +139,8 @@ Scope extended to sources open to all trainees regardless of nationality (no `co
 
 | Source | Group | Finding |
 |---|---|---|
-| European Commission Trainees' Committee (ECTA) | I | [traineescommittee.com](https://www.traineescommittee.com/) (Wix): T-Card, partner discounts, guides; no event calendar. Events are announced via social media/messenger groups |
-| EUNIC Brussels (cultural institutes) | J | No public calendar found; announcements on Instagram/LinkedIn/X |
+| European Commission Trainees' Committee (ECTA) | I | [traineescommittee.com](https://www.traineescommittee.com/) (Wix): T-Card, partner discounts, guides; no event calendar; blog feed has two guides (2025). Events are announced via social media/messenger groups. **On the watchlist** |
+| EUNIC Brussels (cultural institutes) | J | No public calendar found; announcements on Instagram/LinkedIn/X. **On the watchlist** (monthly reminder) |
 | European Parliament visitor offer | G | Lunchtime tours and visits are recurring offers on visiting.europarl.europa.eu, not dated events |
 
 ## Group C: business

@@ -57,8 +57,8 @@
     "checkedAt": "2026-11-22"
   },
   "lv-st": {
-    "status": 200,
-    "failures": 0,
+    "status": 0,
+    "failures": 1,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-22"
@@ -79,7 +79,7 @@
   },
   "goethe-bxl": {
     "status": 403,
-    "failures": 7,
+    "failures": 8,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-22"
@@ -93,7 +93,7 @@
   },
   "euagenda": {
     "status": 403,
-    "failures": 7,
+    "failures": 8,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-22"
@@ -120,8 +120,8 @@
     "checkedAt": "2026-11-22"
   },
   "lv-bw-portal": {
-    "status": 200,
-    "failures": 0,
+    "status": 0,
+    "failures": 1,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-22"
@@ -135,8 +135,17 @@
   },
   "lv-hb": {
     "status": 403,
-    "failures": 3,
+    "failures": 4,
     "feeds": [],
+    "futureDates": [],
+    "checkedAt": "2026-11-22"
+  },
+  "ecta": {
+    "status": 200,
+    "failures": 0,
+    "feeds": [
+      "https://www.traineescommittee.com/blog-feed.xml"
+    ],
     "futureDates": [],
     "checkedAt": "2026-11-22"
   }

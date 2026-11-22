@@ -49,6 +49,10 @@ export const watchlist: WatchEntry[] = [
   { id: 'goethe-bxl', group: 'state', organiser: 'Goethe-Institut Brüssel', status: 'blocked', reviewed: '2026-11-21', url: 'https://www.goethe.de/ins/be/de/ver.cfm', note: 'real calendar; 403 for non-browser clients, ask for permission/feed', signup: { url: 'https://www.goethe.de/ins/be/de/new.html', label: 'Newsletter "Agenda" (cultural events)' } },
   { id: 'euagenda', group: 'aggregator', organiser: 'EU Agenda (aggregator)', status: 'blocked', reviewed: '2026-11-21', url: 'https://euagenda.eu/', note: 'Cloudflare; check terms/API' },
 
+  // EU-wide: young professional & trainee networks, culture
+  { id: 'ecta', group: 'network', organiser: "European Commission Trainees' Committee (ECTA)", status: 'no-calendar', reviewed: '2026-11-22', url: 'https://www.traineescommittee.com/', note: 'events announced via social media and messenger groups; T-Card and guides on the website' },
+  { id: 'eunic-bxl', group: 'culture', organiser: 'EUNIC Brussels (cultural institutes of EU member states)', status: 'not-located', reviewed: '2026-11-22', note: 'no public calendar found; announcements on Instagram/LinkedIn/X' },
+
   // Group B: political foundations (Böll and Rosa-Luxemburg are candidates for adapters)
   { id: 'fes-bxl', group: 'foundation', organiser: 'Friedrich-Ebert-Stiftung EU Office', status: 'no-calendar', reviewed: '2026-11-21', url: 'https://brussels.fes.de/events.html', note: 'event list exists but is empty', signup: { url: 'https://brussels.fes.de/newsletter.html', label: 'Newsletter (publications and events)' } },
   { id: 'kas-bxl', group: 'foundation', organiser: 'Konrad-Adenauer-Stiftung Europabüro Brüssel', status: 'blocked', reviewed: '2026-11-21', url: 'https://www.kas.de/de/web/bruessel/veranstaltungen', note: 'web application firewall' },
