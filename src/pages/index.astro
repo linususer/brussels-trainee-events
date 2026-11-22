@@ -6,6 +6,7 @@ import { buildMonths } from '../lib/calendar';
 import { eventSlug, googleEventLink } from '../lib/subscribe';
 import { feedForCategory } from '../lib/feeds';
 import { lastFetch } from '../lib/load';
+import { AFTER_WORK_FROM, fitsAroundWork } from '../lib/workday';
 
 const events = siteEvents();
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -61,7 +62,7 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
     </p>
     <p class="calendar-tip">
       <span aria-hidden="true">📅</span>
-      <span><strong>Tip:</strong> <a href={`${base}/subscribe/`}>add these events to your calendar</a>. They update by
+      <span><strong>Tip:</strong> <a id="cal-link" href={`${base}/subscribe/`} data-filter-feeds={JSON.stringify(filterFeeds)}>add these events to your calendar</a>. They update by
       themselves every night, so you don't need to come back to this website.</span>
     </p>
   </header>
@@ -71,15 +72,16 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
       <button type="button" data-filter="all" data-label="All" aria-pressed="true">All <span class="n"></span></button>
       {used.map((c) => <button type="button" data-filter={c} data-label={CATEGORIES[c]} aria-pressed="false">{CATEGORIES[c]} <span class="n"></span></button>)}
       {hasUnclassified && <button type="button" data-filter="unclassified" data-label="Unclassified" aria-pressed="false">Unclassified <span class="n"></span></button>}
+      <button type="button" class="afterwork" id="afterwork" aria-pressed="false" title={`Weekdays only from ${AFTER_WORK_FROM}; weekends and all-day events always`}>
+        <span aria-hidden="true">🕑</span> Outside work hours
+      </button>
     </nav>
+    <p class="afterwork-note" id="afterwork-note" hidden>Weekday events from {AFTER_WORK_FROM}, weekend and all-day events at any time.</p>
     <div class="toolbar-right">
       <div class="views" role="group" aria-label="View">
         <button type="button" data-view="list" aria-pressed="true">List</button>
         <button type="button" data-view="month" aria-pressed="false">Month</button>
       </div>
-      <a class="btn btn-small" id="cal-link" href={`${base}/subscribe/`} data-filter-feeds={JSON.stringify(filterFeeds)}>
-        <span aria-hidden="true">📅</span> Add to calendar
-      </a>
     </div>
   </div>
 
@@ -99,7 +101,7 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
           <h2>{month}</h2>
           <ul>
             {list.map((e) => (
-              <li class="event" id={`ev-${eventSlug(e.id)}`} data-categories={cats(e)} data-end={(e.end ?? e.start).slice(0, 10)}>
+              <li class="event" id={`ev-${eventSlug(e.id)}`} data-categories={cats(e)} data-afterwork={String(fitsAroundWork(e))} data-end={(e.end ?? e.start).slice(0, 10)}>
                 <div class="when">{when(e)}</div>
                 <div class="what">
                   {e.registration === 'invitation' && <p class="invite">{REGISTRATION.invitation}</p>}
@@ -144,7 +146,7 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
                 )}
                 {day.inMonth &&
                   day.events.map((e) => (
-                    <a class="cal-chip" href={`#day-${day.date}`} data-day={day.date} data-categories={cats(e)} title={`${timeOf(e, day.date)} ${e.title}`}>
+                    <a class="cal-chip" href={`#day-${day.date}`} data-day={day.date} data-categories={cats(e)} data-afterwork={String(fitsAroundWork(e))} title={`${timeOf(e, day.date)} ${e.title}`}>
                       <span class="cal-time">{timeOf(e, day.date)}</span> {e.title}
                     </a>
                   ))}
@@ -156,7 +158,7 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
               <h3>{longDayFmt.format(asUtc(day.date))}</h3>
               <ul>
                 {day.events.map((e) => (
-                  <li data-categories={cats(e)}>
+                  <li data-categories={cats(e)} data-afterwork={String(fitsAroundWork(e))}>
                     <span class="cal-time">{timeOf(e, day.date)}</span>
                     {e.url ? <a href={e.url} rel="noopener" class="cal-panel-title">{e.title}</a> : <span class="cal-panel-title">{e.title}</span>}
                     <span class="cal-panel-meta">
@@ -195,16 +197,28 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
 
     const events = [...document.querySelectorAll<HTMLElement>('.event')];
     const filterButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
-    const inFilter = (el: HTMLElement, f: string) => f === 'all' || (el.dataset.categories ?? '').split(' ').includes(f);
-
-    // Counts on the filter buttons (after past events were removed).
-    for (const b of filterButtons) {
-      const n = events.filter((li) => inFilter(li, b.dataset.filter ?? 'all')).length;
-      b.querySelector('.n')!.textContent = String(n);
-      b.setAttribute('aria-label', `${b.dataset.label}: ${n} events`);
+    // "Outside work hours" combines with the category filter; remembered per browser.
+    const afterWorkBtn = document.getElementById('afterwork') as HTMLButtonElement;
+    const afterWorkNote = document.getElementById('afterwork-note')!;
+    let afterWork = false;
+    try {
+      afterWork = localStorage.getItem('bte-afterwork') === '1';
+    } catch {
+      // storage unavailable: start with the toggle off
     }
+    const inCategory = (el: HTMLElement, f: string) => f === 'all' || (el.dataset.categories ?? '').split(' ').includes(f);
+    const inFilter = (el: HTMLElement, f: string) => inCategory(el, f) && (!afterWork || el.dataset.afterwork === 'true');
 
-    // "Add to calendar" opens the subscription page with the current filter preselected.
+    // Counts on the filter buttons follow the work-hours toggle.
+    const updateCounts = () => {
+      for (const b of filterButtons) {
+        const n = events.filter((li) => inFilter(li, b.dataset.filter ?? 'all')).length;
+        b.querySelector('.n')!.textContent = String(n);
+        b.setAttribute('aria-label', `${b.dataset.label}: ${n} events`);
+      }
+    };
+
+    // The tip's calendar link opens the subscription page with the current filter preselected.
     const calLink = document.getElementById('cal-link') as HTMLAnchorElement;
     const filterFeeds = JSON.parse(calLink.dataset.filterFeeds ?? '{}') as Record<string, string>;
     const updateCalLink = (filter: string, label: string) => {
@@ -218,6 +232,9 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
     const showing = document.getElementById('showing')!;
     const emptyBox = document.getElementById('empty-filter')!;
     const applyFilter = () => {
+      updateCounts();
+      afterWorkBtn.setAttribute('aria-pressed', String(afterWork));
+      afterWorkNote.hidden = !afterWork;
       for (const b of filterButtons) b.setAttribute('aria-pressed', String(b.dataset.filter === filter));
       for (const el of document.querySelectorAll<HTMLElement>('.event, .cal-chip, .cal-panel li')) el.hidden = !inFilter(el, filter);
       for (const s of document.querySelectorAll<HTMLElement>('.month-list')) s.hidden = !s.querySelector('.event:not([hidden])');
@@ -229,13 +246,32 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
       }
       const n = events.filter((li) => !li.hidden).length;
       const label = filterButtons.find((b) => b.dataset.filter === filter)?.dataset.label ?? '';
-      showing.textContent = filter === 'all' ? `Showing all ${n} upcoming events` : `Showing ${n} ${label} ${n === 1 ? 'event' : 'events'}`;
+      const what = filter === 'all' ? `${n} upcoming ${n === 1 ? 'event' : 'events'}` : `${n} ${label} ${n === 1 ? 'event' : 'events'}`;
+      showing.textContent = `Showing ${filter === 'all' && !afterWork ? 'all ' : ''}${what}${afterWork ? ' outside work hours' : ''}`;
       emptyBox.hidden = n > 0 || events.length === 0;
-      emptyBox.querySelector('[data-empty-label]')!.textContent = label;
+      emptyBox.querySelector('[data-empty-label]')!.textContent = `${filter === 'all' ? '' : label}${afterWork ? ' after-work' : ''}`.trim() || 'upcoming';
       updateCalLink(filter, label);
     };
     for (const b of filterButtons) b.addEventListener('click', () => ((filter = b.dataset.filter ?? 'all'), applyFilter()));
-    document.querySelector('[data-filter-reset]')?.addEventListener('click', () => ((filter = 'all'), applyFilter()));
+    document.querySelector('[data-filter-reset]')?.addEventListener('click', () => {
+      filter = 'all';
+      afterWork = false;
+      try {
+        localStorage.setItem('bte-afterwork', '0');
+      } catch {
+        // ignore
+      }
+      applyFilter();
+    });
+    afterWorkBtn.addEventListener('click', () => {
+      afterWork = !afterWork;
+      try {
+        localStorage.setItem('bte-afterwork', afterWork ? '1' : '0');
+      } catch {
+        // ignore
+      }
+      applyFilter();
+    });
 
     // List / month view, remembered per browser.
     const viewButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-view]')];
@@ -296,6 +332,9 @@ const filterFeeds = Object.fromEntries([['all', 'all'], ['unclassified', 'all'],
 
   <style is:global>
     .toolbar-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .filters .afterwork { border-style: dashed; }
+    .filters .afterwork[aria-pressed='true'] { border-style: solid; }
+    .afterwork-note { margin: -12px 0 12px; color: var(--muted); font-size: 0.85rem; }
     .updated { font-size: 0.9rem; }
     .calendar-tip {
       display: flex;
