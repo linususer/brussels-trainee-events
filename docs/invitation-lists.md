@@ -2,7 +2,7 @@
 
 Organisers whose events are announced mainly by **invitation** (no public calendar), so the way to get their events is to be on their mailing list. Entries from these invitations go into `data/manual-events.yaml`.
 
-Verified newsletter and invitation sign-up links are shown on the website's **Sources** page (from `signup` in `scrapers/watchlist.ts`); this file keeps the wider research notes (addresses, phone numbers).
+Verified sign-up links are shown on the website's **Sources** page (from `signup` in `scrapers/watchlist.ts`), **only for newsletters that say they cover events** and for dedicated event addresses. Checked and left out as not event-specific (2026-11-22): Sachsen "Europa-News" (EU topics and dates), Sachsen-Anhalt "EU-Wochenspiegel", the Brandenburg Europe newsletter (run by Europa-Zentrum Potsdam), KAS "Insights from Inside" (policy digest). This file keeps the wider research notes (addresses, phone numbers).
 
 Collected on 2026-11-21 from the organisers' pages and search results. **Verify before use**: some details come from older documents (marked *unconfirmed*). Only functional addresses are listed, no personal names.
 
