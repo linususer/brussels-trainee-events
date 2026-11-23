@@ -55,6 +55,23 @@
     "source": "lv-nrw"
   },
   {
+    "id": "lv-nrw:3E269",
+    "title": "Quantum Focus Day",
+    "start": "2026-12-08T09:00",
+    "end": "2026-12-08T14:00",
+    "location": "Vertretung des Landes Nordrhein-Westfalen bei der Europäischen Union",
+    "organiser": "Vertretung des Landes Nordrhein-Westfalen bei der EU",
+    "country": "DE",
+    "url": "https://bruessel.veranstaltungen.land.nrw/event.php?vnrtoken=JE+a0g5ewLx4Rx2uVYKWrG8QZDtPl/u3Z8BsfkKTfY20HeEa2lcTOBqToNZ0Qf8Gtzn1GBHD+i17+XGoXQ1/WAjhmvQ2a+xZcS5lL2nu0qsBlj8r1tzd1vbmb2WM+UQwm5vUw6ODT1byKvcVlhr3W8EJNOMZ6FVC+EY3DvY9yWH6VPMHBWG/VHqVLV1fAYfGAeD4a4Qmstnc0Lh2KBAnfrTO4DBnZvRi29kHTSzFd9ARmmsJrOlW0ehE1TWzFEjCFopwFDrMcv4hOEcEG/rKOLPd6+tJgalTvsrasx9MQH4GDlupoYDgnqzZZVUwDbKqari5RQhhjPg8kMyq/bK1Y3j4UuJQHP23DP/ehTUSx1Jqt4asG4vxC3BVczFQBOFb7Q==&intLinkSource=OVLEventName",
+    "description": "The Representation of the State of North Rhine-Westphalia to the EU, in cooperation with ELNET, cordially invites you to the event: Quantum Focus Day Tuesday 8 December 2026, 9:30 am (admission from 9:00 am) Representation of the State of North Rhine-Westphalia to the EU Rue …",
+    "categories": [
+      "policy",
+      "networking"
+    ],
+    "registration": "required",
+    "source": "lv-nrw"
+  },
+  {
     "id": "lv-rp:1E55",
     "title": "Die GAP nach 2027",
     "start": "2026-11-16T18:00",
@@ -70,6 +87,21 @@
     ],
     "registration": "required",
     "source": "lv-rp"
+  },
+  {
+    "id": "lv-st:1E52",
+    "title": "Lesung mit Klopstock Preisträgerin 2025 Heike Geißler und Förderpreisträger 2025 Tobias Wagner",
+    "start": "2026-11-19T17:30",
+    "end": "2026-11-19T21:00",
+    "location": "Vertretung des Landes Sachsen-Anhalt bei der EU Boulevard Saint Michel 80 1040 Brüssel",
+    "organiser": "Vertretung des Landes Sachsen-Anhalt bei der EU",
+    "country": "DE",
+    "url": "https://lv-bxl.sachsen-anhalt-events.de/event.php?vnrtoken=JPfLjmNgiqPMDQCTkz6RC9UtRPf9REJG0zRIxLhFBelJrioe0SK8sJzVQHuTmTEW9T6HHKw46SgfksjfemZZLH4Q4ODT5SeP+X/d5kdA5UsaeNCmPTb/0uqpSL9MLklq/0HHqiFa7Wjc+Mfd602lpIWicrZ3EJj/aydYrB4SHYaer2g32O9A647nY5LDUSH06EMZq/SvUWwvHf2sWSnsw4KPRPzsfifETtVTEywskyVkhEAqi6L+rC+H9ic7MrM2B9mvI3g18/AgEKP60ggbWg0gG6sTzJ/Fgyb1VNft1egq1oTAWJVjwtfxCZ/ehlGZsriQwLX07rerJk1JlClbr9Jg4Q84SevtSgfhHHvmJFJFaTsu1RfDCwHKm1spR85uT/6NzCes6UBRCwQUibfbXLw=&intLinkSource=OVLEventName",
+    "categories": [
+      "culture"
+    ],
+    "registration": "required",
+    "source": "lv-st"
   },
   {
     "id": "ypfp-bxl:6909163",
@@ -180,6 +212,42 @@
     "location": "House of European History, 135 Rue Belliard/straat, 1000 Brussels, Belgium",
     "organiser": "House of European History",
     "url": "https://historia.europa.eu/en/exhibitions-events/events/lunchtime-tour-preparation-festive-season",
+    "description": "The House of European History team offers an engaging and thought-provoking journey through European history. Dive into it over lunchtime!",
+    "labels": [
+      "Tours"
+    ],
+    "categories": [
+      "culture"
+    ],
+    "registration": "unknown",
+    "source": "hoeh"
+  },
+  {
+    "id": "hoeh:visite-decouverte-january",
+    "title": "Visite Découverte - January",
+    "start": "2027-01-10T14:30",
+    "end": "2027-01-10T16:00",
+    "location": "House of European History, 135 Rue Belliard/straat, 1000 Brussels, Belgium",
+    "organiser": "House of European History",
+    "url": "https://historia.europa.eu/en/exhibitions-events/events/visite-decouverte-january",
+    "description": "A free 90-minute introduction to the museum using interactive learning methods to discover the essentials of the collection, with groups in French and English.",
+    "labels": [
+      "Tours"
+    ],
+    "categories": [
+      "culture"
+    ],
+    "registration": "unknown",
+    "source": "hoeh"
+  },
+  {
+    "id": "hoeh:lunchtime-tour-memories-shoah-0",
+    "title": "Lunchtime tour - Memories of the Shoah",
+    "start": "2027-01-19T12:15",
+    "end": "2027-01-19T13:00",
+    "location": "House of European History, 135 Rue Belliard/straat, 1000 Brussels, Belgium",
+    "organiser": "House of European History",
+    "url": "https://historia.europa.eu/en/exhibitions-events/events/lunchtime-tour-memories-shoah-0",
     "description": "The House of European History team offers an engaging and thought-provoking journey through European history. Dive into it over lunchtime!",
     "labels": [
       "Tours"
