@@ -28,6 +28,7 @@ const previous: EventInput[] = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'u
 const result: EventInput[] = [];
 let failures = 0;
 const report: string[] = [];
+const failed: { source: string; error: string }[] = [];
 
 for (const source of sources) {
   try {
@@ -40,12 +41,14 @@ for (const source of sources) {
     const kept = previous.filter((e) => e.source === source.id);
     console.error(`✘ ${source.id}: ${(err as Error).message} (keeping ${kept.length} previous events)`);
     report.push(`| ✘ | ${source.id} | ${kept.length} (kept) | ${(err as Error).message.replace(/\|/g, '/')} |`);
+    failed.push({ source: source.id, error: (err as Error).message.slice(0, 200) });
     result.push(...kept);
   }
 }
 
 writeFileSync(OUT, JSON.stringify(result, null, 2) + '\n');
-writeFileSync(META, JSON.stringify({ fetchedAt: new Date().toISOString(), sources: sources.length, failed: failures }, null, 2) + '\n');
+// Which sources failed and why, readable without access to the CI logs.
+writeFileSync(META, JSON.stringify({ fetchedAt: new Date().toISOString(), sources: sources.length, failed: failures, failures: failed }, null, 2) + '\n');
 console.log(`Wrote ${result.length} events from ${sources.length} sources to data/scraped.json`);
 if (sources.length === 0) console.log('No sources configured yet: add some in scrapers/sources.ts.');
 

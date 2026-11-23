@@ -32,9 +32,10 @@ npm run build      # static site in dist/
 ## Deployment (GitHub Pages)
 
 - `.github/workflows/deploy.yml` tests, builds and publishes the site on every push to `main` (and when called by the nightly run).
-- `.github/workflows/nightly.yml` runs **every night at 04:30 UTC**: tests, `npm run fetch` (all sources plus the watchlist), commits changed `data/` as `github-actions[bot]`, then deploys. A failing source keeps its previous events. The run page shows a summary table of all sources and the watchlist findings. Start it by hand under **Actions → Nightly fetch → Run workflow**.
+- `.github/workflows/nightly.yml` runs **every night at 04:17 UTC** (fallback run at 10:17 UTC): tests, `npm run fetch` (all sources plus the watchlist), commits changed `data/` as `github-actions[bot]`, then deploys. A failing source keeps its previous events. The run page shows a summary table of all sources and the watchlist findings. Start it by hand under **Actions → Nightly fetch → Run workflow**.
 - Because the bot commits to `main` every night, run `git pull` before working locally. Manual runs of `npm run fetch` are still possible but no longer needed.
-- GitHub may start scheduled runs late, and disables schedules in repositories without activity for 60 days (the nightly commits count as activity).
+- `data/last-fetch.json` records when the last fetch ran and which sources failed with which error (readable without CI logs).
+- GitHub may start scheduled runs late (or drop them, hence the fallback run), and disables schedules in repositories without activity for 60 days (the nightly commits count as activity).
 
 One-time setup: in the repository on GitHub, open **Settings → Pages** and set **Source** to **GitHub Actions**. The site URL and base path come from that Pages configuration, so the repository name does not need to be hard-coded.
 
