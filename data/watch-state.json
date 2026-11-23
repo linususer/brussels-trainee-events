@@ -11,7 +11,7 @@
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "lv-be": {
     "status": 200,
@@ -20,7 +20,7 @@
       "https://www.berlin.de/sen/europa/buero-bruessel/index.php/rss"
     ],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "lv-hanse": {
     "status": 200,
@@ -31,30 +31,30 @@
       "https://hanse-office.de/feed/"
     ],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "lv-he": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "lv-ni": {
-    "status": 200,
-    "failures": 0,
+    "status": 0,
+    "failures": 1,
     "feeds": [
       "https://www.stk.niedersachsen.de/rss/"
     ],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "lv-sn": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "lv-st": {
     "status": 200,
@@ -68,56 +68,56 @@
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "botschaft-be": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "goethe-bxl": {
     "status": 403,
-    "failures": 11,
+    "failures": 12,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "lv-sl": {
-    "status": 200,
-    "failures": 0,
+    "status": 403,
+    "failures": 1,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "euagenda": {
     "status": 403,
-    "failures": 11,
+    "failures": 12,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "fes-bxl": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "kas-bxl": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "fnf-europe": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "lv-bw-portal": {
     "status": 0,
@@ -131,14 +131,14 @@
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "lv-hb": {
     "status": 403,
-    "failures": 7,
+    "failures": 8,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "ecta": {
     "status": 200,
@@ -147,20 +147,20 @@
       "https://www.traineescommittee.com/blog-feed.xml"
     ],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "ceps": {
     "status": 403,
-    "failures": 3,
+    "failures": 4,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   },
   "carnegie-europe": {
     "status": 200,
     "failures": 0,
     "feeds": [],
     "futureDates": [],
-    "checkedAt": "2026-11-22"
+    "checkedAt": "2026-11-23"
   }
 }

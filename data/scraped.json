@@ -414,5 +414,63 @@
     ],
     "registration": "unknown",
     "source": "ec-events"
+  },
+  {
+    "id": "eesc:keeping-europe-global-battery-map",
+    "title": "Keeping Europe on the global battery map",
+    "start": "2026-11-30",
+    "location": "EESC, Brussels",
+    "organiser": "European Economic and Social Committee (EESC)",
+    "url": "https://www.eesc.europa.eu/en/agenda/our-events/events/keeping-europe-global-battery-map",
+    "description": "Europe has made major progress in building its battery value chain, but global competition, especially from Asia, is intensifying. How can Europe keep its place on the global battery map? The European Economic and Social Committee's Consultative Commission on Industrial Change …",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "eesc"
+  },
+  {
+    "id": "eesc:eesc-consumer-policy-dialogue",
+    "title": "EESC Consumer Policy Dialogue",
+    "start": "2026-11-30",
+    "location": "Brussels",
+    "organiser": "European Economic and Social Committee (EESC)",
+    "url": "https://www.eesc.europa.eu/en/agenda/our-events/events/eesc-consumer-policy-dialogue",
+    "description": "Following the introduction of the temporary €3 customs duty on low-value parcels on 1 July 2026, the European Economic and Social Committee (EESC) will organise a Consumer Policy Dialogue on 30 November 2026 to bring together EU institutions, consumer organisations, businesses …",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "eesc"
+  },
+  {
+    "id": "eesc:how-unlock-potential-plant-based-sector",
+    "title": "How to unlock the potential of the plant-based sector",
+    "start": "2026-12-01T14:30",
+    "end": "2026-12-01T16:30",
+    "location": "Brussels",
+    "organiser": "European Economic and Social Committee (EESC)",
+    "url": "https://www.eesc.europa.eu/en/agenda/our-events/events/how-unlock-potential-plant-based-sector",
+    "description": "On Tuesday 1 December, from 14:30-16:30 CEST, the EESC's Permanent Group on Sustainable Food Systems is hosting a debate on how to unlock the potential of the plant-based sector.",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "eesc"
+  },
+  {
+    "id": "eesc:debate-revision-utps-directive",
+    "title": "Debate on the Revision of the UTPs Directive",
+    "start": "2026-12-01T10:00",
+    "end": "2026-12-01T13:00",
+    "location": "Brussels",
+    "organiser": "European Economic and Social Committee (EESC)",
+    "url": "https://www.eesc.europa.eu/en/agenda/our-events/events/debate-revision-utps-directive",
+    "description": "On Tuesday 1 December, from 10:00-13:00 CEST, the EESC's Permanent Group on Sustainable Food Systems is hosting a debate on the upcoming revision of the Unfair Trading Practices (UTPs) Directive.",
+    "categories": [
+      "policy"
+    ],
+    "registration": "unknown",
+    "source": "eesc"
   }
 ]
