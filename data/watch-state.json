@@ -77,21 +77,21 @@
   },
   "goethe-bxl": {
     "status": 403,
-    "failures": 16,
+    "failures": 17,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-25"
   },
   "lv-sl": {
     "status": 403,
-    "failures": 5,
+    "failures": 6,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-25"
   },
   "euagenda": {
     "status": 403,
-    "failures": 16,
+    "failures": 17,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-25"
@@ -133,7 +133,7 @@
   },
   "lv-hb": {
     "status": 403,
-    "failures": 12,
+    "failures": 13,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-25"
@@ -149,7 +149,7 @@
   },
   "ceps": {
     "status": 403,
-    "failures": 8,
+    "failures": 9,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-25"
