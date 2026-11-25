@@ -1,8 +1,12 @@
 {
-  "fetchedAt": "2026-11-24T20:45:23.059Z",
+  "fetchedAt": "2026-11-25T14:29:50.061Z",
   "sources": 15,
-  "failed": 2,
+  "failed": 3,
   "failures": [
+    {
+      "source": "lv-bw",
+      "error": "The operation was aborted due to timeout"
+    },
     {
       "source": "bruegel",
       "error": "403 Forbidden for https://www.bruegel.org/events"
