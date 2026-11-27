@@ -1,24 +1,5 @@
 [
   {
-    "id": "boell-eu:167273",
-    "title": "EU-India Climate Expert Workshop",
-    "start": "2026-11-26T09:00",
-    "end": "2026-11-26T14:00",
-    "location": "Brussels",
-    "organiser": "Heinrich-Böll-Stiftung, EU office",
-    "country": "DE",
-    "url": "https://calendar.boell.de/en/event/eu-india-climate-expert-workshop",
-    "description": "The workshop will bring together Indian and European participants to exchange experiences on environmental challenges, discuss climate cooperation and explore the role of civil society in shaping shared solutions.",
-    "labels": [
-      "Workshop"
-    ],
-    "categories": [
-      "policy"
-    ],
-    "registration": "invitation",
-    "source": "boell-eu"
-  },
-  {
     "id": "boell-eu:167281",
     "title": "European perspectives on German rearmament: Reassurance or concern?",
     "start": "2026-12-01T14:00",
@@ -72,23 +53,6 @@
     "source": "lv-nrw"
   },
   {
-    "id": "lv-rp:1E55",
-    "title": "Die GAP nach 2027",
-    "start": "2026-11-16T18:00",
-    "end": "2026-11-16T22:00",
-    "location": "Vertretung des Landes Rheinland-Pfalz bei der EU",
-    "organiser": "Vertretung des Landes Rheinland-Pfalz bei der EU",
-    "country": "DE",
-    "url": "https://bruessel.landesvertretung-rlp.de/event.php?vnrtoken=JGjtWlxkCwRaNoO0OlJluvhE1SzYikMmU3Ur8gsfKJ4lpefKDtmFAWKE6ljTPwsoD68DWPK7qO6eXYyrPVonkn7KrH/EXbB/5A/3MwtBlfbFHZJ919U5FGl5zbylDOpmyPqXyeZAO64znLhorq0fR6zDubMIqUFVxX2vOz4dRfiRsGV5Lfek7qMU1LHbHUNE9VQA3LIWNQZnidByJD9taIA5tfAhB0nBj0dB031hH/Z9m30l/2SwNFsKHsFU+CnLXCIfkaanNLASgJx8L5b0AAIu4wiA23emHV+YKBhzGAiW5JVG1CasQ9mvZoG2N+SyTaYAkPFqrxq0jfbyyR98mdAoaRWzGZcrBbKZnWQU/ctVcmAKLNCwMtdgWAb3LCRJpdcZrRj9X86u0XEcKGyPl40=&intLinkSource=OVLEventName",
-    "description": "EINLADUNG Die GAP nach 2027 - Perspektiven für Weinbau und Sonderkulturen am Montag, 16. November 2026 um 18.30 Uhr // Einlass 18.00 Uhr in die Vertretung des Landes Rheinland-Pfalz Avenue de Tervueren 60 1040 Brüssel Mit den Vorschlägen der Europäischen Kommission zur …",
-    "categories": [
-      "policy",
-      "party"
-    ],
-    "registration": "required",
-    "source": "lv-rp"
-  },
-  {
     "id": "lv-st:1E52",
     "title": "Lesung mit Klopstock Preisträgerin 2025 Heike Geißler und Förderpreisträger 2025 Tobias Wagner",
     "start": "2026-11-19T17:30",
@@ -117,53 +81,6 @@
     ],
     "registration": "required",
     "source": "lv-bw"
-  },
-  {
-    "id": "ypfp-bxl:6909163",
-    "title": "YPFP Christmas Pub Quiz",
-    "start": "2026-11-25T19:00",
-    "location": "1st Floor, Scott's Bar, Rue Montagne aux Herbes Potagères 2, 1000 Bruxelles",
-    "organiser": "YPFP Brussels (Young Professionals in Foreign Policy)",
-    "url": "https://members.ypfp.org/event-6909163",
-    "description": "YPFP Brussels is happy to invite you to the 2026 Christmas edition of our YPFP Pub Quiz! Join us for a festive evening of fun, reflection, and friendly competition as we wrap up another amazing year together! Test your knowledge in our short Christmas Pub Quiz on 25 November at …",
-    "categories": [
-      "networking"
-    ],
-    "registration": "unknown",
-    "source": "ypfp-bxl"
-  },
-  {
-    "id": "ypfp-bxl:6914392",
-    "title": "YPFP Ambassador Series: Moldova’s European Future - The Road to EU Membership",
-    "start": "2026-11-26T18:30",
-    "location": "Mission of the Republic of Moldova to the European Union, Avenue Franklin Roosevelt 55, 1050 Brussels",
-    "organiser": "YPFP Brussels (Young Professionals in Foreign Policy)",
-    "url": "https://members.ypfp.org/event-6914392",
-    "description": "YPFP Brussels is pleased to invite you to a special Ambassador Series event hosted at the Mission of the Republic of Moldova to the European Union. Join us for an exclusive fireside chat with H.E.",
-    "categories": [
-      "policy"
-    ],
-    "registration": "unknown",
-    "source": "ypfp-bxl"
-  },
-  {
-    "id": "hoeh:evening-david-van-reybrouck",
-    "title": "An evening with David Van Reybrouck",
-    "start": "2026-11-26T19:00",
-    "end": "2026-11-26T21:00",
-    "location": "House of European History, rue Belliard/straat 135, 1000 Brussels, Belgium",
-    "organiser": "House of European History",
-    "url": "https://historia.europa.eu/en/exhibitions-events/events/evening-david-van-reybrouck",
-    "description": "The House of European History is hosting an evening with David Van Reybrouck organised by the Goethe-Institute Brussels and the German Embassy in Brussels.",
-    "labels": [
-      "Talks"
-    ],
-    "categories": [
-      "policy",
-      "culture"
-    ],
-    "registration": "unknown",
-    "source": "hoeh"
   },
   {
     "id": "hoeh:remembering-past-understanding-present",
