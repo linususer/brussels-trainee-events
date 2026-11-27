@@ -25,7 +25,11 @@
   "lv-hanse": {
     "status": 200,
     "failures": 0,
-    "feeds": [],
+    "feeds": [
+      "https://hanse-office.de/category/veranstaltungen-termine/feed/",
+      "https://hanse-office.de/comments/feed/",
+      "https://hanse-office.de/feed/"
+    ],
     "futureDates": [],
     "checkedAt": "2026-11-27"
   },
@@ -73,21 +77,21 @@
   },
   "goethe-bxl": {
     "status": 403,
-    "failures": 20,
+    "failures": 21,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-27"
   },
   "lv-sl": {
     "status": 403,
-    "failures": 9,
+    "failures": 10,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-27"
   },
   "euagenda": {
     "status": 403,
-    "failures": 20,
+    "failures": 21,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-27"
@@ -129,7 +133,7 @@
   },
   "lv-hb": {
     "status": 403,
-    "failures": 16,
+    "failures": 17,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-27"
@@ -145,7 +149,7 @@
   },
   "ceps": {
     "status": 403,
-    "failures": 12,
+    "failures": 13,
     "feeds": [],
     "futureDates": [],
     "checkedAt": "2026-11-27"
